@@ -1,0 +1,43 @@
+int x = 21*5+2; 
+int y = 21*(5+2); # int w = 0;
+y = y - x + 3;
+int z = 2.56;
+print(y);
+
+geo warszawa = 52^13'5''N  21^30''E;
+geo gdansk = 54^20'51''N 18^38'43''E;
+geo diff;
+if (warszawa > gdansk) {
+    diff = warszawa - gdansk;
+}
+else {
+    diff = gdansk - warszawa;
+}
+
+int i = 0;
+int j = 10;
+while (i < 10) {
+    while (j > 0)
+        if (i <= 5) {
+            if (j >= 5) {
+                print("a");
+            }
+            else
+                print("b");
+        }
+        elsif (i == 6 and j != 6) {
+            print("c");
+        }
+    i = i + 1;
+    j = j - 1;
+}
+
+string test(string s1, string s2) {
+    return s1 + " " + s2;
+}
+string x = test("abc", "def");
+
+int silnia(int a) {
+    return a*silnia(a-1);
+}
+silnia(10);
