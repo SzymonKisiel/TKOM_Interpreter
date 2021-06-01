@@ -1,5 +1,6 @@
-#ifndef SOURCE_H
-#define SOURCE_H
+#ifndef _TKOM__INTERPRETER_SOURCE_H
+#define _TKOM__INTERPRETER_SOURCE_H
+
 
 #include <fstream>
 
@@ -17,9 +18,6 @@ public:
         row = 1;
         column = -1;
     }
-    ~Source() {
-        file.close();
-    }
     char getNextChar() {
         char c = file.get();
         if (c == '\n') {
@@ -31,12 +29,13 @@ public:
         }
         return c;
     }
-    int getRow() {
+    const int getRow() {
         return row;
     }
-    int getColumn() {
+    const int getColumn() {
         return column;
     }
 };
 
-#endif // SOURCE_H
+
+#endif //_TKOM__INTERPRETER_SOURCE_H

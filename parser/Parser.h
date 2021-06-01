@@ -1,11 +1,10 @@
-#ifndef PARSER_H
-#define PARSER_H
+#ifndef _TKOM__INTERPRETER_PARSER_H
+#define _TKOM__INTERPRETER_PARSER_H
 
-#include "Token.h"
-#include "Lexer.h"
 
-#include "StatementNode.h"
 #include "Node.h"
+#include "../lexer/Token.h"
+#include "../lexer/Lexer.h"
 #include <memory>
 
 #include <iostream>
@@ -14,17 +13,18 @@ class Parser
 {
 private:
     Lexer & lexer;
-    Token* currentToken;
+    std::unique_ptr<Token> currentToken;
 public:
     Parser(Lexer & lexer) : lexer(lexer) {
         nextToken();
     }
 
-    Token* nextToken() { // tymczasowo wskaznik zamiast unique_ptr
-        currentToken = lexer.getNextToken();
+    //std::unique_ptr<Token>?
+    void nextToken() {
+        currentToken = std::move(lexer.getNextToken());
         while (currentToken->getType() == TokenType::T_MULTICOMMENT)
-            currentToken = lexer.getNextToken();
-        return currentToken;
+            currentToken = std::move(lexer.getNextToken());
+        return; //currentToken?
     }
 
     // program = {statement | function} ;
@@ -308,4 +308,6 @@ public:
     }
 };
 
-#endif // PARSER_H
+
+
+#endif //_TKOM__INTERPRETER_PARSER_H

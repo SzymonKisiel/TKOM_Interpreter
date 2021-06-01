@@ -31,11 +31,11 @@ geo     # T_TYPE_GEO
 geocoord# T_TYPE_GEOCOORD
 5206    # T_INT
 200.367 # T_FLOAT
-"test"  # T_STRING
+"test2" # T_STRING
 ^       # T_GEO_DEGREE
 '       # T_GEO_MINUTE
 ''      # T_GEO_SECOND
-N       #T_GEO_DIRECTION_N",
+N       # T_GEO_DIRECTION_N
 S       # T_GEO_DIRECTION_S
 W       # T_GEO_DIRECTION_W
 E       # T_GEO_DIRECTION_E

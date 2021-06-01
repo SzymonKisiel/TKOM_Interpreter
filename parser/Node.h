@@ -1,7 +1,7 @@
-#ifndef NODE_H
-#define NODE_H
+#ifndef _TKOM__INTERPRETER_NODE_H
+#define _TKOM__INTERPRETER_NODE_H
 
-#include "Token.h"
+
 #include <vector>
 #include <memory>
 
@@ -11,12 +11,12 @@ class Node
 {
 private:
     std::vector<std::unique_ptr<Node>> children;
-    string name = "";
+    std::string name = "";
 public:
 
     Node() {}
 
-    Node(string name) {
+    Node(std::string name) {
         this->name = name;
     }
 
@@ -43,4 +43,4 @@ public:
 };
 
 
-#endif // NODE_H
+#endif //_TKOM__INTERPRETER_NODE_H
