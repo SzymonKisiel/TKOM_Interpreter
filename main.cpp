@@ -3,6 +3,8 @@
 #include "lexer/Source.h"
 #include "lexer/Lexer.h"
 #include "parser/Parser.h"
+#include "lexer/FileSource.h"
+#include "lexer/StringSource.h"
 
 using namespace std;
 
@@ -64,7 +66,9 @@ void printToken(std::unique_ptr<Token> token) {
 }
 
 int main() {
-    Source source("test2.txt");
+    //FileSource source("test2.txt");
+    StringSource source("int x = 10;\n"
+                               "while (x > 5) x = x - 2;");
     Lexer lexer(source);
     std::unique_ptr<Token> token;
     TokenType type;

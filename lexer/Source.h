@@ -8,27 +8,11 @@ using namespace std;
 
 class Source
 {
-    ifstream file;
+protected:
     int row;
     int column;
-
 public:
-    Source(string filename) {
-        file.open(filename, ios::in);
-        row = 1;
-        column = -1;
-    }
-    char getNextChar() {
-        char c = file.get();
-        if (c == '\n') {
-            column = -1;
-            ++row;
-        }
-        else {
-            ++column;
-        }
-        return c;
-    }
+    virtual char getNextChar() = 0;
     const int getRow() {
         return row;
     }

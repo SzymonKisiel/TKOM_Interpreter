@@ -14,7 +14,7 @@ private:
     std::string name = "";
 public:
 
-    Node() {}
+    Node() = default;
 
     Node(std::string name) {
         this->name = name;
