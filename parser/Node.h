@@ -16,16 +16,15 @@ public:
 
     Node() = default;
 
-    Node(std::string name) {
-        this->name = name;
+    Node(std::string name) : name(std::move(name)){
     }
 
-    void addChild(std::unique_ptr<Node> & node) {
+    void addChild(std::unique_ptr<Node> node) {
         if (node != nullptr)
             children.push_back(std::move(node));
     }
 
-    bool isTerminal() {
+    const bool isTerminal() {
         return children.empty();
     }
 
@@ -36,8 +35,8 @@ public:
         if (isTerminal()) {
             return;
         }
-        for (auto itr = children.begin(); itr != children.end(); ++itr) {
-            (*itr)->print(depth+1);
+        for (const auto &child: children) {
+            child->print(depth+1);
         }
     }
 };

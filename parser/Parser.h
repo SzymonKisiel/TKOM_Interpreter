@@ -35,7 +35,7 @@ public:
             node = parseFunction();
             if (node == nullptr)
                 node = parseStatement();
-            result->addChild(node);
+            result->addChild(std::move(node));
         }
         return result;
     }
@@ -59,7 +59,7 @@ public:
         }
         nextToken();
         node = parseParameters();
-        result->addChild(node);
+        result->addChild(std::move(node));
         if (currentToken->getType() != TokenType::T_CLOSE) {
             return nullptr;
         }
@@ -71,7 +71,7 @@ public:
         while (currentToken->getType() != TokenType::T_CLOSE_BRACKET) {
             // co jesli T_END
             node = parseStatement();
-            result->addChild(node);
+            result->addChild(std::move(node));
         }
         nextToken();
         return result;
@@ -94,7 +94,7 @@ public:
             nextToken();
             while (currentToken->getType() != TokenType::T_CLOSE_BRACKET) {
                 node = parseStatement();
-                result->addChild(node);
+                result->addChild(std::move(node));
             }
             nextToken();
             return result;
@@ -119,9 +119,9 @@ public:
         }
         nextToken();
         node = parseExpression();
-        result->addChild(node);
+        result->addChild(std::move(node));
         node = parseStatement();
-        result->addChild(node);
+        result->addChild(std::move(node));
 
         if (currentToken->getType() != TokenType::T_ELSIF && currentToken->getType() != TokenType::T_ELSE) {
             return result;
@@ -133,14 +133,14 @@ public:
             }
             nextToken();
             node = parseExpression();
-            result->addChild(node);
+            result->addChild(std::move(node));
             node = parseStatement();
-            result->addChild(node);
+            result->addChild(std::move(node));
         }
         if (currentToken->getType() == TokenType::T_ELSE) {
             nextToken();
             node = parseStatement();
-            result->addChild(node);
+            result->addChild(std::move(node));
         }
         return result;
     }
@@ -158,10 +158,10 @@ public:
         nextToken();
 
         node = parseExpression();
-        result->addChild(node);
+        result->addChild(std::move(node));
 
         node = parseStatement();
-        result->addChild(node);
+        result->addChild(std::move(node));
 
         return result;
     }
@@ -199,7 +199,7 @@ public:
         }
         nextToken();
         node = parseExpression();
-        result->addChild(node);
+        result->addChild(std::move(node));
         return result;
     }
 
@@ -217,7 +217,7 @@ public:
             result = std::make_unique<Node>("ASSIGNMENT");
 
             node = parseExpression();
-            result->addChild(node);
+            result->addChild(std::move(node));
 
             return result;
         }
@@ -226,7 +226,7 @@ public:
             result = std::make_unique<Node>("FUNCTION_CALL");
 
             node = parseArguments();
-            result->addChild(node);
+            result->addChild(std::move(node));
             return result;
         }
         else
@@ -242,7 +242,7 @@ public:
         }
         nextToken();
         node = parseExpression();
-        result->addChild(node);
+        result->addChild(std::move(node));
         return result;
     }
 
@@ -279,11 +279,11 @@ public:
         std::unique_ptr<Node> node;
 
         node = parseExpression();
-        result->addChild(node);
+        result->addChild(std::move(node));
         while (currentToken->getType() == TokenType::T_COMMA) {
             nextToken();
             node = parseExpression();
-            result->addChild(node);
+            result->addChild(std::move(node));
         }
         return result;
     }
@@ -309,7 +309,7 @@ public:
             }
             else {
                 node = parseCompExpression(); //budowa expression
-                result->addChild(node);
+                result->addChild(std::move(node));
             }
         }
         return result;
@@ -321,13 +321,13 @@ public:
         std::unique_ptr<Node> node;
 
         node = parseAddExpression();
-        result->addChild(node);
+        result->addChild(std::move(node));
 
         while (currentToken->isCompOperator()) {
             nextToken();
 
             node = parseAddExpression();
-            result->addChild(node);
+            result->addChild(std::move(node));
         }
         return result;
     }
@@ -338,13 +338,13 @@ public:
         std::unique_ptr<Node> node;
 
         node = parseMultExpression();
-        result->addChild(node);
+        result->addChild(std::move(node));
 
         while (currentToken->isAddOperator()) {
             nextToken();
 
             node = parseMultExpression();
-            result->addChild(node);
+            result->addChild(std::move(node));
         }
         return result;
     }
@@ -355,13 +355,13 @@ public:
         std::unique_ptr<Node> node;
 
         node = parseFactor();
-        result->addChild(node);
+        result->addChild(std::move(node));
 
         while (currentToken->isMultOperator()) {
             nextToken();
 
             node = parseFactor();
-            result->addChild(node);
+            result->addChild(std::move(node));
         }
         return result;
     }
