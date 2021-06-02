@@ -127,6 +127,8 @@ public:
                 {
                     bool commentEnd = false;
                     while (!commentEnd) {
+                        if (character == EOF)
+                            throw "Niezakończony komentarz";
                         if (character == '*') {
                             character = source.getNextChar();
                             if (character == '/')
@@ -187,6 +189,11 @@ public:
             string value = "";
             character = source.getNextChar();
             while (character != '"') {
+                if (character == EOF)
+                    throw "Niezakończony string";
+                if (character == '\\') {
+                    character = source.getNextChar();
+                }
                 value.push_back(character);
                 character = source.getNextChar();
             }

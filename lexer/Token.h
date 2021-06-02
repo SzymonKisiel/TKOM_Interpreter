@@ -200,8 +200,8 @@ public:
             cout << this->getIntValue();
         else if (this->getType() == TokenType::T_FLOAT)
             cout << this->getFloatValue();
-//        else if (this->getType() == TokenType::T_STRING)
-//            cout << this->getStringValue();
+        else if (this->getType() == TokenType::T_STRING)
+            cout << this->getStringValue();
         cout << endl;
 //        if (this->getType() == TokenType::T_INT)
 //            cout << std::get<int>(this->getValue()) << endl;
