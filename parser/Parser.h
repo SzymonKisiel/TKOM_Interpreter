@@ -294,17 +294,84 @@ public:
     // factor          = integer | float | geo | string | (["-"] , id) | function_call | "(" , expression , ")"  ;
     std::unique_ptr<Node> parseExpression() {
         std::unique_ptr<Node> result = std::make_unique<Node>("EXPRESSION");
+        std::unique_ptr<Node> node;
+
         int parenCount = 0;
         while (parenCount >= 0 && currentToken->isExpressionPart()) {
-            if (currentToken->getType() == TokenType::T_CLOSE)
+            if (currentToken->getType() == TokenType::T_CLOSE) {
                 --parenCount;
-            else if (currentToken->getType() == TokenType::T_OPEN)
+                nextToken();
+            }
+
+            else if (currentToken->getType() == TokenType::T_OPEN) {
                 ++parenCount;
-            else
-                ; //budowa expression
-            nextToken();
+                nextToken();
+            }
+            else {
+                node = parseCompExpression(); //budowa expression
+                result->addChild(node);
+            }
         }
         return result;
+    }
+
+    //expression = add_expression , {comp_operator, add_expression } ;
+    std::unique_ptr<Node> parseCompExpression() {
+        std::unique_ptr<Node> result = std::make_unique<Node>("COMP_EXPRESSION");
+        std::unique_ptr<Node> node;
+
+        node = parseAddExpression();
+        result->addChild(node);
+
+        while (currentToken->isCompOperator()) {
+            nextToken();
+
+            node = parseAddExpression();
+            result->addChild(node);
+        }
+        return result;
+    }
+
+    //add_expression = mult_expression , {add_operator, mult_expression }
+    std::unique_ptr<Node> parseAddExpression() {
+        std::unique_ptr<Node> result = std::make_unique<Node>("ADD_EXPRESSION");
+        std::unique_ptr<Node> node;
+
+        node = parseMultExpression();
+        result->addChild(node);
+
+        while (currentToken->isAddOperator()) {
+            nextToken();
+
+            node = parseMultExpression();
+            result->addChild(node);
+        }
+        return result;
+    }
+
+    //mult_expression = factor , { mult_operator , factor} ;
+    std::unique_ptr<Node> parseMultExpression() {
+        std::unique_ptr<Node> result = std::make_unique<Node>("MULT_EXPRESSION");
+        std::unique_ptr<Node> node;
+
+        node = parseFactor();
+        result->addChild(node);
+
+        while (currentToken->isMultOperator()) {
+            nextToken();
+
+            node = parseFactor();
+            result->addChild(node);
+        }
+        return result;
+    }
+
+    //factor = integer | id | function_call | "(" , expression , ")" ;
+    std::unique_ptr<Node> parseFactor() {
+        if (!currentToken->isExpressionPart())
+            return nullptr;
+        nextToken();
+        return std::make_unique<Node>("FACTOR");
     }
 };
 
