@@ -1,7 +1,3 @@
-//
-// Created by kislu on 01.06.2021.
-//
-
 #include "StringSource.h"
 
 StringSource::StringSource(string source) {

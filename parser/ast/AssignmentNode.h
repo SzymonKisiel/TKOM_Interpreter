@@ -1,0 +1,10 @@
+#ifndef _TKOM__INTERPRETER_ASSIGNMENTNODE_H
+#define _TKOM__INTERPRETER_ASSIGNMENTNODE_H
+
+
+class AssignmentNode : public Node {
+
+};
+
+
+#endif //_TKOM__INTERPRETER_ASSIGNMENTNODE_H

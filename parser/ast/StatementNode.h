@@ -1,7 +1,3 @@
-//
-// Created by kislu on 03.06.2021.
-//
-
 #ifndef _TKOM__INTERPRETER_STATEMENTNODE_H
 #define _TKOM__INTERPRETER_STATEMENTNODE_H
 
@@ -11,26 +7,26 @@
 class StatementNode;
 
 class WhileStatementNode : public Node {
-    std::unique_ptr<TestNode> condition;
+    std::unique_ptr<ExpressionNode> condition;
     std::unique_ptr<StatementNode> statement;
     std::string name = "";
 public:
     WhileStatementNode(std::string name);
-    void setCondition(std::unique_ptr<TestNode> node);
+    void setCondition(std::unique_ptr<ExpressionNode> node);
     void setStatement(std::unique_ptr<StatementNode> node);
     void print(int depth = 0);
 };
 
 class IfStatementNode : public Node {
-    std::unique_ptr<TestNode> ifCondition;
+    std::unique_ptr<ExpressionNode> ifCondition;
     std::unique_ptr<StatementNode> ifStatement;
-    std::vector<std::unique_ptr<TestNode>> elsifCondition;
+    std::vector<std::unique_ptr<ExpressionNode>> elsifCondition;
     std::vector<std::unique_ptr<StatementNode>> elsifStatement;
     std::unique_ptr<StatementNode> elseStatement;
 public:
-    void setIfCondition(std::unique_ptr<TestNode> node);
+    void setIfCondition(std::unique_ptr<ExpressionNode> node);
     void setIfStatement(std::unique_ptr<StatementNode> node);
-    void addElsifCondition(std::unique_ptr<TestNode> node);
+    void addElsifCondition(std::unique_ptr<ExpressionNode> node);
     void addElsifStatement(std::unique_ptr<StatementNode> node);
     void setElseStatement(std::unique_ptr<StatementNode> node);
     void print(int depth = 0);
@@ -43,6 +39,9 @@ class StatementNode : public Node {
     std::unique_ptr<WhileStatementNode> whileStatement;
     std::unique_ptr<IfStatementNode> ifStatement;
     std::string name = "";
+
+    enum StatementType {
+    };
 public:
     void addChild(std::unique_ptr<TestNode> node) {
         if (node != nullptr)
@@ -86,7 +85,7 @@ public:
 WhileStatementNode::WhileStatementNode(std::string name) : name(std::move(name)) {
 }
 
-void WhileStatementNode::setCondition(std::unique_ptr<TestNode> node) {
+void WhileStatementNode::setCondition(std::unique_ptr<ExpressionNode> node) {
     if (node != nullptr)
         condition = std::move(node);
 }
@@ -105,7 +104,7 @@ void WhileStatementNode::print(int depth) {
 }
 
 
-void IfStatementNode::setIfCondition(std::unique_ptr<TestNode> node) {
+void IfStatementNode::setIfCondition(std::unique_ptr<ExpressionNode> node) {
     ifCondition = std::move(node);
 }
 
@@ -113,7 +112,7 @@ void IfStatementNode::setIfStatement(std::unique_ptr<StatementNode> node) {
     ifStatement = std::move(node);
 }
 
-void IfStatementNode::addElsifCondition(std::unique_ptr<TestNode> node) {
+void IfStatementNode::addElsifCondition(std::unique_ptr<ExpressionNode> node) {
     if (node != nullptr)
         elsifCondition.push_back(std::move(node));
 }

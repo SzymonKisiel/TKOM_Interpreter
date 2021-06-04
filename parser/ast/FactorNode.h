@@ -1,17 +1,22 @@
-//
-// Created by kislu on 04.06.2021.
-//
-
 #ifndef _TKOM__INTERPRETER_FACTORNODE_H
 #define _TKOM__INTERPRETER_FACTORNODE_H
 
 
 class FactorNode : public Node {
+    TokenType type;
     //type
     //value
 public:
+    void setType(TokenType type) {
+        this->type = type;
+    }
+
+    void setValue() {
+
+    }
+
     std::string toString() {
-        return "FACTOR";
+        return std::string("FACTOR ").append(tokenTypeToString(type));
     }
 
     void print(int depth = 0) {

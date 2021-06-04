@@ -1,7 +1,3 @@
-//
-// Created by kislu on 03.06.2021.
-//
-
 #ifndef _TKOM__INTERPRETER_PROGRAMNODE_H
 #define _TKOM__INTERPRETER_PROGRAMNODE_H
 
