@@ -36,10 +36,20 @@ public:
                         .append(", Col: ")
                         .append(std::to_string(currentToken->getColumn()))
                         .append("\tExpected: ")
-                        .append(tokenTypeToString(expectedTokenType));
-        throw;
+                        .append(tokenTypeToString(expectedTokenType))
+                        .append("\n");
+        //throw;
     }
 
+    void test() {
+        std::cerr << std::string("Current token: ")
+                .append(tokenTypeToString(currentToken->getType()))
+                .append("\tRow: ")
+                .append(std::to_string(currentToken->getRow()))
+                .append(", Col: ")
+                .append(std::to_string(currentToken->getColumn()))
+                .append("\n");
+    }
 
     // program = {statement | function} ;
     std::unique_ptr<ProgramNode> parse() {
@@ -130,7 +140,7 @@ public:
                 return result;
             }
         }
-        throw "Expected statement";
+        //throw "Expected statement";
         return nullptr;
     }
 
@@ -144,11 +154,17 @@ public:
 
         nextToken();
         if (currentToken->getType() != TokenType::T_OPEN) {
+            unexpectedToken(TokenType::T_OPEN);
             return nullptr;
         }
         nextToken();
         node = parseExpression();
         result->setIfCondition(std::move(node));
+        if (currentToken->getType() != TokenType::T_CLOSE) {
+            unexpectedToken(TokenType::T_CLOSE);
+            return nullptr;
+        }
+        nextToken();
         statement = parseStatement();
         result->setIfStatement(std::move(statement));
 
@@ -163,6 +179,11 @@ public:
             nextToken();
             node = parseExpression();
             result->addElsifCondition(std::move(node));
+            if (currentToken->getType() != TokenType::T_CLOSE) {
+                unexpectedToken(TokenType::T_CLOSE);
+                return nullptr;
+            }
+            nextToken();
             statement = parseStatement();
             result->addElsifStatement(std::move(statement));
         }
@@ -178,7 +199,6 @@ public:
     std::unique_ptr<WhileStatementNode> parseWhile() {
         std::unique_ptr<WhileStatementNode> result = std::make_unique<WhileStatementNode>("WHILE_STATEMENT");
         std::unique_ptr<TestNode> node;
-        //result->addChild(node);
 
         nextToken();
         if (currentToken->getType() != TokenType::T_OPEN) {
@@ -188,6 +208,11 @@ public:
 
         node = parseExpression();
         result->setCondition(std::move(node));
+
+        if (currentToken->getType() != TokenType::T_CLOSE) {
+            return nullptr;
+        }
+        nextToken();
 
         std::unique_ptr<StatementNode> statement = parseStatement();
         result->setStatement(std::move(statement));
@@ -322,31 +347,31 @@ public:
     // add_expression  = mult_expression , {add_operator, mult_expression } ;
     // mult_expression = factor , { mult_operator , factor} ;
     // factor          = integer | float | geo | string | (["-"] , id) | function_call | "(" , expression , ")"  ;
-    std::unique_ptr<TestNode> parseExpression() {
-        std::unique_ptr<TestNode> result = std::make_unique<TestNode>("EXPRESSION");
-        std::unique_ptr<TestNode> node;
-
-        int parenCount = 0;
-        while (parenCount >= 0 && currentToken->isExpressionPart()) {
-            if (currentToken->getType() == TokenType::T_CLOSE) {
-                --parenCount;
-                nextToken();
-            }
-            else if (currentToken->getType() == TokenType::T_OPEN) {
-                ++parenCount;
-                nextToken();
-            }
-            else {
-                node = parseCompExpression(); //budowa expression
-                result->addChild(std::move(node));
-            }
-        }
-        return result;
-    }
+//    std::unique_ptr<TestNode> parseExpression() {
+//        std::unique_ptr<TestNode> result = std::make_unique<TestNode>("EXPRESSION");
+//        std::unique_ptr<TestNode> node;
+//
+//        int parenCount = 0;
+//        while (parenCount >= 0 && currentToken->isExpressionPart()) {
+//            if (currentToken->getType() == TokenType::T_CLOSE) {
+//                --parenCount;
+//                nextToken();
+//            }
+//            else if (currentToken->getType() == TokenType::T_OPEN) {
+//                ++parenCount;
+//                nextToken();
+//            }
+//            else {
+//                node = parseCompExpression(); //budowa expression
+//                result->addChild(std::move(node));
+//            }
+//        }
+//        return result;
+//    }
 
     //expression = add_expression , {comp_operator, add_expression } ;
-    std::unique_ptr<TestNode> parseCompExpression() {
-        std::unique_ptr<TestNode> result = std::make_unique<TestNode>("COMP_EXPRESSION");
+    std::unique_ptr<TestNode> parseExpression() {
+        std::unique_ptr<TestNode> result = std::make_unique<TestNode>("EXPRESSION");
         std::unique_ptr<TestNode> node;
 
         node = parseAddExpression();
@@ -397,8 +422,16 @@ public:
 
     //factor = integer | id | function_call | "(" , expression , ")" ;
     std::unique_ptr<TestNode> parseFactor() {
-        if (!currentToken->isExpressionPart())
+        if (!currentToken->getType() == TokenType::T_ID)
             return nullptr;
+        if (!currentToken->getType() == TokenType::T_INT)
+            return nullptr;
+        if (!currentToken->getType() == TokenType::T_FLOAT)
+            return nullptr;
+        if (!currentToken->getType() == TokenType::T_STRING)
+            return nullptr;
+//        if (!currentToken->isExpressionPart())
+//            return nullptr;
         nextToken();
         return std::make_unique<TestNode>("FACTOR");
     }

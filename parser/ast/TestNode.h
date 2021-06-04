@@ -7,10 +7,12 @@
 #include <iostream>
 
 #include "Node.h"
+#include "ExpressionNode.h"
 
 class TestNode : public Node {
 private:
     std::vector<std::unique_ptr<TestNode>> children;
+    std::vector<std::unique_ptr<ExpressionNode>> expressions;
     std::string name = "TEST";
 public:
     TestNode() = default;
@@ -21,6 +23,11 @@ public:
     void addChild(std::unique_ptr<TestNode> node) {
         if (node != nullptr)
             children.push_back(std::move(node));
+    }
+
+    void addExpression(std::unique_ptr<ExpressionNode> node) {
+        if (node != nullptr)
+            expressions.push_back(std::move(node));
     }
 
     const bool isTerminal() {
@@ -39,6 +46,9 @@ public:
             return;
         }
         for (const auto &child: children) {
+            child->print(depth+1);
+        }
+        for (const auto &child: expressions) {
             child->print(depth+1);
         }
     }
