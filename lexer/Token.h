@@ -57,11 +57,14 @@ enum TokenType {
     T_UNKNOWN
 };
 
+std::string tokenTypeToString(TokenType tokenType);
+
 class Token {
     TokenType type;
     int row;
     int column;
     variant<std::monostate, string, int, float> value;
+public:
     inline static const std::string tokenTypeNames[50] = {
             "T_WHILE",
             "T_IF",
@@ -108,7 +111,6 @@ class Token {
             "T_END",
             "T_UNKNOWN",
     };
-public:
     Token(TokenType type, int row, int column, variant<std::monostate, string, int, float> value) :
             type(type), row(row), column(column), value(std::move(value)) {
     }
@@ -211,6 +213,5 @@ public:
 //            cout << std::get<std::string>(this->getValue()) << endl;
     }
 };
-
 
 #endif //_TKOM__INTERPRETER_TOKEN_H
