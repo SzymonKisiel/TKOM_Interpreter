@@ -1,25 +1,24 @@
-#ifndef _TKOM__INTERPRETER_NODE_H
-#define _TKOM__INTERPRETER_NODE_H
+#ifndef _TKOM__INTERPRETER_TESTNODE_H
+#define _TKOM__INTERPRETER_TESTNODE_H
 
 
 #include <vector>
 #include <memory>
 
 #include <iostream>
+#include "Node.h"
 
-class Node
-{
+class TestNode : public Node {
 private:
-    std::vector<std::unique_ptr<Node>> children;
+    std::vector<std::unique_ptr<TestNode>> children;
     std::string name = "";
 public:
+    TestNode() = default;
 
-    Node() = default;
-
-    Node(std::string name) : name(std::move(name)){
+    TestNode(std::string name) : name(std::move(name)){
     }
 
-    void addChild(std::unique_ptr<Node> node) {
+    void addChild(std::unique_ptr<TestNode> node) {
         if (node != nullptr)
             children.push_back(std::move(node));
     }
@@ -28,10 +27,14 @@ public:
         return children.empty();
     }
 
+    std::string toString() {
+        return name;
+    }
+
     void print(int depth = 0) {
         for (int i = 0; i < depth; ++i)
             std::cout << "  ";
-        std::cout << name << std::endl;
+        std::cout << toString() << std::endl;
         if (isTerminal()) {
             return;
         }
@@ -41,5 +44,4 @@ public:
     }
 };
 
-
-#endif //_TKOM__INTERPRETER_NODE_H
+#endif //_TKOM__INTERPRETER_TESTNODE_H

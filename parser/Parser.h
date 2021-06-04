@@ -2,9 +2,9 @@
 #define _TKOM__INTERPRETER_PARSER_H
 
 
-#include "Node.h"
 #include "../lexer/Token.h"
 #include "../lexer/Lexer.h"
+#include "ast/Node.h"
 #include <memory>
 
 #include <iostream>
@@ -27,30 +27,50 @@ public:
         return; //currentToken?
     }
 
+
+    void unexpectedToken(TokenType expectedTokenType = TokenType::T_UNKNOWN) {
+        std::cerr << std::string("Unexpected token: ")
+                .append(tokenTypeToString(currentToken->getType()))
+                .append("\tRow: ")
+                .append(std::to_string(currentToken->getRow()))
+                .append(", Col: ")
+                .append(std::to_string(currentToken->getColumn()))
+                .append("\tExpected: ")
+                .append(tokenTypeToString(expectedTokenType));
+    }
+
+
     // program = {statement | function} ;
-    std::unique_ptr<Node> parse() {
-        std::unique_ptr<Node> result = std::make_unique<Node>("PROGRAM");
-        std::unique_ptr<Node> node;
+    std::unique_ptr<ProgramNode> parse() {
+        std::unique_ptr<ProgramNode> result = std::make_unique<ProgramNode>();
+        std::unique_ptr<TestNode> node;
         while (currentToken->getType() != TokenType::T_END) {
-            node = parseFunction();
-            if (node == nullptr)
-                node = parseStatement();
-            result->addChild(std::move(node));
+            std::unique_ptr<FunctionNode> node1 = parseFunction(); //FunctionNode
+            if (node1 != nullptr) {
+                result->addFunction(std::move(node1));
+            }
+            else {
+                std::unique_ptr<StatementNode> node2 = parseStatement(); //StatementNode
+                if (node2 != nullptr) {
+                    result->addStatement(std::move(node2));
+                }
+            }
         }
         return result;
     }
 
     // function = type , id ,  "(" , [parameters] , ")" , "{" , {statement} , "}" ;
     // var_declaration  = type , id, "=", expression ;
-    std::unique_ptr<Node> parseFunction() {
-        std::unique_ptr<Node> result = std::make_unique<Node>("FUNCTION");
-        std::unique_ptr<Node> node;
+    std::unique_ptr<FunctionNode> parseFunction() {
+        std::unique_ptr<FunctionNode> result = std::make_unique<FunctionNode>("FUNCTION");
+        std::unique_ptr<TestNode> node;
 
         if (!currentToken->isType()) {
             return nullptr;
         }
         nextToken();
         if (currentToken->getType() != TokenType::T_ID) {
+            unexpectedToken(TokenType::T_ID);
             return nullptr;
         }
         nextToken();
@@ -70,38 +90,43 @@ public:
         nextToken();
         while (currentToken->getType() != TokenType::T_CLOSE_BRACKET) {
             // co jesli T_END
-            node = parseStatement();
-            result->addChild(std::move(node));
+            std::unique_ptr<StatementNode> statement = parseStatement();
+            result->setStatement(std::move(statement));
         }
         nextToken();
         return result;
     }
 
     // statement        = if_statement | while_statement | simple_statement | "{" , {statement} , "}" ;
-    std::unique_ptr<Node> parseStatement() {
-        std::unique_ptr<Node> result = std::make_unique<Node>("STATEMENT");
-        std::unique_ptr<Node> node = std::make_unique<Node>();
+    std::unique_ptr<StatementNode> parseStatement() {
+        std::unique_ptr<StatementNode> result = std::make_unique<StatementNode>("STATEMENT");
+        std::unique_ptr<TestNode> node = std::make_unique<TestNode>();
         if (currentToken->getType() == TokenType::T_WHILE) {
-            node = parseWhile();
-            return node;
+            std::unique_ptr<WhileStatementNode> whileStatementNode = parseWhile();
+            result->setWhileStatement(std::move(whileStatementNode));
+            return result;
             //result->addChild(node);
         }
         else if (currentToken->getType() == TokenType::T_IF) {
             node = parseIf();
-            return node;
+            result->addChild(std::move(node));
+            return result;
         }
         else if (currentToken->getType() == TokenType::T_OPEN_BRACKET) {
             nextToken();
             while (currentToken->getType() != TokenType::T_CLOSE_BRACKET) {
-                node = parseStatement();
-                result->addChild(std::move(node));
+                std::unique_ptr<StatementNode> statementNode = parseStatement();
+                result->addStatement(std::move(statementNode));
             }
             nextToken();
             return result;
         }
         else {
             node = parseSimpleStatement();
-            return node;
+            if (node != nullptr) {
+                result->addChild(std::move(node));
+                return result;
+            }
         }
         return nullptr;
     }
@@ -109,9 +134,9 @@ public:
     // if_statement     = "if" , "(" , expression, ")" , statement
     //                  , {"elsif" , "(" , expression, ")" , statement}
     //                  , ["else" , statement] ;
-    std::unique_ptr<Node> parseIf() {
-        std::unique_ptr<Node> result = std::make_unique<Node>("IF");
-        std::unique_ptr<Node> node;
+    std::unique_ptr<TestNode> parseIf() {
+        std::unique_ptr<TestNode> result = std::make_unique<TestNode>("IF");
+        std::unique_ptr<TestNode> node;
 
         nextToken();
         if (currentToken->getType() != TokenType::T_OPEN) {
@@ -120,8 +145,8 @@ public:
         nextToken();
         node = parseExpression();
         result->addChild(std::move(node));
-        node = parseStatement();
-        result->addChild(std::move(node));
+        //node = parseStatement();
+        //result->addChild(std::move(node));
 
         if (currentToken->getType() != TokenType::T_ELSIF && currentToken->getType() != TokenType::T_ELSE) {
             return result;
@@ -134,21 +159,21 @@ public:
             nextToken();
             node = parseExpression();
             result->addChild(std::move(node));
-            node = parseStatement();
-            result->addChild(std::move(node));
+            //node = parseStatement();
+            //result->addChild(std::move(node));
         }
         if (currentToken->getType() == TokenType::T_ELSE) {
             nextToken();
-            node = parseStatement();
-            result->addChild(std::move(node));
+            //node = parseStatement();
+            //result->addChild(std::move(node));
         }
         return result;
     }
 
     // while_statement  = "while" , "(" , expression, ")", statement ;
-    std::unique_ptr<Node> parseWhile() {
-        std::unique_ptr<Node> result = std::make_unique<Node>("WHILE");
-        std::unique_ptr<Node> node;
+    std::unique_ptr<WhileStatementNode> parseWhile() {
+        std::unique_ptr<WhileStatementNode> result = std::make_unique<WhileStatementNode>();
+        std::unique_ptr<TestNode> node;
         //result->addChild(node);
 
         nextToken();
@@ -158,17 +183,18 @@ public:
         nextToken();
 
         node = parseExpression();
-        result->addChild(std::move(node));
+        result->setCondition(std::move(node));
 
-        node = parseStatement();
-        result->addChild(std::move(node));
+        std::unique_ptr<StatementNode> statement = parseStatement();
+        result->setStatement(std::move(statement));
 
         return result;
+
     }
 
     // simple_statement = (var_declaration | assignment | function_call | return_statement) , ";" ;
-    std::unique_ptr<Node> parseSimpleStatement() {
-        std::unique_ptr<Node> node;
+    std::unique_ptr<TestNode> parseSimpleStatement() {
+        std::unique_ptr<TestNode> node;
         node = parseDeclaration();
         if (node == nullptr)
             node = parseAssignmentOrFunCall();
@@ -183,9 +209,9 @@ public:
     }
 
     // var_declaration  = type , id, "=", expression ;
-    std::unique_ptr<Node> parseDeclaration() {
-        std::unique_ptr<Node> result = std::make_unique<Node>("DECLARATION");
-        std::unique_ptr<Node> node;
+    std::unique_ptr<TestNode> parseDeclaration() {
+        std::unique_ptr<TestNode> result = std::make_unique<TestNode>("DECLARATION");
+        std::unique_ptr<TestNode> node;
         if (!currentToken->isType()) {
             return nullptr;
         }
@@ -205,16 +231,16 @@ public:
 
     // assignment       = id, "=", expression ;
     // function_call    = id ,  "(" , [arguments] , ")" ;
-    std::unique_ptr<Node> parseAssignmentOrFunCall() {
-        std::unique_ptr<Node> result;
-        std::unique_ptr<Node> node;
+    std::unique_ptr<TestNode> parseAssignmentOrFunCall() {
+        std::unique_ptr<TestNode> result;
+        std::unique_ptr<TestNode> node;
         if (currentToken->getType() != TokenType::T_ID) {
             return nullptr;
         }
         nextToken();
         if (currentToken->getType() == TokenType::T_ASSIGN) {
             nextToken();
-            result = std::make_unique<Node>("ASSIGNMENT");
+            result = std::make_unique<TestNode>("ASSIGNMENT");
 
             node = parseExpression();
             result->addChild(std::move(node));
@@ -223,7 +249,7 @@ public:
         }
         else if (currentToken->getType() == TokenType::T_OPEN) {
             nextToken();
-            result = std::make_unique<Node>("FUNCTION_CALL");
+            result = std::make_unique<TestNode>("FUNCTION_CALL");
 
             node = parseArguments();
             result->addChild(std::move(node));
@@ -234,9 +260,9 @@ public:
     }
 
     // return_statement = "return" , [expression] ;
-    std::unique_ptr<Node> parseReturnStatement() {
-        std::unique_ptr<Node> result = std::make_unique<Node>("RETURN");
-        std::unique_ptr<Node> node;
+    std::unique_ptr<TestNode> parseReturnStatement() {
+        std::unique_ptr<TestNode> result = std::make_unique<TestNode>("RETURN");
+        std::unique_ptr<TestNode> node;
         if (currentToken->getType() != TokenType::T_RETURN) {
             return nullptr;
         }
@@ -248,8 +274,8 @@ public:
 
     // parameters = parameter , {"," , parameter} ;
     // parameter  = type , id ;
-    std::unique_ptr<Node> parseParameters() {
-        std::unique_ptr<Node> result = std::make_unique<Node>("PARAMETERS");
+    std::unique_ptr<TestNode> parseParameters() {
+        std::unique_ptr<TestNode> result = std::make_unique<TestNode>("PARAMETERS");
         if (!currentToken->isType())
             return nullptr;
         nextToken();
@@ -274,9 +300,9 @@ public:
 
     // arguments  = argument , {"," , argument} ;
     // argument   = expression ;
-    std::unique_ptr<Node> parseArguments() {
-        std::unique_ptr<Node> result = std::make_unique<Node>("ARGUMENTS");
-        std::unique_ptr<Node> node;
+    std::unique_ptr<TestNode> parseArguments() {
+        std::unique_ptr<TestNode> result = std::make_unique<TestNode>("ARGUMENTS");
+        std::unique_ptr<TestNode> node;
 
         node = parseExpression();
         result->addChild(std::move(node));
@@ -292,9 +318,9 @@ public:
     // add_expression  = mult_expression , {add_operator, mult_expression } ;
     // mult_expression = factor , { mult_operator , factor} ;
     // factor          = integer | float | geo | string | (["-"] , id) | function_call | "(" , expression , ")"  ;
-    std::unique_ptr<Node> parseExpression() {
-        std::unique_ptr<Node> result = std::make_unique<Node>("EXPRESSION");
-        std::unique_ptr<Node> node;
+    std::unique_ptr<TestNode> parseExpression() {
+        std::unique_ptr<TestNode> result = std::make_unique<TestNode>("EXPRESSION");
+        std::unique_ptr<TestNode> node;
 
         int parenCount = 0;
         while (parenCount >= 0 && currentToken->isExpressionPart()) {
@@ -316,9 +342,9 @@ public:
     }
 
     //expression = add_expression , {comp_operator, add_expression } ;
-    std::unique_ptr<Node> parseCompExpression() {
-        std::unique_ptr<Node> result = std::make_unique<Node>("COMP_EXPRESSION");
-        std::unique_ptr<Node> node;
+    std::unique_ptr<TestNode> parseCompExpression() {
+        std::unique_ptr<TestNode> result = std::make_unique<TestNode>("COMP_EXPRESSION");
+        std::unique_ptr<TestNode> node;
 
         node = parseAddExpression();
         result->addChild(std::move(node));
@@ -333,9 +359,9 @@ public:
     }
 
     //add_expression = mult_expression , {add_operator, mult_expression }
-    std::unique_ptr<Node> parseAddExpression() {
-        std::unique_ptr<Node> result = std::make_unique<Node>("ADD_EXPRESSION");
-        std::unique_ptr<Node> node;
+    std::unique_ptr<TestNode> parseAddExpression() {
+        std::unique_ptr<TestNode> result = std::make_unique<TestNode>("ADD_EXPRESSION");
+        std::unique_ptr<TestNode> node;
 
         node = parseMultExpression();
         result->addChild(std::move(node));
@@ -350,9 +376,9 @@ public:
     }
 
     //mult_expression = factor , { mult_operator , factor} ;
-    std::unique_ptr<Node> parseMultExpression() {
-        std::unique_ptr<Node> result = std::make_unique<Node>("MULT_EXPRESSION");
-        std::unique_ptr<Node> node;
+    std::unique_ptr<TestNode> parseMultExpression() {
+        std::unique_ptr<TestNode> result = std::make_unique<TestNode>("MULT_EXPRESSION");
+        std::unique_ptr<TestNode> node;
 
         node = parseFactor();
         result->addChild(std::move(node));
@@ -367,11 +393,11 @@ public:
     }
 
     //factor = integer | id | function_call | "(" , expression , ")" ;
-    std::unique_ptr<Node> parseFactor() {
+    std::unique_ptr<TestNode> parseFactor() {
         if (!currentToken->isExpressionPart())
             return nullptr;
         nextToken();
-        return std::make_unique<Node>("FACTOR");
+        return std::make_unique<TestNode>("FACTOR");
     }
 };
 
