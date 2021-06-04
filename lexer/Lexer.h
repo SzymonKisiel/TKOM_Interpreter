@@ -34,7 +34,7 @@ class Lexer {
     };
     Source & source;
 
-    char character;
+    char character {};
 
     int row = 0;
     int column = 0;
