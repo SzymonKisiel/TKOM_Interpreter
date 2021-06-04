@@ -4,14 +4,14 @@
 
 #include <vector>
 #include <memory>
-
 #include <iostream>
+
 #include "Node.h"
 
 class TestNode : public Node {
 private:
     std::vector<std::unique_ptr<TestNode>> children;
-    std::string name = "";
+    std::string name = "TEST";
 public:
     TestNode() = default;
 

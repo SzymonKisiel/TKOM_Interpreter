@@ -5,15 +5,6 @@
 #ifndef _TKOM__INTERPRETER_NODE_H
 #define _TKOM__INTERPRETER_NODE_H
 
-
-#include "ProgramNode.h"
-#include "StatementNode.h"
-#include "WhileStatementNode.h"
-#include "DeclarationNode.h"
-#include "FunctionNode.h"
-#include "TestNode.h"
-#include "IfStatementNode.h"
-
 class Node {
 public:
     Node() = default;

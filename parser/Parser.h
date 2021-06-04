@@ -4,7 +4,7 @@
 
 #include "../lexer/Token.h"
 #include "../lexer/Lexer.h"
-#include "ast/Node.h"
+#include "ast/ProgramNode.h"
 #include <memory>
 
 #include <iostream>
@@ -30,13 +30,14 @@ public:
 
     void unexpectedToken(TokenType expectedTokenType = TokenType::T_UNKNOWN) {
         std::cerr << std::string("Unexpected token: ")
-                .append(tokenTypeToString(currentToken->getType()))
-                .append("\tRow: ")
-                .append(std::to_string(currentToken->getRow()))
-                .append(", Col: ")
-                .append(std::to_string(currentToken->getColumn()))
-                .append("\tExpected: ")
-                .append(tokenTypeToString(expectedTokenType));
+                        .append(tokenTypeToString(currentToken->getType()))
+                        .append("\tRow: ")
+                        .append(std::to_string(currentToken->getRow()))
+                        .append(", Col: ")
+                        .append(std::to_string(currentToken->getColumn()))
+                        .append("\tExpected: ")
+                        .append(tokenTypeToString(expectedTokenType));
+        throw;
     }
 
 
@@ -68,6 +69,7 @@ public:
         if (!currentToken->isType()) {
             return nullptr;
         }
+        result->setReturnType(currentToken->getType());
         nextToken();
         if (currentToken->getType() != TokenType::T_ID) {
             unexpectedToken(TokenType::T_ID);
@@ -99,17 +101,17 @@ public:
 
     // statement        = if_statement | while_statement | simple_statement | "{" , {statement} , "}" ;
     std::unique_ptr<StatementNode> parseStatement() {
-        std::unique_ptr<StatementNode> result = std::make_unique<StatementNode>("STATEMENT");
+        std::unique_ptr<StatementNode> result = std::make_unique<StatementNode>();
         std::unique_ptr<TestNode> node = std::make_unique<TestNode>();
         if (currentToken->getType() == TokenType::T_WHILE) {
-            std::unique_ptr<WhileStatementNode> whileStatementNode = parseWhile();
-            result->setWhileStatement(std::move(whileStatementNode));
+            std::unique_ptr<WhileStatementNode> whileStatement = parseWhile();
+            result->setWhileStatement(std::move(whileStatement));
             return result;
             //result->addChild(node);
         }
         else if (currentToken->getType() == TokenType::T_IF) {
-            node = parseIf();
-            result->addChild(std::move(node));
+            std::unique_ptr<IfStatementNode> ifStatement = parseIf();
+            result->setIfStatement(std::move(ifStatement));
             return result;
         }
         else if (currentToken->getType() == TokenType::T_OPEN_BRACKET) {
@@ -128,15 +130,17 @@ public:
                 return result;
             }
         }
+        throw "Expected statement";
         return nullptr;
     }
 
     // if_statement     = "if" , "(" , expression, ")" , statement
     //                  , {"elsif" , "(" , expression, ")" , statement}
     //                  , ["else" , statement] ;
-    std::unique_ptr<TestNode> parseIf() {
-        std::unique_ptr<TestNode> result = std::make_unique<TestNode>("IF");
+    std::unique_ptr<IfStatementNode> parseIf() {
+        std::unique_ptr<IfStatementNode> result = std::make_unique<IfStatementNode>();
         std::unique_ptr<TestNode> node;
+        std::unique_ptr<StatementNode> statement;
 
         nextToken();
         if (currentToken->getType() != TokenType::T_OPEN) {
@@ -144,9 +148,9 @@ public:
         }
         nextToken();
         node = parseExpression();
-        result->addChild(std::move(node));
-        //node = parseStatement();
-        //result->addChild(std::move(node));
+        result->setIfCondition(std::move(node));
+        statement = parseStatement();
+        result->setIfStatement(std::move(statement));
 
         if (currentToken->getType() != TokenType::T_ELSIF && currentToken->getType() != TokenType::T_ELSE) {
             return result;
@@ -158,21 +162,21 @@ public:
             }
             nextToken();
             node = parseExpression();
-            result->addChild(std::move(node));
-            //node = parseStatement();
-            //result->addChild(std::move(node));
+            result->addElsifCondition(std::move(node));
+            statement = parseStatement();
+            result->addElsifStatement(std::move(statement));
         }
         if (currentToken->getType() == TokenType::T_ELSE) {
             nextToken();
-            //node = parseStatement();
-            //result->addChild(std::move(node));
+            statement = parseStatement();
+            result->setElseStatement(std::move(statement));
         }
         return result;
     }
 
     // while_statement  = "while" , "(" , expression, ")", statement ;
     std::unique_ptr<WhileStatementNode> parseWhile() {
-        std::unique_ptr<WhileStatementNode> result = std::make_unique<WhileStatementNode>();
+        std::unique_ptr<WhileStatementNode> result = std::make_unique<WhileStatementNode>("WHILE_STATEMENT");
         std::unique_ptr<TestNode> node;
         //result->addChild(node);
 
@@ -200,8 +204,8 @@ public:
             node = parseAssignmentOrFunCall();
         if (node == nullptr)
             node = parseReturnStatement();
-
         if (currentToken->getType() != TokenType::T_SEMICOLON) {
+            unexpectedToken(TokenType::T_SEMICOLON);
             return nullptr;
         }
         nextToken();
@@ -328,7 +332,6 @@ public:
                 --parenCount;
                 nextToken();
             }
-
             else if (currentToken->getType() == TokenType::T_OPEN) {
                 ++parenCount;
                 nextToken();

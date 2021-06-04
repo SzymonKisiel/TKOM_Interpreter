@@ -7,6 +7,7 @@
 
 #include <vector>
 #include "Node.h"
+#include "FunctionNode.h"
 
 class ProgramNode : public Node {
     std::vector<std::unique_ptr<FunctionNode>> functions;
