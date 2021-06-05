@@ -36,13 +36,13 @@ public:
     }
 
     std::string toString() {
-        return name;
+        return std::string("FUNCTION\t").append(tokenTypeToString(returnType));
     }
 
     void print(int depth = 0) {
         for (int i = 0; i < depth; ++i)
             std::cout << "  ";
-        std::cout << "FUNCTION\t" << tokenTypeToString(returnType) << std::endl;
+        std::cout << toString() << std::endl;
         if (isTerminal()) {
             return;
         }

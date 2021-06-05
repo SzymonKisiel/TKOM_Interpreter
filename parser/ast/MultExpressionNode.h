@@ -16,7 +16,7 @@ public:
     };
 
     std::string toString() {
-        return "MULT_EXPRESSION_NODE";
+        return "MULT_EXPRESSION";
     }
 
     void print(int depth = 0) {

@@ -16,7 +16,7 @@ public:
     };
 
     std::string toString() {
-        return "ADD_EXPRESSION_NODE";
+        return "ADD_EXPRESSION";
     }
 
     void print(int depth = 0) {

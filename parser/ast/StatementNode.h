@@ -3,6 +3,7 @@
 
 #include "Node.h"
 #include "TestNode.h"
+#include "SimpleStatementNode.h"
 
 class StatementNode;
 
@@ -36,11 +37,16 @@ public:
 class StatementNode : public Node {
     std::vector<std::unique_ptr<TestNode>> children;
     std::vector<std::unique_ptr<StatementNode>> statements;
+    std::unique_ptr<SimpleStatementNode> simpleStatement;
     std::unique_ptr<WhileStatementNode> whileStatement;
     std::unique_ptr<IfStatementNode> ifStatement;
     std::string name = "";
 
     enum StatementType {
+        WHILE,
+        IF,
+        SIMPLE,
+        BLOCK,
     };
 public:
     void addChild(std::unique_ptr<TestNode> node) {
@@ -61,6 +67,10 @@ public:
         ifStatement = std::move(node);
     }
 
+    void setSimpleStatement(std::unique_ptr<SimpleStatementNode> node) {
+        simpleStatement = std::move(node);
+    }
+
     const bool isTerminal() {
         return children.empty();
     }
@@ -79,6 +89,8 @@ public:
             whileStatement->print(depth+1);
         if (ifStatement != nullptr)
             ifStatement->print(depth+1);
+        if (simpleStatement != nullptr)
+            simpleStatement->print(depth+1);
     }
 };
 

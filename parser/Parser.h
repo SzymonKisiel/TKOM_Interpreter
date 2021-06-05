@@ -4,10 +4,13 @@
 
 #include "../lexer/Token.h"
 #include "../lexer/Lexer.h"
-#include "ast/ProgramNode.h"
 #include <memory>
 
 #include <iostream>
+#include <ProgramNode.h>
+#include <SimpleStatementNode.h>
+#include <DeclarationNode.h>
+#include <ArgumentsNode.h>
 
 class Parser
 {
@@ -134,9 +137,9 @@ public:
             return result;
         }
         else {
-            node = parseSimpleStatement();
-            if (node != nullptr) {
-                result->addChild(std::move(node));
+            std::unique_ptr<SimpleStatementNode> simpleStatement = parseSimpleStatement();
+            if (simpleStatement != nullptr) {
+                result->setSimpleStatement(std::move(simpleStatement));
                 return result;
             }
         }
@@ -225,25 +228,55 @@ public:
     }
 
     // simple_statement = (var_declaration | assignment | function_call | return_statement) , ";" ;
-    std::unique_ptr<TestNode> parseSimpleStatement() {
-        std::unique_ptr<TestNode> node;
-        node = parseDeclaration();
-        if (node == nullptr)
-            node = parseAssignmentOrFunCall();
-        if (node == nullptr)
-            node = parseReturnStatement();
-        if (currentToken->getType() != TokenType::T_SEMICOLON) {
-            unexpectedToken(TokenType::T_SEMICOLON);
-            return nullptr;
+    std::unique_ptr<SimpleStatementNode> parseSimpleStatement() {
+        std::unique_ptr<SimpleStatementNode> result = std::make_unique<SimpleStatementNode>();
+
+        std::unique_ptr<DeclarationNode> declaration = parseDeclaration();
+        if (declaration != nullptr) {
+            result->setDeclaration(std::move(declaration));
+            if (currentToken->getType() != TokenType::T_SEMICOLON)
+                unexpectedToken(TokenType::T_SEMICOLON);
+            nextToken();
+            return result;
+        }
+
+        std::unique_ptr<ReturnStatementNode> returnStatement = parseReturnStatement();
+        if (returnStatement != nullptr) {
+            result->setReturnStatement(std::move(returnStatement));
+            if (currentToken->getType() != TokenType::T_SEMICOLON)
+                unexpectedToken(TokenType::T_SEMICOLON);
+            nextToken();
+            return result;
+        }
+
+        if (currentToken->getType() != TokenType::T_ID) {
+            throw; //Nie udalo sie sparsowac statement
         }
         nextToken();
-        return node;
+
+        std::unique_ptr<AssignmentNode> assignment = parseAssignment();
+        if (assignment != nullptr) {
+            result->setAssignment(std::move(assignment));
+            if (currentToken->getType() != TokenType::T_SEMICOLON)
+                unexpectedToken(TokenType::T_SEMICOLON);
+            nextToken();
+            return result;
+        }
+
+        std::unique_ptr<FunctionCallNode> functionCall = parseFunctionCall();
+        if (functionCall != nullptr) {
+            result->setFunctionCall(std::move(functionCall));
+            if (currentToken->getType() != TokenType::T_SEMICOLON)
+                unexpectedToken(TokenType::T_SEMICOLON);
+            nextToken();
+            return result;
+        }
+        throw; //Nie udalo sie sparsowac statement
     }
 
     // var_declaration  = type , id, "=", expression ;
-    std::unique_ptr<TestNode> parseDeclaration() {
-        std::unique_ptr<TestNode> result = std::make_unique<TestNode>("DECLARATION");
-        std::unique_ptr<TestNode> node;
+    std::unique_ptr<DeclarationNode> parseDeclaration() {
+        std::unique_ptr<DeclarationNode> result = std::make_unique<DeclarationNode>();
         std::unique_ptr<ExpressionNode> expression;
         if (!currentToken->isType()) {
             return nullptr;
@@ -258,35 +291,42 @@ public:
         }
         nextToken();
         expression = parseExpression();
-        result->addExpression(std::move(expression));
+        result->setExpression(std::move(expression));
         return result;
     }
 
     // assignment       = id, "=", expression ;
-    // function_call    = id ,  "(" , [arguments] , ")" ;
-    std::unique_ptr<TestNode> parseAssignmentOrFunCall() {
-        std::unique_ptr<TestNode> result;
-        std::unique_ptr<TestNode> node;
+    std::unique_ptr<AssignmentNode> parseAssignment() {
+        std::unique_ptr<AssignmentNode> result = std::make_unique<AssignmentNode>();
         std::unique_ptr<ExpressionNode> expression;
-        if (currentToken->getType() != TokenType::T_ID) {
-            return nullptr;
-        }
-        nextToken();
         if (currentToken->getType() == TokenType::T_ASSIGN) {
             nextToken();
-            result = std::make_unique<TestNode>("ASSIGNMENT");
 
             expression = parseExpression();
-            result->addExpression(std::move(expression));
+            result->setExpression(std::move(expression));
 
             return result;
         }
-        else if (currentToken->getType() == TokenType::T_OPEN) {
-            nextToken();
-            result = std::make_unique<TestNode>("FUNCTION_CALL");
+        else
+            return nullptr;
+    }
 
-            node = parseArguments();
-            result->addChild(std::move(node));
+    // function_call    = id ,  "(" , [arguments] , ")" ;
+    std::unique_ptr<FunctionCallNode> parseFunctionCall() {
+        std::unique_ptr<FunctionCallNode> result = std::make_unique<FunctionCallNode>();
+        if (currentToken->getType() == TokenType::T_OPEN) {
+            nextToken();
+            if (currentToken->getType() == TokenType::T_CLOSE) {
+                nextToken();
+                return result;
+            }
+
+            std::unique_ptr<ArgumentsNode> arguments = parseArguments();
+            result->setArguments(std::move(arguments));
+
+            if (currentToken->getType() != TokenType::T_CLOSE)
+                return nullptr;
+            nextToken();
             return result;
         }
         else
@@ -294,16 +334,15 @@ public:
     }
 
     // return_statement = "return" , [expression] ;
-    std::unique_ptr<TestNode> parseReturnStatement() {
-        std::unique_ptr<TestNode> result = std::make_unique<TestNode>("RETURN");
-        std::unique_ptr<TestNode> node;
+    std::unique_ptr<ReturnStatementNode> parseReturnStatement() {
+        std::unique_ptr<ReturnStatementNode> result = std::make_unique<ReturnStatementNode>();
         std::unique_ptr<ExpressionNode> expression;
         if (currentToken->getType() != TokenType::T_RETURN) {
             return nullptr;
         }
         nextToken();
         expression = parseExpression();
-        result->addExpression(std::move(expression));
+        result->setReturnExpression(std::move(expression));
         return result;
     }
 
@@ -335,17 +374,16 @@ public:
 
     // arguments  = argument , {"," , argument} ;
     // argument   = expression ;
-    std::unique_ptr<TestNode> parseArguments() {
-        std::unique_ptr<TestNode> result = std::make_unique<TestNode>("ARGUMENTS");
-        std::unique_ptr<TestNode> node;
+    std::unique_ptr<ArgumentsNode> parseArguments() {
+        std::unique_ptr<ArgumentsNode> result = std::make_unique<ArgumentsNode>();
         std::unique_ptr<ExpressionNode> expression;
 
         expression = parseExpression();
-        result->addExpression(std::move(expression));
+        result->addArgument(std::move(expression));
         while (currentToken->getType() == TokenType::T_COMMA) {
             nextToken();
             expression = parseExpression();
-            result->addExpression(std::move(expression));
+            result->addArgument(std::move(expression));
         }
         return result;
     }
