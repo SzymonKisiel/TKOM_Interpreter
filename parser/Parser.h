@@ -4,6 +4,8 @@
 
 #include "../lexer/Token.h"
 #include "../lexer/Lexer.h"
+#include "../exception/Exception.h"
+#include "../exception/ParserException.h"
 #include <memory>
 
 #include <iostream>
@@ -80,27 +82,29 @@ public:
         result->setReturnType(currentToken->getType());
         nextToken();
         if (currentToken->getType() != TokenType::T_ID) {
-            unexpectedToken(TokenType::T_ID);
-            return nullptr;
+            throw ParserException(std::move(currentToken), TokenType::T_ID);
         }
         result->setId(currentToken->getStringValue());
         nextToken();
         if (currentToken->getType() != TokenType::T_OPEN) {
-            return nullptr;
+            throw ParserException(std::move(currentToken), TokenType::T_OPEN);
         }
         nextToken();
         std::unique_ptr<ParametersNode> parameters = parseParameters();
         result->setParameters(std::move(parameters));
         if (currentToken->getType() != TokenType::T_CLOSE) {
-            return nullptr;
+            throw ParserException(std::move(currentToken), TokenType::T_CLOSE);
         }
         nextToken();
         if (currentToken->getType() != TokenType::T_OPEN_BRACKET) {
-            return nullptr;
+            throw ParserException(std::move(currentToken), TokenType::T_OPEN_BRACKET);
+
         }
         nextToken();
         while (currentToken->getType() != TokenType::T_CLOSE_BRACKET) {
-            // co jesli T_END
+            if (currentToken->getType() == TokenType::T_END) {
+                throw ParserException("Expected function end '}'");
+            }
             std::unique_ptr<StatementNode> statement = parseStatement();
             result->addStatement(std::move(statement));
         }
@@ -124,6 +128,9 @@ public:
         else if (currentToken->getType() == TokenType::T_OPEN_BRACKET) {
             nextToken();
             while (currentToken->getType() != TokenType::T_CLOSE_BRACKET) {
+                if (currentToken->getType() == TokenType::T_END) {
+                    throw ParserException("Expected block end '}'");
+                }
                 std::unique_ptr<StatementNode> statementNode = parseStatement();
                 result->addStatement(std::move(statementNode));
             }
@@ -137,8 +144,7 @@ public:
                 return result;
             }
         }
-        //throw "Expected statement";
-        return nullptr;
+        throw ParserException(std::move(currentToken), "Expected statement");
     }
 
     // if_statement     = "if" , "(" , expression, ")" , statement
@@ -151,15 +157,13 @@ public:
 
         nextToken();
         if (currentToken->getType() != TokenType::T_OPEN) {
-            unexpectedToken(TokenType::T_OPEN);
-            return nullptr;
+            throw ParserException(std::move(currentToken), TokenType::T_OPEN);
         }
         nextToken();
         expression = parseExpression();
         result->setIfCondition(std::move(expression));
         if (currentToken->getType() != TokenType::T_CLOSE) {
-            unexpectedToken(TokenType::T_CLOSE);
-            return nullptr;
+            throw ParserException(std::move(currentToken), TokenType::T_CLOSE);
         }
         nextToken();
         statement = parseStatement();
@@ -171,14 +175,13 @@ public:
         while (currentToken->getType() == TokenType::T_ELSIF) {
             nextToken();
             if (currentToken->getType() != TokenType::T_OPEN) {
-                return nullptr;
+                throw ParserException(std::move(currentToken), TokenType::T_OPEN);
             }
             nextToken();
             expression = parseExpression();
             result->addElsifCondition(std::move(expression));
             if (currentToken->getType() != TokenType::T_CLOSE) {
-                unexpectedToken(TokenType::T_CLOSE);
-                return nullptr;
+                throw ParserException(std::move(currentToken), TokenType::T_CLOSE);
             }
             nextToken();
             statement = parseStatement();
@@ -200,7 +203,7 @@ public:
 
         nextToken();
         if (currentToken->getType() != TokenType::T_OPEN) {
-            return nullptr;
+            throw ParserException(std::move(currentToken), TokenType::T_OPEN);
         }
         nextToken();
 
@@ -208,7 +211,7 @@ public:
         result->setCondition(std::move(expression));
 
         if (currentToken->getType() != TokenType::T_CLOSE) {
-            return nullptr;
+            throw ParserException(std::move(currentToken), TokenType::T_CLOSE);
         }
         nextToken();
 
@@ -216,7 +219,6 @@ public:
         result->setStatement(std::move(statement));
 
         return result;
-
     }
 
     // simple_statement = (var_declaration | assignment | function_call | return_statement) , ";" ;
@@ -227,7 +229,7 @@ public:
         if (declaration != nullptr) {
             result->setDeclaration(std::move(declaration));
             if (currentToken->getType() != TokenType::T_SEMICOLON)
-                unexpectedToken(TokenType::T_SEMICOLON);
+                throw ParserException(std::move(currentToken), TokenType::T_SEMICOLON);
             nextToken();
             return result;
         }
@@ -236,13 +238,13 @@ public:
         if (returnStatement != nullptr) {
             result->setReturnStatement(std::move(returnStatement));
             if (currentToken->getType() != TokenType::T_SEMICOLON)
-                unexpectedToken(TokenType::T_SEMICOLON);
+                throw ParserException(std::move(currentToken), TokenType::T_SEMICOLON);
             nextToken();
             return result;
         }
 
         if (currentToken->getType() != TokenType::T_ID) {
-            throw; //Nie udalo sie sparsowac statement
+            return nullptr;
         }
         std::string tempId = currentToken->getStringValue();
         nextToken();
@@ -251,7 +253,7 @@ public:
         if (assignment != nullptr) {
             result->setAssignment(std::move(assignment));
             if (currentToken->getType() != TokenType::T_SEMICOLON)
-                unexpectedToken(TokenType::T_SEMICOLON);
+                throw ParserException(std::move(currentToken), TokenType::T_SEMICOLON);
             nextToken();
             return result;
         }
@@ -260,11 +262,11 @@ public:
         if (functionCall != nullptr) {
             result->setFunctionCall(std::move(functionCall));
             if (currentToken->getType() != TokenType::T_SEMICOLON)
-                unexpectedToken(TokenType::T_SEMICOLON);
+                throw ParserException(std::move(currentToken), TokenType::T_SEMICOLON);
             nextToken();
             return result;
         }
-        throw; //Nie udalo sie sparsowac statement
+        return nullptr;
     }
 
     // var_declaration  = type , id, "=", expression ;
@@ -276,14 +278,12 @@ public:
         result->setType(currentToken->getType());
         nextToken();
         if (currentToken->getType() != TokenType::T_ID) {
-            unexpectedToken(TokenType::T_ID);
-            return nullptr;
+            throw ParserException(std::move(currentToken), TokenType::T_ID);
         }
         result->setId(currentToken->getStringValue());
         nextToken();
         if (currentToken->getType() != TokenType::T_ASSIGN) {
-            unexpectedToken(TokenType::T_ASSIGN);
-            return nullptr;
+            throw ParserException(std::move(currentToken), TokenType::T_ASSIGN);
         }
         nextToken();
         std::unique_ptr<ExpressionNode> expression = parseExpression();
@@ -319,8 +319,7 @@ public:
             std::unique_ptr<ArgumentsNode> arguments = parseArguments();
             result->setArguments(std::move(arguments));
             if (currentToken->getType() != TokenType::T_CLOSE) {
-                unexpectedToken(TokenType::T_CLOSE);
-                return nullptr;
+                throw ParserException(std::move(currentToken), TokenType::T_CLOSE);
             }
             nextToken();
             return result;
@@ -360,11 +359,11 @@ public:
         while (currentToken->getType() == TokenType::T_COMMA) {
             nextToken();
             if (!currentToken->isType())
-                return nullptr;
+                throw ParserException(std::move(currentToken), "Expected type");
             result->addType(currentToken->getType());
             nextToken();
             if (currentToken->getType() != TokenType::T_ID)
-                return nullptr;
+                throw ParserException(std::move(currentToken), TokenType::T_ID);
             result->addIdentifier(currentToken->getStringValue());
             nextToken();
         }
@@ -449,11 +448,12 @@ public:
             currentToken->getType() != TokenType::T_FLOAT &&
             currentToken->getType() != TokenType::T_STRING
            )
-            return nullptr;
+            throw ParserException(std::move(currentToken), "Expected expression");
         factor->setType(currentToken->getType());
         //factor->setValue();
         nextToken();
         return factor;
+
     }
 };
 
