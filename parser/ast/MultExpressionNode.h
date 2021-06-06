@@ -3,6 +3,7 @@
 
 #include "FactorNode.h"
 
+// mult_expression = factor , { mult_operator , factor} ;
 class MultExpressionNode : public Node {
     std::vector<std::unique_ptr<FactorNode>> operands;
     std::vector<TokenType> multOperations;
@@ -16,7 +17,14 @@ public:
     };
 
     std::string toString() {
-        return "MULT_EXPRESSION";
+        std::string result("MULT_EXPRESSION");
+        if (!multOperations.empty()) {
+            result.append(" -");
+            for (const auto &operation: multOperations) {
+                result.append(" ").append(tokenTypeToString(operation));
+            }
+        }
+        return result;
     }
 
     void print(int depth = 0) {

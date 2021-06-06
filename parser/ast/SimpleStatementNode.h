@@ -6,6 +6,7 @@
 #include "FunctionCallNode.h"
 #include "ReturnStatementNode.h"
 
+// simple_statement = (var_declaration | assignment | function_call | return_statement) , ";" ;
 class SimpleStatementNode : public Node {
     std::unique_ptr <DeclarationNode> declaration;
     std::unique_ptr <AssignmentNode> assignment;

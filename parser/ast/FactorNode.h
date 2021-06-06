@@ -1,10 +1,9 @@
 #ifndef _TKOM__INTERPRETER_FACTORNODE_H
 #define _TKOM__INTERPRETER_FACTORNODE_H
 
-
+// factor          = integer | float | geo | string | (["-"] , id) | function_call | "(" , expression , ")"  ;
 class FactorNode : public Node {
     TokenType type;
-    //type
     //value
 public:
     void setType(TokenType type) {
@@ -16,7 +15,7 @@ public:
     }
 
     std::string toString() {
-        return std::string("FACTOR ").append(tokenTypeToString(type));
+        return std::string("FACTOR - ").append(tokenTypeToString(type));
     }
 
     void print(int depth = 0) {

@@ -5,6 +5,7 @@
 #include "Node.h"
 #include "FunctionNode.h"
 
+// program = {statement | function} ;
 class ProgramNode : public Node {
     std::vector<std::unique_ptr<FunctionNode>> functions;
     std::vector<std::unique_ptr<StatementNode>> statements;

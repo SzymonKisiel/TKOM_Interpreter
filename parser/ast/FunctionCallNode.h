@@ -3,17 +3,21 @@
 
 #include "ArgumentsNode.h"
 
+// function_call    = id ,  "(" , [arguments] , ")" ;
 class FunctionCallNode : public Node {
-    //id
-    //args
+    std::string id;
     std::unique_ptr<ArgumentsNode> arguments;
 public:
+    void setId(std::string id) {
+        this->id = id;
+    }
+
     void setArguments(std::unique_ptr<ArgumentsNode> arguments) {
         this->arguments = std::move(arguments);
     }
 
     std::string toString() {
-        return "FUNCTION_CALL";
+        return std::string("FUNCTION_CALL - ").append(id);
     }
 
     void print(int depth = 0) {

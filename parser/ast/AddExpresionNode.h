@@ -3,6 +3,7 @@
 
 #include "MultExpressionNode.h"
 
+// add_expression  = mult_expression , {add_operator, mult_expression } ;
 class AddExpresionNode : public Node {
     std::vector<std::unique_ptr<MultExpressionNode>> operands;
     std::vector<TokenType> addOperations;
@@ -16,7 +17,14 @@ public:
     };
 
     std::string toString() {
-        return "ADD_EXPRESSION";
+        std::string result("ADD_EXPRESSION");
+        if (!addOperations.empty()) {
+            result.append(" -");
+            for (const auto &operation: addOperations) {
+                result.append(" ").append(tokenTypeToString(operation));
+            }
+        }
+        return result;
     }
 
     void print(int depth = 0) {

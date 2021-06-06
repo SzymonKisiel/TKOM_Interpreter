@@ -1,9 +1,9 @@
 #ifndef _TKOM__INTERPRETER_EXPRESSIONNODE_H
 #define _TKOM__INTERPRETER_EXPRESSIONNODE_H
 
-
 #include "AddExpresionNode.h"
 
+// expression      = add_expression , {comp_operator, add_expression } ;
 class ExpressionNode : public Node {
     std::vector<std::unique_ptr<AddExpresionNode>> operands;
     std::vector<TokenType> compOperations;
@@ -17,7 +17,14 @@ public:
     };
 
     std::string toString() {
-        return "EXPRESSION";
+        std::string result("EXPRESSION");
+        if (!compOperations.empty()) {
+            result.append(" -");
+            for (const auto &operation: compOperations) {
+                result.append(" ").append(tokenTypeToString(operation));
+            }
+        }
+        return result;
     }
 
     void print(int depth = 0) {

@@ -1,7 +1,7 @@
 #ifndef _TKOM__INTERPRETER_RETURNSTATEMENTNODE_H
 #define _TKOM__INTERPRETER_RETURNSTATEMENTNODE_H
 
-
+// return_statement = "return" , [expression] , ";" ;
 class ReturnStatementNode : public Node {
     std::unique_ptr<ExpressionNode> returnExpression;
 public:

@@ -2,54 +2,48 @@
 #define _TKOM__INTERPRETER_FUNCTIONNODE_H
 
 #include "Node.h"
-#include "TestNode.h"
 #include "StatementNode.h"
+#include "ParametersNode.h"
 
+// function = type , id ,  "(" , [parameters] , ")" , "{" , {statement} , "}" ;
 class FunctionNode : public Node {
-    //function = type , id ,  "(" , [parameters] , ")" , "{" , {statement} , "}" ;
-    //type
-    //id
-    //parameters
-    //statements
+    std::string id;
+    std::unique_ptr<ParametersNode> parameters;
+    std::vector<std::unique_ptr<StatementNode>> statements;
     TokenType returnType;
-    std::vector<std::unique_ptr<TestNode>> children;
-    std::unique_ptr<StatementNode> statement;
-    std::string name = "";
 public:
-    FunctionNode(std::string name) : name(std::move(name)){
+    void setId(std::string id) {
+        this->id = id;
+    }
+
+    void setParameters(std::unique_ptr<ParametersNode> parameters)  {
+        this->parameters = std::move(parameters);
+    }
+
+    void addStatement(std::unique_ptr<StatementNode> statement) {
+        statements.push_back(std::move(statement));
     }
 
     void setReturnType(TokenType returnType) {
         this->returnType = returnType;
     }
 
-    void addChild(std::unique_ptr<TestNode> node) {
-        children.push_back(std::move(node));
-    }
-
-    void setStatement(std::unique_ptr<StatementNode> statementNode)  {
-        statement = std::move(statementNode);
-    }
-
-    const bool isTerminal() {
-        return children.empty();
-    }
-
     std::string toString() {
-        return std::string("FUNCTION\t").append(tokenTypeToString(returnType));
+        return std::string("FUNCTION - ")
+                    .append(tokenTypeToString(returnType))
+                    .append(" ")
+                    .append(id);
     }
 
     void print(int depth = 0) {
         for (int i = 0; i < depth; ++i)
             std::cout << "  ";
         std::cout << toString() << std::endl;
-        if (isTerminal()) {
-            return;
-        }
-        for (const auto &child: children) {
+        if (parameters != nullptr)
+            parameters->print(depth+1);
+        for (const auto &child: statements) {
             child->print(depth+1);
         }
-        statement->print(depth+1);
     }
 };
 
