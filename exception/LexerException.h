@@ -1,7 +1,3 @@
-//
-// Created by kislu on 07.06.2021.
-//
-
 #ifndef _TKOM__INTERPRETER_LEXEREXCEPTION_H
 #define _TKOM__INTERPRETER_LEXEREXCEPTION_H
 

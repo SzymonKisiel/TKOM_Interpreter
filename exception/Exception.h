@@ -1,10 +1,5 @@
-//
-// Created by kislu on 06.06.2021.
-//
-
 #ifndef _TKOM__INTERPRETER_EXCEPTION_H
 #define _TKOM__INTERPRETER_EXCEPTION_H
-
 
 class Exception : public std::exception {
 protected:
