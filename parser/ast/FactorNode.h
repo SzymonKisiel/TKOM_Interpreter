@@ -1,17 +1,54 @@
 #ifndef _TKOM__INTERPRETER_FACTORNODE_H
 #define _TKOM__INTERPRETER_FACTORNODE_H
 
+#include "FunctionCallNode.h"
+#include "ExpressionNode.h"
+
 // factor          = integer | float | geo | string | (["-"] , id) | function_call | "(" , expression , ")"  ;
 class FactorNode : public Node {
     TokenType type;
-    //value
+    bool isPositive = true;
+
+    variant<std::monostate, string, int, float> value;
+    std::string id;
+    std::unique_ptr<FunctionCallNode> functionCall;
+    //std::unique_ptr<ExpressionNode> expression;
+    enum FactorType {
+        VALUE,
+        ID,
+        FUNCTION_CALL,
+        GEO,
+        EXPRESSION,
+    };
+    FactorType factorType;
+
 public:
-    void setType(TokenType type) {
+    void setValue(TokenType type, variant<std::monostate, string, int, float> value) {
         this->type = type;
+        this->value = std::move(value);
+        factorType = FactorType::VALUE;
     }
 
-    void setValue() {
+    void setId(std::string id) {
+        this->id = std::move(id);
+        factorType = FactorType::ID;
+    }
 
+    void setFunction(std::unique_ptr<FunctionCallNode> functionCall) {
+        this->functionCall = std::move(functionCall);
+        factorType = FactorType::FUNCTION_CALL;
+    }
+
+    void setGeo() {
+
+    }
+
+    void setExpression() {
+
+    }
+
+    void setNegative() {
+        isPositive = false;
     }
 
     std::string toString() {

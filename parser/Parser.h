@@ -76,6 +76,7 @@ public:
     // var_declaration  = type , id, "=", expression ;
     std::unique_ptr<FunctionNode> parseFunction() {
         std::unique_ptr<FunctionNode> result = std::make_unique<FunctionNode>();
+        //var_declaration?
         if (!currentToken->isType()) {
             return nullptr;
         }
@@ -443,14 +444,36 @@ public:
     // factor          = integer | float | geo | string | (["-"] , id) | function_call | "(" , expression , ")"  ;
     std::unique_ptr<FactorNode> parseFactor() {
         std::unique_ptr<FactorNode> factor = std::make_unique<FactorNode>();
+        if (currentToken->getType() == TokenType::T_MINUS) {
+            factor->setNegative();
+            nextToken();
+        }
+        if (currentToken->getType() == TokenType::T_OPEN) {
+            nextToken();
+            auto expression = parseExpression();
+            //factor->setExpression(std::move(expression));
+            if (currentToken->getType() != TokenType::T_CLOSE)
+                throw ParserException(std::move(currentToken), TokenType::T_CLOSE);
+        }
         if (currentToken->getType() != TokenType::T_ID &&
             currentToken->getType() != TokenType::T_INT &&
             currentToken->getType() != TokenType::T_FLOAT &&
             currentToken->getType() != TokenType::T_STRING
            )
             throw ParserException(std::move(currentToken), "Expected expression");
-        factor->setType(currentToken->getType());
-        //factor->setValue();
+        if (currentToken->getType() == TokenType::T_ID) {
+            nextToken();
+            if (currentToken->getType() != TokenType::T_OPEN) {
+                factor->setId(currentToken->getStringValue());
+            }
+            else {
+                //functionCall
+            }
+        }
+        else {
+            factor->setValue(currentToken->getType(), currentToken->getValue());
+            //geo
+        }
         nextToken();
         return factor;
 

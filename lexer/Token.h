@@ -123,6 +123,9 @@ public:
     const TokenType getType() {
         return this->type;
     }
+    variant<std::monostate, string, int, float> getValue() {
+        return value;
+    }
     const string getStringValue() {
         return std::get<string>(this->value);
     }
