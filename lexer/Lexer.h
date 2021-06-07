@@ -9,6 +9,7 @@
 
 #include "Token.h"
 #include "Source.h"
+#include "../exception/LexerException.h"
 
 using namespace std;
 
@@ -128,7 +129,7 @@ public:
                     bool commentEnd = false;
                     while (!commentEnd) {
                         if (character == EOF)
-                            throw "Niezakończony komentarz";
+                            throw LexerException("Excepted comment end");
                         if (character == '*') {
                             character = source.getNextChar();
                             if (character == '/')
@@ -151,6 +152,7 @@ public:
         }
         if (token == nullptr) {
             token = std::make_unique<Token>(TokenType::T_UNKNOWN, row, column);
+            throw LexerException(std::move(token));
         }
 
         character = source.getNextChar();
@@ -168,6 +170,8 @@ public:
             int value = 0;
             while (isdigit(character)) {
                 value = 10 * value + character - '0';
+                if (value < 0)
+                    throw LexerException("Int overflow", row, column);
                 character = source.getNextChar();
             }
             if (character != '.')
@@ -176,7 +180,7 @@ public:
             // float
             float floatValue = static_cast<float>(value);
             character = source.getNextChar();
-            for (int i = 1; isdigit(character); ++i) { //nieskończone liczby!!
+            for (int i = 1; isdigit(character); ++i) {
                 floatValue += (character - '0')/pow(10,i);
                 character = source.getNextChar();
             }
@@ -190,7 +194,7 @@ public:
             character = source.getNextChar();
             while (character != '"') {
                 if (character == EOF)
-                    throw "Niezakończony string";
+                    throw LexerException("Expected string end");
                 if (character == '\\') {
                     character = source.getNextChar();
                 }
