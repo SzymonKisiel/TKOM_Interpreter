@@ -6,7 +6,7 @@ public:
     Node() = default;
     //virtual const bool isTerminal() = 0;
     //virtual void print(int depth = 0) = 0;
-    //virtual void execute() = 0;
+    //virtual void execute(Context & context) = 0;
 };
 
 #endif //_TKOM__INTERPRETER_NODE_H
