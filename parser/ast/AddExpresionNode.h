@@ -35,6 +35,10 @@ public:
             child->print(depth+1);
         }
     }
+
+    variant<std::monostate, string, int, float> evaluate() {
+
+    }
 };
 
 
