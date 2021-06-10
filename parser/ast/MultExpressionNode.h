@@ -1,6 +1,8 @@
 #ifndef _TKOM__INTERPRETER_MULTEXPRESSIONNODE_H
 #define _TKOM__INTERPRETER_MULTEXPRESSIONNODE_H
 
+#include <vector>
+#include <memory>
 #include "FactorNode.h"
 
 // mult_expression = factor , { mult_operator , factor} ;
@@ -35,6 +37,41 @@ public:
             child->print(depth+1);
         }
     }
+
+    variant<std::monostate, string, int, float> evaluate() {
+        variant<std::monostate, string, int, float> lhs = operands[0]->evaluate();
+        variant<std::monostate, string, int, float> rhs;
+        TokenType operation;
+        for (int i = 0; i < multOperations.size(); ++i) {
+            operation = multOperations[i];
+            rhs = operands[i+1]->evaluate();
+            if (operation == TokenType::T_MUL) {
+                std::visit(VisitMult(), lhs, rhs);
+            }
+            else if (operation == TokenType::T_DIV) {
+                std::visit(VisitDiv(), lhs, rhs);
+            }
+            else
+                ;//ExecutionException
+        }
+        return lhs;
+    }
+
+    struct VisitMult {
+        void operator()(int&, int&) { cout << "int * int\n"; }
+        void operator()(float&, float&) { cout << "float * float\n"; }
+        void operator()(int&, float&) { cout << "int * float\n"; }
+        void operator()(float&, int&) { cout << "float * int\n"; }
+        void operator()(auto, auto) { cout << "error\n"; /*ExecutionException*/ }
+    };
+
+    struct VisitDiv {
+        void operator()(int&, int&) { cout << "int / int\n"; }
+        void operator()(float&, float&) { cout << "float / float\n"; }
+        void operator()(int&, float&) { cout << "int / float\n"; }
+        void operator()(float&, int&) { cout << "float / int\n"; }
+        void operator()(auto, auto) { cout << "error\n"; /*ExecutionException*/ }
+    };
 };
 
 

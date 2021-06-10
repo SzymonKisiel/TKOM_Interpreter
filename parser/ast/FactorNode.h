@@ -1,23 +1,23 @@
 #ifndef _TKOM__INTERPRETER_FACTORNODE_H
 #define _TKOM__INTERPRETER_FACTORNODE_H
 
-#include "FunctionCallNode.h"
-#include "ExpressionNode.h"
+//#include "FunctionCallNode.h"
+//#include "ExpressionNode.h"
+#include "../../lexer/Token.h"
 
 // factor          = integer | float | geo | string | (["-"] , id) | function_call | "(" , expression , ")"  ;
 class FactorNode : public Node {
     TokenType type;
     bool isPositive = true;
 
-    variant<std::monostate, string, int, float> value;
+    variant<std::monostate, string, int, float /*, GeographicalCoordinate*/> value;
     std::string id;
-    std::unique_ptr<FunctionCallNode> functionCall;
+    //std::unique_ptr<FunctionCallNode> functionCall;
     //std::unique_ptr<ExpressionNode> expression;
     enum FactorType {
         VALUE,
         ID,
         FUNCTION_CALL,
-        GEO,
         EXPRESSION,
     };
     FactorType factorType;
@@ -34,10 +34,10 @@ public:
         factorType = FactorType::ID;
     }
 
-    void setFunction(std::unique_ptr<FunctionCallNode> functionCall) {
-        this->functionCall = std::move(functionCall);
-        factorType = FactorType::FUNCTION_CALL;
-    }
+//    void setFunction(std::unique_ptr<FunctionCallNode> functionCall) {
+//        this->functionCall = std::move(functionCall);
+//        factorType = FactorType::FUNCTION_CALL;
+//    }
 
     void setGeo() {
 
@@ -51,6 +51,10 @@ public:
         isPositive = false;
     }
 
+    FactorType getType() {
+        return factorType;
+    }
+
     std::string toString() {
         return std::string("FACTOR - ").append(tokenTypeToString(type));
     }
@@ -59,6 +63,11 @@ public:
         for (int i = 0; i < depth; ++i)
             std::cout << "  ";
         std::cout << toString() << std::endl;
+    }
+
+    variant<std::monostate, string, int, float> evaluate() {
+        if (factorType == VALUE)
+            return value;
     }
 };
 
