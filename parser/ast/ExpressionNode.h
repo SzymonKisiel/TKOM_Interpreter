@@ -37,7 +37,8 @@ public:
     }
 
     variant<std::monostate, string, int, float> evaluate() {
-
+        variant<std::monostate, string, int, float> test = 0;
+        return test;
     }
 };
 

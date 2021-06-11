@@ -4,6 +4,7 @@
 #include <vector>
 #include "Node.h"
 #include "FunctionNode.h"
+#include "../../execution/Context.h"
 
 // program = {statement | function} ;
 class ProgramNode : public Node {
@@ -37,6 +38,12 @@ public:
         for (const auto &child: statements) {
             child->print(depth+1);
         }
+    }
+
+    void execute() {
+        Context context;
+        for (const auto &statement: statements)
+            statement->execute(context);
     }
 };
 

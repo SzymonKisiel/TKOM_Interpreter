@@ -62,3 +62,7 @@ void IfStatementNode::print(int depth) {
     if (elseStatement != nullptr)
         elseStatement->print(depth+1);
 }
+
+void IfStatementNode::execute(Context &context) {
+    ifCondition->evaluate();
+}

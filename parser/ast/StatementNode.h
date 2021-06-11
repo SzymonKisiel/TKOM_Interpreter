@@ -3,6 +3,7 @@
 
 #include "Node.h"
 #include "SimpleStatementNode.h"
+#include "../../execution/Context.h"
 #include <memory>
 
 class StatementNode;
@@ -17,6 +18,7 @@ public:
     void setCondition(std::unique_ptr<ExpressionNode> node);
     void setStatement(std::unique_ptr<StatementNode> node);
     void print(int depth = 0);
+    void execute(Context & context);
 };
 
 // if_statement     = "if" , "(" , expression, ")" , statement
@@ -35,6 +37,7 @@ public:
     void addElsifStatement(std::unique_ptr<StatementNode> node);
     void setElseStatement(std::unique_ptr<StatementNode> node);
     void print(int depth = 0);
+    void execute(Context & context);
 };
 
 // statement        = if_statement | while_statement | simple_statement | "{" , {statement} , "}" ;
@@ -49,6 +52,7 @@ class StatementNode : public Node {
         SIMPLE,
         BLOCK,
     };
+    StatementType statementType;
 public:
     void addStatement(std::unique_ptr<StatementNode> node) {
         if (node != nullptr)
@@ -80,6 +84,11 @@ public:
             ifStatement->print(depth+1);
         if (simpleStatement != nullptr)
             simpleStatement->print(depth+1);
+    }
+
+    void execute(Context & context) {
+        //switch (statementType)
+        ifStatement->execute(context);
     }
 };
 
