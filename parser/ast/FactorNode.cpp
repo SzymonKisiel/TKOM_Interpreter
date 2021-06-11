@@ -20,8 +20,8 @@ void FactorNode::setGeo() {
 
 }
 
-void FactorNode::setExpression() {
-
+void FactorNode::setExpression(std::unique_ptr<ExpressionNode> expression) {
+    this->expression = std::move(expression);
 }
 
 void FactorNode::setNegative() {
@@ -29,7 +29,7 @@ void FactorNode::setNegative() {
 }
 
 std::string FactorNode::toString() {
-    return std::string("FACTOR - ").append(tokenTypeToString(type));
+    return std::string("FACTOR - ").append(factorTypeNames[factorType]/*tokenTypeToString(type)*/);
 }
 
 void FactorNode::print(int depth) {
@@ -41,4 +41,6 @@ void FactorNode::print(int depth) {
 variant<std::monostate, string, int, float> FactorNode::evaluate() {
     if (factorType == VALUE)
         return value;
+    else
+        return variant<std::monostate, string, int, float>();
 }

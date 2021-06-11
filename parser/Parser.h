@@ -454,32 +454,34 @@ public:
         if (currentToken->getType() == TokenType::T_OPEN) {
             nextToken();
             auto expression = parseExpression();
-            //factor->setExpression(std::move(expression));
+            factor->setExpression(std::move(expression));
             if (currentToken->getType() != TokenType::T_CLOSE)
                 throw ParserException(std::move(currentToken), TokenType::T_CLOSE);
         }
-        if (currentToken->getType() != TokenType::T_ID &&
-            currentToken->getType() != TokenType::T_INT &&
-            currentToken->getType() != TokenType::T_FLOAT &&
-            currentToken->getType() != TokenType::T_STRING
-           )
-            throw ParserException(std::move(currentToken), "Expected expression");
-        if (currentToken->getType() == TokenType::T_ID) {
-            nextToken();
-            if (currentToken->getType() != TokenType::T_OPEN) {
+        else {
+            if (currentToken->getType() != TokenType::T_ID &&
+                    currentToken->getType() != TokenType::T_INT &&
+                    currentToken->getType() != TokenType::T_FLOAT &&
+                    currentToken->getType() != TokenType::T_STRING
+                    )
+                throw ParserException(std::move(currentToken), "Expected expression");
+            if (currentToken->getType() == TokenType::T_ID) {
                 factor->setId(currentToken->getStringValue());
+                /*nextToken();
+                if (currentToken->getType() != TokenType::T_OPEN) {
+                    factor->setId(currentToken->getStringValue());
+                }
+                else {
+                    //functionCall
+                }*/
             }
             else {
-                //functionCall
+                factor->setValue(currentToken->getType(), currentToken->getValue());
+                //geo
             }
-        }
-        else {
-            factor->setValue(currentToken->getType(), currentToken->getValue());
-            //geo
         }
         nextToken();
         return factor;
-
     }
 };
 

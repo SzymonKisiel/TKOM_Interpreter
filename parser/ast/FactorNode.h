@@ -33,12 +33,18 @@ public:
     void setId(std::string id);
     void setFunction(std::unique_ptr<FunctionCallNode> functionCall);
     void setGeo();
-    void setExpression();
+    void setExpression(std::unique_ptr<ExpressionNode> expression);
     void setNegative();
     FactorType getType();
     std::string toString();
     void print(int depth = 0);
     variant<std::monostate, string, int, float> evaluate();
+    inline static const std::string factorTypeNames[4] = {
+            "VALUE",
+            "ID",
+            "FUNCTION_CALL",
+            "EXPRESSION",
+    };
 };
 
 
