@@ -1,11 +1,13 @@
 #ifndef _TKOM__INTERPRETER_ADDEXPRESSIONNODE_H
 #define _TKOM__INTERPRETER_ADDEXPRESSIONNODE_H
 
-#include "Node.h"
-#include "MultExpressionNode.h"
-#include "../../lexer/Token.h"
+#include <memory>
+#include <vector>
 #include <variant>
 #include <string>
+#include "Node.h"
+#include "../../lexer/Token.h"
+#include "../../execution/Context.h"
 
 class MultExpressionNode;
 

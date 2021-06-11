@@ -1,10 +1,18 @@
 #ifndef _TKOM__INTERPRETER_SIMPLESTATEMENTNODE_H
 #define _TKOM__INTERPRETER_SIMPLESTATEMENTNODE_H
 
-#include "DeclarationNode.h"
-#include "AssignmentNode.h"
-#include "FunctionCallNode.h"
-#include "ReturnStatementNode.h"
+#include <memory>
+#include <vector>
+#include <variant>
+#include <string>
+#include "Node.h"
+#include "../../lexer/Token.h"
+#include "../../execution/Context.h"
+
+class DeclarationNode;
+class AssignmentNode;
+class FunctionCallNode;
+class ReturnStatementNode;
 
 // simple_statement = (var_declaration | assignment | function_call | return_statement) , ";" ;
 class SimpleStatementNode : public Node {

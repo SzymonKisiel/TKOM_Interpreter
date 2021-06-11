@@ -1,10 +1,14 @@
 #ifndef _TKOM__INTERPRETER_MULTEXPRESSIONNODE_H
 #define _TKOM__INTERPRETER_MULTEXPRESSIONNODE_H
 
-#include <vector>
 #include <memory>
-#include "FactorNode.h"
+#include <vector>
+#include <variant>
+#include <string>
+#include "Node.h"
 #include "../../lexer/Token.h"
+#include "../../execution/Context.h"
+
 
 class FactorNode;
 

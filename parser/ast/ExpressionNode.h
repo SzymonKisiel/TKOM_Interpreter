@@ -1,10 +1,14 @@
 #ifndef _TKOM__INTERPRETER_EXPRESSIONNODE_H
 #define _TKOM__INTERPRETER_EXPRESSIONNODE_H
 
-#include <vector>
 #include <memory>
+#include <vector>
+#include <variant>
+#include <string>
 #include "Node.h"
 #include "../../lexer/Token.h"
+#include "../../execution/Context.h"
+
 
 class AddExpressionNode;
 

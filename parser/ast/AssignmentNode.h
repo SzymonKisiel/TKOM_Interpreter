@@ -1,7 +1,15 @@
 #ifndef _TKOM__INTERPRETER_ASSIGNMENTNODE_H
 #define _TKOM__INTERPRETER_ASSIGNMENTNODE_H
 
-#include "ExpressionNode.h"
+#include <memory>
+#include <vector>
+#include <variant>
+#include <string>
+#include "Node.h"
+#include "../../lexer/Token.h"
+#include "../../execution/Context.h"
+
+class ExpressionNode;
 
 // assignment       = id, "=", expression ;
 class AssignmentNode : public Node {

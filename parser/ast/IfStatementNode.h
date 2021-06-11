@@ -1,10 +1,15 @@
 #ifndef _TKOM__INTERPRETER_IFSTATEMENTNODE_H
 #define _TKOM__INTERPRETER_IFSTATEMENTNODE_H
 
+#include <memory>
+#include <vector>
+#include <variant>
+#include <string>
 #include "Node.h"
-#include "ExpressionNode.h"
-#include "StatementNode.h"
+#include "../../lexer/Token.h"
 #include "../../execution/Context.h"
+#include "../../execution/Context.h"
+
 
 class StatementNode;
 // if_statement     = "if" , "(" , expression, ")" , statement

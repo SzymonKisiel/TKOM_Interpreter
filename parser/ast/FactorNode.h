@@ -1,9 +1,14 @@
 #ifndef _TKOM__INTERPRETER_FACTORNODE_H
 #define _TKOM__INTERPRETER_FACTORNODE_H
 
-#include "FunctionCallNode.h"
-#include "ExpressionNode.h"
+#include <memory>
+#include <vector>
+#include <variant>
+#include <string>
+#include "Node.h"
 #include "../../lexer/Token.h"
+#include "../../execution/Context.h"
+
 
 class FunctionCallNode;
 class ExpressionNode;

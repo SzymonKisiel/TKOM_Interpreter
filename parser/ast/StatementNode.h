@@ -1,16 +1,18 @@
 #ifndef _TKOM__INTERPRETER_STATEMENTNODE_H
 #define _TKOM__INTERPRETER_STATEMENTNODE_H
 
-#include "Node.h"
-#include "SimpleStatementNode.h"
-#include "WhileStatementNode.h"
-#include "IfStatementNode.h"
-#include "../../execution/Context.h"
 #include <memory>
+#include <vector>
+#include <variant>
+#include <string>
+#include "Node.h"
+#include "../../lexer/Token.h"
+#include "../../execution/Context.h"
+
 
 class WhileStatementNode;
 class IfStatementNode;
-class Context;
+class SimpleStatementNode;
 
 // statement        = if_statement | while_statement | simple_statement | "{" , {statement} , "}" ;
 class StatementNode : public Node {

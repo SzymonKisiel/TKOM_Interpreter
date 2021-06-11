@@ -1,7 +1,14 @@
 #ifndef _TKOM__INTERPRETER_DECLARATIONNODE_H
 #define _TKOM__INTERPRETER_DECLARATIONNODE_H
 
-#include "ExpressionNode.h"
+#include <memory>
+#include <vector>
+#include <variant>
+#include <string>
+#include "Node.h"
+#include "../../lexer/Token.h"
+#include "../../execution/Context.h"
+
 
 // var_declaration  = type , id, "=", expression ;
 class DeclarationNode : public Node {

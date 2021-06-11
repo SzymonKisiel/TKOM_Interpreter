@@ -1,8 +1,14 @@
 #ifndef _TKOM__INTERPRETER_RETURNSTATEMENTNODE_H
 #define _TKOM__INTERPRETER_RETURNSTATEMENTNODE_H
 
+#include <memory>
+#include <vector>
+#include <variant>
+#include <string>
 #include "Node.h"
-#include "ExpressionNode.h"
+#include "../../lexer/Token.h"
+#include "../../execution/Context.h"
+
 
 // return_statement = "return" , [expression] , ";" ;
 class ReturnStatementNode : public Node {

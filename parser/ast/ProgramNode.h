@@ -1,10 +1,15 @@
 #ifndef _TKOM__INTERPRETER_PROGRAMNODE_H
 #define _TKOM__INTERPRETER_PROGRAMNODE_H
 
+#include <memory>
 #include <vector>
+#include <variant>
+#include <string>
 #include "Node.h"
-#include "FunctionNode.h"
+#include "../../lexer/Token.h"
 #include "../../execution/Context.h"
+
+class FunctionNode;
 
 // program = {statement | function} ;
 class ProgramNode : public Node {

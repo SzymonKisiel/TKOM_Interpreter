@@ -1,8 +1,13 @@
 #ifndef _TKOM__INTERPRETER_ARGUMENTSNODE_H
 #define _TKOM__INTERPRETER_ARGUMENTSNODE_H
 
+#include <memory>
 #include <vector>
-#include "ExpressionNode.h"
+#include <variant>
+#include <string>
+#include "Node.h"
+#include "../../lexer/Token.h"
+#include "../../execution/Context.h"
 
 class ExpressionNode;
 

@@ -1,10 +1,14 @@
 #ifndef _TKOM__INTERPRETER_WHILESTATEMENTNODE_H
 #define _TKOM__INTERPRETER_WHILESTATEMENTNODE_H
 
+#include <memory>
+#include <vector>
+#include <variant>
+#include <string>
 #include "Node.h"
-#include "ExpressionNode.h"
-#include "StatementNode.h"
+#include "../../lexer/Token.h"
 #include "../../execution/Context.h"
+
 
 class StatementNode;
 class Context;
