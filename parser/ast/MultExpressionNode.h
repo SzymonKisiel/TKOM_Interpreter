@@ -23,18 +23,17 @@ public:
     void print(int depth = 0);
     variant<std::monostate, string, int, float> evaluate();
     struct VisitMult {
-        void operator()(int&, int&) { cout << "int * int\n"; }
-        void operator()(float&, float&) { cout << "float * float\n"; }
-        void operator()(int&, float&) { cout << "int * float\n"; }
-        void operator()(float&, int&) { cout << "float * int\n"; }
+        void operator()(int& lhs, int& rhs) { cout << "int * int\n"; lhs = lhs * rhs; }
+        void operator()(float& lhs, float& rhs) { cout << "float * float\n"; lhs = lhs * rhs; }
+        void operator()(int& lhs, float& rhs) { cout << "int * float\n"; lhs = lhs * rhs; }
+        void operator()(float& lhs, int& rhs) { cout << "float * int\n"; lhs = lhs * rhs; }
         void operator()(auto, auto) { cout << "error\n"; /*ExecutionException*/ }
     };
-
     struct VisitDiv {
-        void operator()(int&, int&) { cout << "int / int\n"; }
-        void operator()(float&, float&) { cout << "float / float\n"; }
-        void operator()(int&, float&) { cout << "int / float\n"; }
-        void operator()(float&, int&) { cout << "float / int\n"; }
+        void operator()(int& lhs, int& rhs) { cout << "int / int\n"; }
+        void operator()(float& lhs, float& rhs) { cout << "float / float\n"; }
+        void operator()(int& lhs, float& rhs) { cout << "int / float\n"; }
+        void operator()(float& lhs, int& rhs) { cout << "float / int\n"; }
         void operator()(auto, auto) { cout << "error\n"; /*ExecutionException*/ }
     };
 };

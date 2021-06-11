@@ -29,5 +29,21 @@ void AddExpressionNode::print(int depth) {
 }
 
 variant<std::monostate, string, int, float> AddExpressionNode::evaluate() {
-    return variant<std::monostate, string, int, float>();
+    variant<std::monostate, string, int, float> lhs = operands[0]->evaluate();
+    variant<std::monostate, string, int, float> rhs;
+    TokenType operation;
+    for (int i = 0; i < addOperations.size(); ++i) {
+        operation = addOperations[i];
+        rhs = operands[i+1]->evaluate();
+        if (operation == TokenType::T_PLUS) {
+            std::visit(VisitAdd(), lhs, rhs);
+        }
+        else if (operation == TokenType::T_MINUS) {
+            std::visit(VisitSubstract(), lhs, rhs);
+        }
+        else
+            ;//ExecutionException
+    }
+    std::visit(VisitPrint(), lhs);
+    return lhs;
 }

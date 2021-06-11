@@ -31,5 +31,30 @@ void ExpressionNode::print(int depth) {
 }
 
 variant<std::monostate, string, int, float> ExpressionNode::evaluate() {
-    return variant<std::monostate, string, int, float>();
+    variant<std::monostate, string, int, float> lhs = operands[0]->evaluate();
+    variant<std::monostate, string, int, float> rhs;
+    TokenType operation;
+    for (int i = 0; i < compOperations.size(); ++i) {
+        operation = compOperations[i];
+        rhs = operands[i+1]->evaluate();
+        switch (operation) {
+            case TokenType::T_LESS:
+                lhs = std::visit(VisitLess(), lhs, rhs);
+                break;
+            case TokenType::T_GREATER:
+                break;
+            case TokenType::T_LESS_OR_EQUAL:
+                break;
+            case TokenType::T_GREATER_OR_EQUAL:
+                break;
+            case TokenType::T_EQUAL:
+                break;
+            case TokenType::T_NOT_EQUAL:
+                break;
+            default:
+                ; //ExecutionException
+        }
+    }
+    std::visit(VisitPrint(), lhs);
+    return lhs;
 }

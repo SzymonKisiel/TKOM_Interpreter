@@ -21,6 +21,20 @@ public:
     std::string toString();
     void print(int depth = 0);
     std::variant<std::monostate, std::string, int, float> evaluate();
+    struct VisitAdd {
+        void operator()(int& lhs, int& rhs) { cout << "int + int\n"; lhs = lhs + rhs; }
+        void operator()(float& lhs, float& rhs) { cout << "float + float\n"; lhs = lhs + rhs; }
+        void operator()(int& lhs, float& rhs) { cout << "int + float\n"; lhs = lhs + rhs; }
+        void operator()(float& lhs, int& rhs) { cout << "float + int\n"; lhs = lhs + rhs; }
+        void operator()(auto, auto) { cout << "error\n"; /*ExecutionException*/ }
+    };
+    struct VisitSubstract {
+        void operator()(int& lhs, int& rhs) { cout << "int - int\n"; lhs = lhs - rhs; }
+        void operator()(float& lhs, float& rhs) { cout << "float - float\n"; lhs = lhs - rhs; }
+        void operator()(int& lhs, float& rhs) { cout << "int - float\n"; lhs = lhs - rhs; }
+        void operator()(float& lhs, int& rhs) { cout << "float - int\n"; lhs = lhs - rhs; }
+        void operator()(auto, auto) { cout << "error\n"; /*ExecutionException*/ }
+    };
 };
 
 
