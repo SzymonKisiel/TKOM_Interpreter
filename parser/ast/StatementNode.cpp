@@ -1,68 +1,40 @@
 #include "StatementNode.h"
 #include <memory>
 
-WhileStatementNode::WhileStatementNode(std::string name) : name(std::move(name)) {
-}
 
-void WhileStatementNode::setCondition(std::unique_ptr<ExpressionNode> node) {
+void StatementNode::addStatement(std::unique_ptr<StatementNode> node) {
     if (node != nullptr)
-        condition = std::move(node);
+        statements.push_back(std::move(node));
 }
 
-void WhileStatementNode::setStatement(std::unique_ptr<StatementNode> node) {
-    if (node != nullptr)
-        statement = std::move(node);
+void StatementNode::setWhileStatement(std::unique_ptr<WhileStatementNode> node) {
+    whileStatement = std::move(node);
 }
 
-void WhileStatementNode::print(int depth) {
-    for (int i = 0; i < depth; ++i)
-        std::cout << "  ";
-    std::cout << "WHILE_STATEMENT" << std::endl;
-    condition->print(depth+1);
-    statement->print(depth+1);
-}
-
-
-void IfStatementNode::setIfCondition(std::unique_ptr<ExpressionNode> node) {
-    ifCondition = std::move(node);
-}
-
-void IfStatementNode::setIfStatement(std::unique_ptr<StatementNode> node) {
+void StatementNode::setIfStatement(std::unique_ptr<IfStatementNode> node) {
     ifStatement = std::move(node);
 }
 
-void IfStatementNode::addElsifCondition(std::unique_ptr<ExpressionNode> node) {
-    if (node != nullptr)
-        elsifCondition.push_back(std::move(node));
+void StatementNode::setSimpleStatement(std::unique_ptr<SimpleStatementNode> node) {
+    simpleStatement = std::move(node);
 }
 
-void IfStatementNode::addElsifStatement(std::unique_ptr<StatementNode> node) {
-    if (node != nullptr)
-        elsifStatement.push_back(std::move(node));
-}
-
-void IfStatementNode::setElseStatement(std::unique_ptr<StatementNode> node) {
-    elseStatement = std::move(node);
-}
-
-void IfStatementNode::print(int depth) {
+void StatementNode::print(int depth) {
     for (int i = 0; i < depth; ++i)
         std::cout << "  ";
-    std::cout << "IF_STATEMENT" << std::endl;
-    if (ifCondition != nullptr)
-        ifCondition->print(depth+1);
+    std::cout << "STATEMENT" << std::endl;
+    for (const auto &child: statements) {
+        child->print(depth+1);
+    }
+    if (whileStatement != nullptr)
+        whileStatement->print(depth+1);
     if (ifStatement != nullptr)
         ifStatement->print(depth+1);
-    if (!elsifCondition.empty()) {
-        for (const auto &child: elsifCondition)
-            child->print(depth+1);
-        for (const auto &child: elsifStatement)
-            child->print(depth+1);
-    }
-    if (elseStatement != nullptr)
-        elseStatement->print(depth+1);
+    if (simpleStatement != nullptr)
+        simpleStatement->print(depth+1);
 }
 
-void IfStatementNode::execute(Context &context) {
-    ifCondition->evaluate();
+void StatementNode::execute(Context &context) {
+    //switch (statementType)
+    ifStatement->execute(context);
 }

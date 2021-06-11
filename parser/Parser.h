@@ -13,6 +13,9 @@
 #include <SimpleStatementNode.h>
 #include <DeclarationNode.h>
 #include <ArgumentsNode.h>
+#include <FactorNode.h>
+#include <MultExpressionNode.h>
+#include <AddExpressionNode.h>
 
 class Parser
 {
@@ -390,7 +393,7 @@ public:
     // expression = add_expression , {comp_operator, add_expression } ;
     std::unique_ptr<ExpressionNode> parseExpression() {
         std::unique_ptr<ExpressionNode> result = std::make_unique<ExpressionNode>();
-        std::unique_ptr<AddExpresionNode> node;
+        std::unique_ptr<AddExpressionNode> node;
 
         node = parseAddExpression();
         result->addOperand(std::move(node));
@@ -406,8 +409,8 @@ public:
     }
 
     // add_expression = mult_expression , {add_operator, mult_expression }
-    std::unique_ptr<AddExpresionNode> parseAddExpression() {
-        std::unique_ptr<AddExpresionNode> result = std::make_unique<AddExpresionNode>();
+    std::unique_ptr<AddExpressionNode> parseAddExpression() {
+        std::unique_ptr<AddExpressionNode> result = std::make_unique<AddExpressionNode>();
         std::unique_ptr<MultExpressionNode> node;
 
         node = parseMultExpression();
