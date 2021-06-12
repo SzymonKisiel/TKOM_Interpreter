@@ -1,4 +1,5 @@
 #include "AssignmentNode.h"
+#include "../../execution/VisitPrint.h"
 
 void AssignmentNode::setId(std::string id) {
     this->id = id;
@@ -21,5 +22,17 @@ void AssignmentNode::print(int depth) {
 }
 
 void AssignmentNode::execute(Context &context) {
-    cout << "TODO: assignment\n";
+    context.assignToVariable(id, expression->evaluate(context));
+    // debug print
+//    auto variables = context.getVariables();
+//    if (auto variable = variables.find(id); variable != variables.end()) {
+//        cout << "assignment: " << variable->first << " = ";
+//        std::visit(VisitPrintValue(), variable->second);
+//        cout << endl;
+//    }
+//    for (auto variable: variables) {
+//        cout << variable.first << " = ";
+//        std::visit(VisitPrintValue(), variable.second);
+//        cout << endl;
+//    }
 }

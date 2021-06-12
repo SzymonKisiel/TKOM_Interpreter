@@ -29,9 +29,17 @@ void DeclarationNode::print(int depth) {
 }
 
 void DeclarationNode::execute(Context &context) {
-    cout << "TODO: declaration statement\n";
     context.addVariable(id, expression->evaluate(context));
-    for (const auto var: context.getVariables()) {
-        cout << "var: " << var.first << " " << std::visit(VisitGetValue(), var.second) << endl;
-    }
+    //debug print
+//    auto variables = context.getVariables();
+//    if (auto variable = variables.find(id); variable != variables.end()) {
+//        cout << "declaration: " << variable->first << " = ";
+//        std::visit(VisitPrintValue(), variable->second);
+//        cout << endl;
+//    }
+//    for (auto variable: variables) {
+//        cout << variable.first << " = ";
+//        std::visit(VisitPrintValue(), variable.second);
+//        cout << endl;
+//    }
 }

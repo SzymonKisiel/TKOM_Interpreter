@@ -59,8 +59,7 @@ variant<std::monostate, string, int, float> FactorNode::evaluate(Context & conte
             return variant<std::monostate, string, int, float>();
         case FactorType::EXPRESSION:
             return expression->evaluate(context);
-        /*default:
-            return variant<std::monostate, string, int, float>();*/
-
+        default:
+            return variant<std::monostate, string, int, float>();
     }
 }

@@ -46,7 +46,6 @@ void StatementNode::print(int depth) {
 }
 
 void StatementNode::execute(Context &context) {
-    cout << "statement: ";
     switch (statementType) {
         case StatementType::IF:
             ifStatement->execute(context);
@@ -63,9 +62,6 @@ void StatementNode::execute(Context &context) {
                 statement->execute(context);
             }
             break;
-        default:
-            cout << "empty statement" << endl;
-            //ExecutionException("Statement error");
     }
 
 }

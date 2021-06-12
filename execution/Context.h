@@ -6,15 +6,17 @@
 #include <variant>
 #include <memory>
 
+class FunctionNode;
+
 class Context {
-    //std::map<std::string, std::unique_ptr<FunctionNode>> functions;
+    std::map<std::string, std::unique_ptr<FunctionNode>> functions;
     std::map<std::string, std::variant<std::monostate, std::string, int, float>> variables;
 public:
-    const std::map<std::string, std::variant<std::monostate, std::string, int, float>> &getVariables() ;
-
-public:
     void addVariable(std::string id, std::variant<std::monostate, std::string, int, float> value);
-    void addFunction();
+    void addFunction(std::string id, std::unique_ptr<FunctionNode> function);
+    const std::map<std::string, std::variant<std::monostate, std::string, int, float>> &getVariables();
+    const std::map<std::string, std::unique_ptr<FunctionNode>> &getFunctions();
+    void assignToVariable(std::string id, std::variant<std::monostate, std::string, int, float> value);
 };
 
 
