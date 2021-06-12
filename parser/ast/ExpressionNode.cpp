@@ -30,13 +30,13 @@ void ExpressionNode::print(int depth) {
     }
 }
 
-variant<std::monostate, string, int, float> ExpressionNode::evaluate() {
-    variant<std::monostate, string, int, float> lhs = operands[0]->evaluate();
+variant<std::monostate, string, int, float> ExpressionNode::evaluate(Context & context) {
+    variant<std::monostate, string, int, float> lhs = operands[0]->evaluate(context);
     variant<std::monostate, string, int, float> rhs;
     TokenType operation;
     for (int i = 0; i < compOperations.size(); ++i) {
         operation = compOperations[i];
-        rhs = operands[i+1]->evaluate();
+        rhs = operands[i+1]->evaluate(context);
         switch (operation) {
             case TokenType::T_LESS:
                 lhs = std::visit(VisitLess(), lhs, rhs);
@@ -55,6 +55,5 @@ variant<std::monostate, string, int, float> ExpressionNode::evaluate() {
                 ; //ExecutionException
         }
     }
-    std::visit(VisitPrint(), lhs);
     return lhs;
 }

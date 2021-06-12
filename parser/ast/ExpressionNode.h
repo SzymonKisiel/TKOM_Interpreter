@@ -8,6 +8,7 @@
 #include "Node.h"
 #include "../../lexer/Token.h"
 #include "../../execution/Context.h"
+#include "../../exception/ExecutionException.h"
 
 
 class AddExpressionNode;
@@ -21,7 +22,7 @@ public:
     void addOperation(TokenType compOperation);
     std::string toString();
     void print(int depth = 0);
-    variant<std::monostate, string, int, float> evaluate();
+    variant<std::monostate, string, int, float> evaluate(Context & context);
     struct VisitLess {
         int operator() (int& lhs, int& rhs) {
             if (lhs < rhs)
@@ -43,7 +44,7 @@ public:
                 return 1;
             return 0;
         }
-        int operator() (auto lhs, auto rhs) { cout << "error\n"; /*ExecutionException*/ }
+        int operator() (auto lhs, auto rhs) { throw ExecutionException("Comparison error"); }
     };
     struct VisitGreater {
         int operator() (int& lhs, int& rhs) {
@@ -66,7 +67,7 @@ public:
                 return 1;
             return 0;
         }
-        int operator() (auto lhs, auto rhs) { cout << "error\n"; /*ExecutionException*/ }
+        int operator() (auto lhs, auto rhs) { throw ExecutionException("Comparison error"); }
     };
     struct VisitLessOrEqual {
         int operator() (int& lhs, int& rhs) {
@@ -89,7 +90,7 @@ public:
                 return 1;
             return 0;
         }
-        int operator() (auto lhs, auto rhs) { cout << "error\n"; /*ExecutionException*/ }
+        int operator() (auto lhs, auto rhs) { throw ExecutionException("Comparison error"); }
     };
     struct VisitGreaterOrEqual {
         int operator() (int& lhs, int& rhs) {
@@ -112,7 +113,7 @@ public:
                 return 1;
             return 0;
         }
-        int operator() (auto lhs, auto rhs) { cout << "error\n"; /*ExecutionException*/ }
+        int operator() (auto lhs, auto rhs) { throw ExecutionException("Comparison error"); }
     };
     struct VisitEqual {
         int operator() (int& lhs, int& rhs) {
@@ -135,7 +136,7 @@ public:
                 return 1;
             return 0;
         }
-        int operator() (auto lhs, auto rhs) { cout << "error\n"; /*ExecutionException*/ }
+        int operator() (auto lhs, auto rhs) { throw ExecutionException("Comparison error"); }
     };
     struct VisitNotEqual {
         int operator() (int& lhs, int& rhs) {
@@ -158,7 +159,7 @@ public:
                 return 1;
             return 0;
         }
-        int operator() (auto lhs, auto rhs) { cout << "error\n"; /*ExecutionException*/ }
+        int operator() (auto lhs, auto rhs) { throw ExecutionException("Comparison error"); }
     };
 };
 

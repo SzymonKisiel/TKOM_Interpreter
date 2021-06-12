@@ -28,13 +28,13 @@ void MultExpressionNode::print(int depth) {
     }
 }
 
-variant<std::monostate, string, int, float> MultExpressionNode::evaluate() {
-    variant<std::monostate, string, int, float> lhs = operands[0]->evaluate();
+variant<std::monostate, string, int, float> MultExpressionNode::evaluate(Context & context) {
+    variant<std::monostate, string, int, float> lhs = operands[0]->evaluate(context);
     variant<std::monostate, string, int, float> rhs;
     TokenType operation;
     for (int i = 0; i < multOperations.size(); ++i) {
         operation = multOperations[i];
-        rhs = operands[i+1]->evaluate();
+        rhs = operands[i+1]->evaluate(context);
         if (operation == TokenType::T_MUL) {
             std::visit(VisitMult(), lhs, rhs);
         }

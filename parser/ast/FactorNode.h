@@ -38,7 +38,7 @@ public:
     FactorType getType();
     std::string toString();
     void print(int depth = 0);
-    variant<std::monostate, string, int, float> evaluate();
+    variant<std::monostate, string, int, float> evaluate(Context & context);
     inline static const std::string factorTypeNames[4] = {
             "VALUE",
             "ID",

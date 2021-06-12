@@ -8,6 +8,7 @@
 #include "Node.h"
 #include "../../lexer/Token.h"
 #include "../../execution/Context.h"
+#include "../../exception/ExecutionException.h"
 
 class MultExpressionNode;
 
@@ -20,20 +21,20 @@ public:
     void addOperation(TokenType addOperation);
     std::string toString();
     void print(int depth = 0);
-    std::variant<std::monostate, std::string, int, float> evaluate();
+    std::variant<std::monostate, std::string, int, float> evaluate(Context & context);
     struct VisitAdd {
-        void operator()(int& lhs, int& rhs) { cout << "int + int\n"; lhs = lhs + rhs; }
-        void operator()(float& lhs, float& rhs) { cout << "float + float\n"; lhs = lhs + rhs; }
-        void operator()(int& lhs, float& rhs) { cout << "int + float\n"; lhs = lhs + rhs; }
-        void operator()(float& lhs, int& rhs) { cout << "float + int\n"; lhs = lhs + rhs; }
-        void operator()(auto, auto) { cout << "error\n"; /*ExecutionException*/ }
+        void operator()(int& lhs, int& rhs) { lhs = lhs + rhs; }
+        void operator()(float& lhs, float& rhs) { lhs = lhs + rhs; }
+        void operator()(int& lhs, float& rhs) { lhs = lhs + rhs; }
+        void operator()(float& lhs, int& rhs) { lhs = lhs + rhs; }
+        void operator()(auto& lhs, auto& rhs) { throw ExecutionException("Addition error"); }
     };
     struct VisitSubstract {
-        void operator()(int& lhs, int& rhs) { cout << "int - int\n"; lhs = lhs - rhs; }
-        void operator()(float& lhs, float& rhs) { cout << "float - float\n"; lhs = lhs - rhs; }
-        void operator()(int& lhs, float& rhs) { cout << "int - float\n"; lhs = lhs - rhs; }
-        void operator()(float& lhs, int& rhs) { cout << "float - int\n"; lhs = lhs - rhs; }
-        void operator()(auto, auto) { cout << "error\n"; /*ExecutionException*/ }
+        void operator()(int& lhs, int& rhs) { lhs = lhs - rhs; }
+        void operator()(float& lhs, float& rhs) { lhs = lhs - rhs; }
+        void operator()(int& lhs, float& rhs) { lhs = lhs - rhs; }
+        void operator()(float& lhs, int& rhs) { lhs = lhs - rhs; }
+        void operator()(auto& lhs, auto& rhs) { throw ExecutionException("Subtraction error"); }
     };
 };
 

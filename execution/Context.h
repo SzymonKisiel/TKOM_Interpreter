@@ -5,10 +5,9 @@
 #include <string>
 #include <variant>
 #include <memory>
-#include <FunctionNode.h>
 
 class Context {
-    std::map<std::string, std::unique_ptr<FunctionNode>> variables;
+    //std::map<std::string, std::unique_ptr<FunctionNode>> variables;
     std::map<std::string, std::variant<std::string, int, float>> functions;
 public:
     void addVariable();

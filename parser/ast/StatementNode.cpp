@@ -36,5 +36,6 @@ void StatementNode::print(int depth) {
 
 void StatementNode::execute(Context &context) {
     //switch (statementType)
-    ifStatement->execute(context);
+    if (ifStatement != nullptr)
+        ifStatement->execute(context);
 }

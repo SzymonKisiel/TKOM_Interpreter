@@ -1,4 +1,5 @@
 #include "IfStatementNode.h"
+#include "../../execution/VisitCondition.h"
 
 void IfStatementNode::setIfCondition(std::unique_ptr<ExpressionNode> node) {
     ifCondition = std::move(node);
@@ -10,12 +11,12 @@ void IfStatementNode::setIfStatement(std::unique_ptr<StatementNode> node) {
 
 void IfStatementNode::addElsifCondition(std::unique_ptr<ExpressionNode> node) {
     if (node != nullptr)
-        elsifCondition.push_back(std::move(node));
+        elsifConditions.push_back(std::move(node));
 }
 
 void IfStatementNode::addElsifStatement(std::unique_ptr<StatementNode> node) {
     if (node != nullptr)
-        elsifStatement.push_back(std::move(node));
+        elsifStatements.push_back(std::move(node));
 }
 
 void IfStatementNode::setElseStatement(std::unique_ptr<StatementNode> node) {
@@ -30,16 +31,37 @@ void IfStatementNode::print(int depth) {
         ifCondition->print(depth+1);
     if (ifStatement != nullptr)
         ifStatement->print(depth+1);
-    if (!elsifCondition.empty()) {
-        for (const auto &child: elsifCondition)
+    if (!elsifConditions.empty()) {
+        for (const auto &child: elsifConditions)
             child->print(depth+1);
-        for (const auto &child: elsifStatement)
+        for (const auto &child: elsifStatements)
             child->print(depth+1);
     }
     if (elseStatement != nullptr)
         elseStatement->print(depth+1);
 }
 
-void IfStatementNode::execute(Context &context) {
-    ifCondition->evaluate();
+void IfStatementNode::execute(Context & context) {
+    auto condition = ifCondition->evaluate(context);
+    if (std::visit(VisitCondition(), condition)) {
+        std::cout << "if statement" << std::endl;
+        ifStatement->execute(context);
+        return;
+    };
+    if (!elsifConditions.empty()) {
+        int i = 0;
+        for (/*int i = 0;*/ const auto &elseIfCondition: elsifConditions) {
+            condition = elseIfCondition->evaluate(context);
+            if (std::visit(VisitCondition(), condition)) {
+                std::cout << "elsif statement " << i << std::endl;
+                elsifStatements[i]->execute(context);
+                return;
+            }
+            ++i;
+        }
+    }
+    if (elseStatement != nullptr) {
+        std::cout << "else statement" << std::endl;
+        elseStatement->execute(context);
+    }
 }

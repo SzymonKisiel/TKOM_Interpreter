@@ -28,13 +28,13 @@ void AddExpressionNode::print(int depth) {
     }
 }
 
-variant<std::monostate, string, int, float> AddExpressionNode::evaluate() {
-    variant<std::monostate, string, int, float> lhs = operands[0]->evaluate();
+variant<std::monostate, string, int, float> AddExpressionNode::evaluate(Context & context) {
+    variant<std::monostate, string, int, float> lhs = operands[0]->evaluate(context);
     variant<std::monostate, string, int, float> rhs;
     TokenType operation;
     for (int i = 0; i < addOperations.size(); ++i) {
         operation = addOperations[i];
-        rhs = operands[i+1]->evaluate();
+        rhs = operands[i+1]->evaluate(context);
         if (operation == TokenType::T_PLUS) {
             std::visit(VisitAdd(), lhs, rhs);
         }
@@ -44,6 +44,5 @@ variant<std::monostate, string, int, float> AddExpressionNode::evaluate() {
         else
             ;//ExecutionException
     }
-    std::visit(VisitPrint(), lhs);
     return lhs;
 }

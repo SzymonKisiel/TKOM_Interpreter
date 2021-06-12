@@ -38,7 +38,7 @@ void FactorNode::print(int depth) {
     std::cout << toString() << std::endl;
 }
 
-variant<std::monostate, string, int, float> FactorNode::evaluate() {
+variant<std::monostate, string, int, float> FactorNode::evaluate(Context & context) {
     if (factorType == VALUE)
         return value;
     else

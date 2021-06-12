@@ -8,7 +8,6 @@
 #include "Node.h"
 #include "../../lexer/Token.h"
 #include "../../execution/Context.h"
-#include "../../execution/Context.h"
 
 
 class StatementNode;
@@ -18,8 +17,8 @@ class StatementNode;
 class IfStatementNode : public Node {
     std::unique_ptr<ExpressionNode> ifCondition;
     std::unique_ptr<StatementNode> ifStatement;
-    std::vector<std::unique_ptr<ExpressionNode>> elsifCondition;
-    std::vector<std::unique_ptr<StatementNode>> elsifStatement;
+    std::vector<std::unique_ptr<ExpressionNode>> elsifConditions;
+    std::vector<std::unique_ptr<StatementNode>> elsifStatements;
     std::unique_ptr<StatementNode> elseStatement;
 public:
     void setIfCondition(std::unique_ptr<ExpressionNode> node);
