@@ -20,6 +20,7 @@ public:
     void addIdentifier(std::string identifier);
     std::string toString();
     void print(int depth = 0);
+    void execute(Context & context);
 };
 
 

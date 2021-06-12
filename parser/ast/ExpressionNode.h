@@ -44,7 +44,7 @@ public:
                 return 1;
             return 0;
         }
-        int operator() (auto lhs, auto rhs) { throw ExecutionException("Comparison error"); }
+        int operator() (auto lhs, auto rhs) { throw ExecutionException("Comparison < error"); }
     };
     struct VisitGreater {
         int operator() (int& lhs, int& rhs) {
@@ -67,7 +67,7 @@ public:
                 return 1;
             return 0;
         }
-        int operator() (auto lhs, auto rhs) { throw ExecutionException("Comparison error"); }
+        int operator() (auto lhs, auto rhs) { throw ExecutionException("Comparison > error"); }
     };
     struct VisitLessOrEqual {
         int operator() (int& lhs, int& rhs) {
@@ -90,7 +90,7 @@ public:
                 return 1;
             return 0;
         }
-        int operator() (auto lhs, auto rhs) { throw ExecutionException("Comparison error"); }
+        int operator() (auto lhs, auto rhs) { throw ExecutionException("Comparison <= error"); }
     };
     struct VisitGreaterOrEqual {
         int operator() (int& lhs, int& rhs) {
@@ -113,7 +113,7 @@ public:
                 return 1;
             return 0;
         }
-        int operator() (auto lhs, auto rhs) { throw ExecutionException("Comparison error"); }
+        int operator() (auto lhs, auto rhs) { throw ExecutionException("Comparison >= error"); }
     };
     struct VisitEqual {
         int operator() (int& lhs, int& rhs) {
@@ -136,7 +136,7 @@ public:
                 return 1;
             return 0;
         }
-        int operator() (auto lhs, auto rhs) { throw ExecutionException("Comparison error"); }
+        int operator() (auto lhs, auto rhs) { throw ExecutionException("Comparison == error"); }
     };
     struct VisitNotEqual {
         int operator() (int& lhs, int& rhs) {
@@ -159,7 +159,7 @@ public:
                 return 1;
             return 0;
         }
-        int operator() (auto lhs, auto rhs) { throw ExecutionException("Comparison error"); }
+        int operator() (auto lhs, auto rhs) { throw ExecutionException("Comparison != error"); }
     };
 };
 

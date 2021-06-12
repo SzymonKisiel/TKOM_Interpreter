@@ -25,8 +25,9 @@ class StatementNode : public Node {
         IF,
         SIMPLE,
         BLOCK,
+        NONE,
     };
-    StatementType statementType;
+    StatementType statementType = StatementType::NONE;
 public:
     void addStatement(std::unique_ptr<StatementNode> node);
     void setWhileStatement(std::unique_ptr<WhileStatementNode> node);

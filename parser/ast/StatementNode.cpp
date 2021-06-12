@@ -3,20 +3,31 @@
 
 
 void StatementNode::addStatement(std::unique_ptr<StatementNode> node) {
-    if (node != nullptr)
+    if (node != nullptr) {
+        statementType = StatementType::BLOCK;
         statements.push_back(std::move(node));
+    }
 }
 
 void StatementNode::setWhileStatement(std::unique_ptr<WhileStatementNode> node) {
-    whileStatement = std::move(node);
+    if (node != nullptr) {
+        statementType = StatementType::WHILE;
+        whileStatement = std::move(node);
+    }
 }
 
 void StatementNode::setIfStatement(std::unique_ptr<IfStatementNode> node) {
-    ifStatement = std::move(node);
+    if (node != nullptr) {
+        statementType = StatementType::IF;
+        ifStatement = std::move(node);
+    }
 }
 
 void StatementNode::setSimpleStatement(std::unique_ptr<SimpleStatementNode> node) {
-    simpleStatement = std::move(node);
+    if (node != nullptr) {
+        statementType = StatementType::SIMPLE;
+        simpleStatement = std::move(node);
+    }
 }
 
 void StatementNode::print(int depth) {
@@ -35,7 +46,26 @@ void StatementNode::print(int depth) {
 }
 
 void StatementNode::execute(Context &context) {
-    //switch (statementType)
-    if (ifStatement != nullptr)
-        ifStatement->execute(context);
+    cout << "statement: ";
+    switch (statementType) {
+        case StatementType::IF:
+            ifStatement->execute(context);
+            break;
+        case StatementType::WHILE:
+            whileStatement->execute(context);
+            break;
+        case StatementType::SIMPLE:
+            simpleStatement->execute(context);
+            break;
+        case StatementType::BLOCK:
+            cout << "block\n";
+            for (const auto &statement: statements) {
+                statement->execute(context);
+            }
+            break;
+        default:
+            cout << "empty statement" << endl;
+            //ExecutionException("Statement error");
+    }
+
 }

@@ -20,3 +20,10 @@ void WhileStatementNode::print(int depth) {
     condition->print(depth+1);
     statement->print(depth+1);
 }
+
+void WhileStatementNode::execute(Context &context) {
+    cout << "TODO: while statement execution\n";
+    /*while (VisitCond(),) {
+
+    }*/
+}

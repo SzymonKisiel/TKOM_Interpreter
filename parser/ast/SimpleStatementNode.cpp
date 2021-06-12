@@ -37,3 +37,7 @@ void SimpleStatementNode::print(int depth) {
     else if (returnStatement != nullptr)
         returnStatement->print(depth + 1);
 }
+
+void SimpleStatementNode::execute(Context &context) {
+    cout << "TODO: simple statement execution\n";
+}
