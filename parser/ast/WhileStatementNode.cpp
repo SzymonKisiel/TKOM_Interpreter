@@ -1,4 +1,5 @@
 #include "WhileStatementNode.h"
+#include "../../execution/VisitCondition.h"
 
 WhileStatementNode::WhileStatementNode(std::string name) : name(std::move(name)) {
 }
@@ -23,7 +24,9 @@ void WhileStatementNode::print(int depth) {
 
 void WhileStatementNode::execute(Context &context) {
     cout << "TODO: while statement execution\n";
-    /*while (VisitCond(),) {
-
-    }*/
+    auto cond = condition->evaluate(context);
+    while (std::visit(VisitCondition(), cond)) {
+        statement->execute(context);
+        cond = condition->evaluate(context);
+    }
 }
