@@ -25,6 +25,7 @@ public:
     void setReturnType(TokenType returnType);
     std::string toString();
     void print(int depth = 0);
+    void execute(Context & context);
 };
 
 

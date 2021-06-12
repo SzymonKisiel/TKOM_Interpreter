@@ -39,5 +39,18 @@ void SimpleStatementNode::print(int depth) {
 }
 
 void SimpleStatementNode::execute(Context &context) {
-    cout << "TODO: simple statement execution\n";
+    switch (simpleStatementType) {
+        case SimpleStatementType::DECLARATION:
+            declaration->execute(context);
+            break;
+        case SimpleStatementType::ASSIGNMENT:
+            assignment->execute(context);
+            break;
+        case SimpleStatementType::FUNCTION_CALL:
+            functionCall->execute(context);
+            break;
+        case SimpleStatementType::RETURN_STATEMENT:
+            returnStatement->execute(context);
+            break;
+    }
 }

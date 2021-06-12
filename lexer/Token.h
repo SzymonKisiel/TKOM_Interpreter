@@ -217,11 +217,4 @@ public:
     }
 };
 
-struct VisitPrint {
-    void operator()(int& x)         { std::cout << "int: " << x << std::endl; }
-    void operator()(float& x)       { std::cout << "float: " << x << std::endl; }
-    void operator()(std::string& x) { std::cout << "string: " << x << std::endl; }
-    void operator()(auto)           { std::cout << "empty/unknown\n"; }
-};
-
 #endif //_TKOM__INTERPRETER_TOKEN_H

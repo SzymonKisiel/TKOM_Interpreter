@@ -1,4 +1,5 @@
 #include "DeclarationNode.h"
+#include "../../execution/VisitPrint.h"
 
 void DeclarationNode::setType(TokenType type) {
     this->type = type;
@@ -25,4 +26,12 @@ void DeclarationNode::print(int depth) {
     std::cout << toString() << std::endl;
     if (expression != nullptr)
         expression->print(depth + 1);
+}
+
+void DeclarationNode::execute(Context &context) {
+    cout << "TODO: declaration statement\n";
+    context.addVariable(id, expression->evaluate(context));
+    for (const auto var: context.getVariables()) {
+        cout << "var: " << var.first << " " << std::visit(VisitGetValue(), var.second) << endl;
+    }
 }

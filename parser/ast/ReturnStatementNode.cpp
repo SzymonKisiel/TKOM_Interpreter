@@ -15,3 +15,7 @@ void ReturnStatementNode::print(int depth) {
     if (returnExpression != nullptr)
         returnExpression->print(depth + 1);
 }
+
+void ReturnStatementNode::execute(Context &context) {
+    cout << "TODO: return statement\n";
+}

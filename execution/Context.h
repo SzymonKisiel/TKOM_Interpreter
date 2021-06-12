@@ -7,10 +7,13 @@
 #include <memory>
 
 class Context {
-    //std::map<std::string, std::unique_ptr<FunctionNode>> variables;
-    std::map<std::string, std::variant<std::string, int, float>> functions;
+    //std::map<std::string, std::unique_ptr<FunctionNode>> functions;
+    std::map<std::string, std::variant<std::monostate, std::string, int, float>> variables;
 public:
-    void addVariable();
+    const std::map<std::string, std::variant<std::monostate, std::string, int, float>> &getVariables() ;
+
+public:
+    void addVariable(std::string id, std::variant<std::monostate, std::string, int, float> value);
     void addFunction();
 };
 

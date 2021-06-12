@@ -21,6 +21,7 @@ public:
     void setArguments(std::unique_ptr<ArgumentsNode> arguments);
     std::string toString();
     void print(int depth = 0);
+    void execute(Context & context);
 };
 
 

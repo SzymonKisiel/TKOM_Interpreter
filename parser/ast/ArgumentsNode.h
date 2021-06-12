@@ -19,6 +19,7 @@ public:
     void addArgument(std::unique_ptr<ExpressionNode> argument);
     std::string toString();
     void print(int depth = 0);
+    void execute(Context & context);
 };
 
 

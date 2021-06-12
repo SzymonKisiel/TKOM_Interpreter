@@ -19,3 +19,7 @@ void FunctionCallNode::print(int depth) {
     if (arguments != nullptr)
         arguments->print(depth + 1);
 }
+
+void FunctionCallNode::execute(Context &context) {
+    cout << "TODO: function call statement\n";
+}

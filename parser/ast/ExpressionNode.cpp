@@ -42,14 +42,19 @@ variant<std::monostate, string, int, float> ExpressionNode::evaluate(Context & c
                 lhs = std::visit(VisitLess(), lhs, rhs);
                 break;
             case TokenType::T_GREATER:
+                lhs = std::visit(VisitGreater(), lhs, rhs);
                 break;
             case TokenType::T_LESS_OR_EQUAL:
+                lhs = std::visit(VisitLessOrEqual(), lhs, rhs);
                 break;
             case TokenType::T_GREATER_OR_EQUAL:
+                lhs = std::visit(VisitGreaterOrEqual(), lhs, rhs);
                 break;
             case TokenType::T_EQUAL:
+                lhs = std::visit(VisitEqual(), lhs, rhs);
                 break;
             case TokenType::T_NOT_EQUAL:
+                lhs = std::visit(VisitNotEqual(), lhs, rhs);
                 break;
             default:
                 ; //ExecutionException

@@ -19,3 +19,7 @@ void AssignmentNode::print(int depth) {
     if (expression != nullptr)
         expression->print(depth + 1);
 }
+
+void AssignmentNode::execute(Context &context) {
+    cout << "TODO: assignment\n";
+}
