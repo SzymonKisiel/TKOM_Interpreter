@@ -33,3 +33,7 @@ void FunctionNode::print(int depth) {
         child->print(depth+1);
     }
 }
+
+void FunctionNode::execute(Context &context) {
+    cout << "TODO: Function execute\n";
+}

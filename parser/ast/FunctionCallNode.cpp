@@ -22,4 +22,5 @@ void FunctionCallNode::print(int depth) {
 
 void FunctionCallNode::execute(Context &context) {
     cout << "TODO: function call statement\n";
+    context.callFunction(id);
 }

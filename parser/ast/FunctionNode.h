@@ -8,12 +8,13 @@
 #include "Node.h"
 #include "../../lexer/Token.h"
 #include "../../execution/Context.h"
+#include "../../execution/Function.h"
 
 class StatementNode;
 class ParametersNode;
 
 // function = type , id ,  "(" , [parameters] , ")" , "{" , {statement} , "}" ;
-class FunctionNode : public Node {
+class FunctionNode : public Node, public Function {
     std::string id;
     std::unique_ptr<ParametersNode> parameters;
     std::vector<std::unique_ptr<StatementNode>> statements;

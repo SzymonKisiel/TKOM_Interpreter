@@ -1,7 +1,3 @@
-//
-// Created by kislu on 12.06.2021.
-//
-
 #ifndef _TKOM__INTERPRETER_VISITPRINT_H
 #define _TKOM__INTERPRETER_VISITPRINT_H
 
