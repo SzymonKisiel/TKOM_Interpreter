@@ -35,5 +35,9 @@ void FunctionNode::print(int depth) {
 }
 
 void FunctionNode::execute(Context &context) {
-    cout << "TODO: Function execute\n";
+    cout << "TODO: Function execute (" << id << ")\n";
+}
+
+const string &FunctionNode::getId() {
+    return id;
 }

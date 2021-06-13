@@ -31,6 +31,11 @@ void ProgramNode::print(int depth) {
 
 void ProgramNode::execute() {
     Context context;
+    for (auto &function: functions) {
+        std::string id = function->getId();
+        context.addFunction(id, std::move(function));
+    }
+
     for (const auto &statement: statements)
         statement->execute(context);
 }

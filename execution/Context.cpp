@@ -38,9 +38,12 @@ const std::map<std::string, std::unique_ptr<Function>> &Context::getFunctions() 
     return functions;
 }
 
-void Context::callFunction(std::string id) {
+void Context::callFunction(std::string id, std::unique_ptr<ArgumentsNode> arguments = nullptr) {
     if (auto function = functions.find(id); function != functions.end()) {
-        function->second->execute(*this);
+        Context functionContext;
+        function->second->execute(*this); //TODO: functionContext instead of *this !!!
     }
+    else
+        throw ExecutionException(std::string("Function ").append(id).append(" not found"));
 }
 

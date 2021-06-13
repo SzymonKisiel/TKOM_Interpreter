@@ -14,8 +14,9 @@ class StatementNode;
 class ParametersNode;
 
 // function = type , id ,  "(" , [parameters] , ")" , "{" , {statement} , "}" ;
-class FunctionNode : public Node, public Function {
+class FunctionNode : public Function {
     std::string id;
+private:
     std::unique_ptr<ParametersNode> parameters;
     std::vector<std::unique_ptr<StatementNode>> statements;
     TokenType returnType;
@@ -24,6 +25,9 @@ public:
     void setParameters(std::unique_ptr<ParametersNode> parameters);
     void addStatement(std::unique_ptr<StatementNode> statement);
     void setReturnType(TokenType returnType);
+
+    const string &getId();
+
     std::string toString();
     void print(int depth = 0);
     void execute(Context & context);

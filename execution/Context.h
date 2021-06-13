@@ -6,6 +6,8 @@
 #include <variant>
 #include <memory>
 #include "Function.h"
+#include "../parser/ast/ArgumentsNode.h"
+class ArgumentsNode;
 
 class Context {
     std::map<std::string, std::unique_ptr<Function>> functions;
@@ -19,7 +21,7 @@ public:
 
     void addFunction(std::string id, std::unique_ptr<Function> function);
     const std::map<std::string, std::unique_ptr<Function>> &getFunctions();
-    void callFunction(std::string id);
+    void callFunction(std::string id, std::unique_ptr<ArgumentsNode> arguments);
 
 };
 
