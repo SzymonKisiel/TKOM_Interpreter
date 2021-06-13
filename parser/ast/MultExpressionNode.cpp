@@ -41,8 +41,9 @@ variant<std::monostate, string, int, float> MultExpressionNode::evaluate(Context
         else if (operation == TokenType::T_DIV) {
             std::visit(VisitDiv(), lhs, rhs);
         }
-        else
-            ;//ExecutionException
+        else if (operation == TokenType::T_AND) {
+            std::visit(VisitAnd(), lhs, rhs);
+        }
     }
     return lhs;
 }

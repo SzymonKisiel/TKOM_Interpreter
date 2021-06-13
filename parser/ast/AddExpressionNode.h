@@ -36,6 +36,34 @@ public:
         void operator()(float& lhs, int& rhs) { lhs = lhs - rhs; }
         void operator()(auto& lhs, auto& rhs) { throw ExecutionException("Subtraction error"); }
     };
+    struct VisitOr {
+        void operator()(int& lhs, int& rhs) {
+            cout << lhs << " and " << rhs << endl;
+            if (lhs != 0 || rhs != 0)
+                lhs = 1;
+            else
+                lhs = 0;
+        }
+        void operator()(float& lhs, float& rhs) {
+            if (lhs != 0 || rhs != 0)
+                lhs = 1;
+            else
+                lhs = 0;
+        }
+        void operator()(int& lhs, float& rhs) {
+            if (lhs != 0 || rhs != 0)
+                lhs = 1;
+            else
+                lhs = 0;
+        }
+        void operator()(float& lhs, int& rhs) {
+            if (lhs != 0 || rhs != 0)
+                lhs = 1;
+            else
+                lhs = 0;
+        }
+        void operator()(auto& lhs, auto& rhs) { throw ExecutionException("Logical 'or' error"); }
+    };
 };
 
 

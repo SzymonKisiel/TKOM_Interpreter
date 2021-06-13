@@ -161,6 +161,7 @@ public:
     }
     bool isMultOperator() {
         if (this->type == TokenType::T_MUL ||
+            this->type == TokenType::T_DIV ||
             this->type == TokenType::T_AND)
             return true;
         return false;

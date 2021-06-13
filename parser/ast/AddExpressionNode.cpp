@@ -41,8 +41,9 @@ variant<std::monostate, string, int, float> AddExpressionNode::evaluate(Context 
         else if (operation == TokenType::T_MINUS) {
             std::visit(VisitSubstract(), lhs, rhs);
         }
-        else
-            ;//ExecutionException
+        else if (operation == TokenType::T_OR) {
+            std::visit(VisitOr(), lhs, rhs);
+        }
     }
     return lhs;
 }
