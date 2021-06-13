@@ -21,6 +21,9 @@ public:
     std::string toString();
     void print(int depth = 0);
     void execute(Context & context);
+
+    const vector<TokenType> &getTypes();
+    const vector<std::string> &getIdentifiers();
 };
 
 

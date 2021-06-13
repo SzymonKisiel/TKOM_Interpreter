@@ -17,3 +17,8 @@ void ArgumentsNode::print(int depth) {
         child->print(depth + 1);
     }
 }
+
+std::vector<std::unique_ptr<ExpressionNode>> ArgumentsNode::getArguments() {
+    //return arguments;
+    return std::move(arguments);
+}

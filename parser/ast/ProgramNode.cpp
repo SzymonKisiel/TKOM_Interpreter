@@ -1,6 +1,6 @@
 #include "ProgramNode.h"
 
-void ProgramNode::addFunction(std::unique_ptr<FunctionNode> node) {
+void ProgramNode::addFunction(std::shared_ptr<FunctionNode> node) {
     if (node != nullptr)
         functions.push_back(std::move(node));
 }
@@ -33,7 +33,7 @@ void ProgramNode::execute() {
     Context context;
     for (auto &function: functions) {
         std::string id = function->getId();
-        context.addFunction(id, std::move(function));
+        context.addFunction(id, function);
     }
 
     for (const auto &statement: statements)

@@ -61,7 +61,7 @@ public:
     std::unique_ptr<ProgramNode> parse() {
         std::unique_ptr<ProgramNode> result = std::make_unique<ProgramNode>();
         while (currentToken->getType() != TokenType::T_END) {
-            std::unique_ptr<FunctionNode> function = parseFunction();
+            std::shared_ptr<FunctionNode> function = parseFunction();
             if (function != nullptr) {
                 result->addFunction(std::move(function));
             }
@@ -76,9 +76,8 @@ public:
     }
 
     // function = type , id ,  "(" , [parameters] , ")" , "{" , {statement} , "}" ;
-    // var_declaration  = type , id, "=", expression ;
-    std::unique_ptr<FunctionNode> parseFunction() {
-        std::unique_ptr<FunctionNode> result = std::make_unique<FunctionNode>();
+    std::shared_ptr<FunctionNode> parseFunction() {
+        std::shared_ptr<FunctionNode> result = std::make_shared<FunctionNode>();
         //var_declaration?
         if (!currentToken->isType()) {
             return nullptr;

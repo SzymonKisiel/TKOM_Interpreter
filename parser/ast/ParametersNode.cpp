@@ -26,3 +26,11 @@ void ParametersNode::print(int depth) {
     }
     std::cout << std::endl;
 }
+
+const vector<TokenType> &ParametersNode::getTypes() {
+    return types;
+}
+
+const vector<std::string> &ParametersNode::getIdentifiers() {
+    return identifiers;
+}

@@ -13,10 +13,10 @@ class FunctionNode;
 
 // program = {statement | function} ;
 class ProgramNode : public Node {
-    std::vector<std::unique_ptr<FunctionNode>> functions;
+    std::vector<std::shared_ptr<FunctionNode>> functions;
     std::vector<std::unique_ptr<StatementNode>> statements;
 public:
-    void addFunction(std::unique_ptr<FunctionNode> node);
+    void addFunction(std::shared_ptr<FunctionNode> node);
     void addStatement(std::unique_ptr<StatementNode> node);
     const bool isTerminal();
     void print(int depth = 0);

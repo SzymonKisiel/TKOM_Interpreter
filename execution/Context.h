@@ -10,7 +10,7 @@
 class ArgumentsNode;
 
 class Context {
-    std::map<std::string, std::unique_ptr<Function>> functions;
+    std::map<std::string, std::shared_ptr<Function>> functions;
     std::map<std::string, std::variant<std::monostate, std::string, int, float>> variables;
 public:
     Context();
@@ -19,10 +19,11 @@ public:
     void assignToVariable(std::string id, std::variant<std::monostate, std::string, int, float> value);
     void deleteVariable(std::string id);
 
-    void addFunction(std::string id, std::unique_ptr<Function> function);
-    const std::map<std::string, std::unique_ptr<Function>> &getFunctions();
-    void callFunction(std::string id, std::unique_ptr<ArgumentsNode> arguments);
+    void addFunction(std::string id, std::shared_ptr<Function> function);
+    const std::map<std::string, std::shared_ptr<Function>> &getFunctions();
+    void callFunction(std::string id, std::unique_ptr<ArgumentsNode> arguments = nullptr);
 
+    void print();
 };
 
 

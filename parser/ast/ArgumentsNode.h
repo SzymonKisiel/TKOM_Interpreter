@@ -17,6 +17,7 @@ class ArgumentsNode : public Node {
     std::vector<std::unique_ptr<ExpressionNode>> arguments;
 public:
     void addArgument(std::unique_ptr<ExpressionNode> argument);
+    std::vector<std::unique_ptr<ExpressionNode>> getArguments();
     std::string toString();
     void print(int depth = 0);
     void execute(Context & context);

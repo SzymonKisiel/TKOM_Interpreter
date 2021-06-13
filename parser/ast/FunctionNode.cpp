@@ -41,3 +41,7 @@ void FunctionNode::execute(Context &context) {
 const string &FunctionNode::getId() {
     return id;
 }
+
+unique_ptr<ParametersNode> FunctionNode::getParameters() {
+    return std::move(parameters);
+}
