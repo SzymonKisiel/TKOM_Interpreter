@@ -44,22 +44,19 @@ void IfStatementNode::print(int depth) {
 std::variant<std::monostate, string, int, float> IfStatementNode::execute(Context & context) {
     auto condition = ifCondition->evaluate(context);
     if (std::visit(VisitCondition(), condition)) {
-        std::cout << "if statement" << std::endl;
         return ifStatement->execute(context);
-    };
+    }
     if (!elsifConditions.empty()) {
         int i = 0;
-        for (/*int i = 0;*/ const auto &elseIfCondition: elsifConditions) {
+        for (const auto &elseIfCondition: elsifConditions) {
             condition = elseIfCondition->evaluate(context);
             if (std::visit(VisitCondition(), condition)) {
-                std::cout << "elsif statement " << i << std::endl;
                 return elsifStatements[i]->execute(context);
             }
             ++i;
         }
     }
     if (elseStatement != nullptr) {
-        std::cout << "else statement" << std::endl;
         return elseStatement->execute(context);
     }
     return std::monostate();
