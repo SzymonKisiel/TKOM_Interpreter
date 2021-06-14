@@ -20,6 +20,6 @@ void FunctionCallNode::print(int depth) {
         arguments->print(depth + 1);
 }
 
-void FunctionCallNode::execute(Context &context) {
-    context.callFunction(id, std::move(arguments));
+std::variant<std::monostate, string, int, float> FunctionCallNode::execute(Context &context) {
+    return context.callFunction(id, std::move(arguments));
 }

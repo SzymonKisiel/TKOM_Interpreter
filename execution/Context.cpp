@@ -34,43 +34,46 @@ void Context::addFunction(std::string id, std::shared_ptr<Function> function) {
     functions.insert(std::make_pair(id, std::move(function)));
 }
 
-//void Context::callFunction(std::string id, std::unique_ptr<ArgumentsNode> arguments) {
-//    if (auto function = functions.find(id); function != functions.end()) {
-//        Context functionContext;
-//        function->second->execute(*this); //TODO: functionContext instead of *this !!!
-//    }
-//    else
-//        throw ExecutionException(std::string("Function ").append(id).append(" not found"));
-//}
-
 std::variant<std::monostate, string, int, float> Context::callFunction(std::string id, std::unique_ptr<ArgumentsNode> argumentsNode) {
     if (auto function = functions.find(id); function != functions.end()) {
         Context functionContext;
-        if (argumentsNode != nullptr) {
-            auto arguments = argumentsNode->getArguments();
 
-            auto parametersNode = function->second;
-            auto parameters = parametersNode->getParameters();
-            auto paramId = parameters->getIdentifiers();
+        auto functionNode = function->second;
+        auto parameters = functionNode->getParameters();
+        if (parameters == nullptr)
+            cout << "????????\n"; //argumentsNode == nullptr => execute,
+        auto paramId = parameters->getIdentifiers();
 
-
-            if (arguments.size() != paramId.size())
+        if (argumentsNode == nullptr) {
+            if (paramId.empty())
+                return function->second->execute(functionContext);
+            else
                 throw ExecutionException(std::string("Wrong arguments amount, ")
-                                              .append("expected: ")
-                                              .append(std::to_string(paramId.size()))
-                                              .append(", provided: ")
-                                              .append(std::to_string(arguments.size()))
-                                        );
+                                                 .append("expected: ")
+                                                 .append(std::to_string(paramId.size()))
+                                                 .append(", provided: ")
+                                                 .append(std::to_string(0))
+                );
+        }
 
-            auto itrArg = arguments.begin();
+        auto arguments = argumentsNode->getArguments();
+
+        if (arguments.size() != paramId.size())
+            throw ExecutionException(std::string("Wrong arguments amount, ")
+                                          .append("expected: ")
+                                          .append(std::to_string(paramId.size()))
+                                          .append(", provided: ")
+                                          .append(std::to_string(arguments.size()))
+            );
+
+        auto itrArg = arguments.begin();
 //            std::vector<std::string> testParams = {"test1", "test2", "test3", "test4", "test5", "test6", "test7", "test8", "test9"};
 //            auto itrParam = testParams.begin();
-            auto itrParam = paramId.begin();
-            while(itrArg != arguments.end() && itrParam != paramId.end()) {
-                functionContext.addVariable(*itrParam, (*itrArg)->evaluate(*this));
-                ++itrArg;
-                ++itrParam;
-            }
+        auto itrParam = paramId.begin();
+        while(itrArg != arguments.end() && itrParam != paramId.end()) {
+            functionContext.addVariable(*itrParam, (*itrArg)->evaluate(*this));
+            ++itrArg;
+            ++itrParam;
         }
 //        this->print();
 //        functionContext.print();
@@ -92,5 +95,8 @@ void Context::print() {
         cout << variable.first << " = ";
         std::visit(VisitPrintValue(), variable.second);
         cout << endl;
+    }
+    for (auto function: functions) {
+        cout << function.first << endl;
     }
 }

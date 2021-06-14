@@ -20,7 +20,6 @@ public:
     void deleteVariable(std::string id);
 
     void addFunction(std::string id, std::shared_ptr<Function> function);
-    const std::map<std::string, std::shared_ptr<Function>> &getFunctions();
     variant<std::monostate, string, int, float> callFunction(std::string id, std::unique_ptr<ArgumentsNode> arguments = nullptr);
 
     void print();

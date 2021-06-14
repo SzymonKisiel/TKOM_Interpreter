@@ -55,8 +55,7 @@ variant<std::monostate, string, int, float> FactorNode::evaluate(Context & conte
             return variant<std::monostate, string, int, float>();
         }
         case FactorType::FUNCTION_CALL:
-            cout << "TODO: Factor - function call\n";
-            return variant<std::monostate, string, int, float>();
+            return functionCall->execute(context);
         case FactorType::EXPRESSION:
             return expression->evaluate(context);
         default:

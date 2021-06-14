@@ -33,20 +33,6 @@ public:
             currentToken = std::move(lexer.getNextToken());
     }
 
-
-    void unexpectedToken(TokenType expectedTokenType = TokenType::T_UNKNOWN) {
-        std::cerr << std::string("Unexpected token: ")
-                        .append(tokenTypeToString(currentToken->getType()))
-                        .append("\tRow: ")
-                        .append(std::to_string(currentToken->getRow()))
-                        .append(", Col: ")
-                        .append(std::to_string(currentToken->getColumn()))
-                        .append("\tExpected: ")
-                        .append(tokenTypeToString(expectedTokenType))
-                        .append("\n");
-        //throw;
-    }
-
     void test() {
         std::cerr << std::string("Current token: ")
                 .append(tokenTypeToString(currentToken->getType()))
@@ -457,6 +443,7 @@ public:
             factor->setExpression(std::move(expression));
             if (currentToken->getType() != TokenType::T_CLOSE)
                 throw ParserException(std::move(currentToken), TokenType::T_CLOSE);
+            nextToken();
         }
         else {
             if (currentToken->getType() != TokenType::T_ID &&
@@ -466,21 +453,28 @@ public:
                     )
                 throw ParserException(std::move(currentToken), "Expected expression");
             if (currentToken->getType() == TokenType::T_ID) {
-                factor->setId(currentToken->getStringValue());
-                /*nextToken();
-                if (currentToken->getType() != TokenType::T_OPEN) {
-                    factor->setId(currentToken->getStringValue());
+                std::string id = currentToken->getStringValue();
+                nextToken();
+                auto functionCall = parseFunctionCall(id);
+                if (functionCall == nullptr) {
+                    factor->setId(id);
                 }
                 else {
-                    //functionCall
-                }*/
+                    factor->setFunction(std::move(functionCall));
+                }
+//                parseFunctionCall(id);
+//                if (currentToken->getType() == TokenType::T_OPEN) {
+//                    factor->setId(currentToken->getStringValue());
+//                    nextToken();
+//                }
             }
             else {
                 factor->setValue(currentToken->getType(), currentToken->getValue());
                 //geo
+                nextToken();
             }
         }
-        nextToken();
+
         return factor;
     }
 };
