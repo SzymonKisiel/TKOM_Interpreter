@@ -7,17 +7,25 @@
 #include "VisitPrint.h" //debug
 
 class PrintFunction : public Function {
+    std::shared_ptr<ParametersNode> parameters;
+    const std::string PRINT_VAR_ID = "var";
+public:
+    PrintFunction() {
+        parameters = std::make_unique<ParametersNode>();
+        parameters->addIdentifier(PRINT_VAR_ID);
+    }
+    virtual std::shared_ptr<ParametersNode> getParameters() {
+        return parameters;
+    };
     variant<std::monostate, string, int, float> execute(Context & context) {
-        std::cout << "test\n";
-
-        //debug print
+        std::cout << "print: ";
         auto variables = context.getVariables();
-        for (auto variable: variables) {
-            std::cout << variable.first << " = ";
-            std::visit(VisitPrintValue(), variable.second);
-            std::cout << std::endl;
+        if (auto variable = variables.find(PRINT_VAR_ID); variable != variables.end()) {
+            std::visit(VisitPrintValue(), variable->second);
         }
-        return std::monostate();
+        cout << endl;
+
+        return monostate();
     }
 };
 
