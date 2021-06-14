@@ -48,7 +48,6 @@ public:
         while (isspace(character)) {
             character = source.getNextChar();
         }
-
         skipComments();
 
         row = source.getRow();
@@ -162,6 +161,8 @@ public:
         if (character == '#') {
             while (character != '\n' && character != EOF)
                 character = source.getNextChar();
+        }
+        while (isspace(character)) {
             character = source.getNextChar();
         }
     }
