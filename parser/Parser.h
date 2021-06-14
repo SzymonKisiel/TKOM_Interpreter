@@ -450,7 +450,7 @@ public:
                 currentToken->getType() != TokenType::T_INT &&
                 currentToken->getType() != TokenType::T_FLOAT &&
                 currentToken->getType() != TokenType::T_STRING
-                    )
+                )
                 throw ParserException(std::move(currentToken), "Expected expression");
             if (currentToken->getType() == TokenType::T_ID) {
                 std::string id = currentToken->getStringValue();
@@ -462,11 +462,6 @@ public:
                 else {
                     factor->setFunction(std::move(functionCall));
                 }
-//                parseFunctionCall(id);
-//                if (currentToken->getType() == TokenType::T_OPEN) {
-//                    factor->setId(currentToken->getStringValue());
-//                    nextToken();
-//                }
             }
             else {
                 factor->setValue(currentToken->getType(), currentToken->getValue());

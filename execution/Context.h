@@ -15,8 +15,8 @@ class Context {
 public:
     Context();
     void addVariable(std::string id, std::variant<std::monostate, std::string, int, float> value);
-    const std::map<std::string, std::variant<std::monostate, std::string, int, float>> &getVariables();
     void assignToVariable(std::string id, std::variant<std::monostate, std::string, int, float> value);
+    variant<std::monostate, string, int, float> getVariableValue(std::string id);
     void deleteVariable(std::string id);
 
     void addFunction(std::string id, std::shared_ptr<Function> function);

@@ -42,18 +42,8 @@ variant<std::monostate, string, int, float> FactorNode::evaluate(Context & conte
     switch (factorType) {
         case FactorType::VALUE:
             return value;
-        case FactorType::ID: {
-            auto variables = context.getVariables();
-            if (const auto variable = variables.find(id); variable != variables.end()) {
-                {   //debug print
-                    cout << "var: " << variable->first << " ";
-                    std::visit(VisitPrintValue(), variable->second);
-                    cout << endl;
-                }
-                return variable->second;
-            }
-            return variant<std::monostate, string, int, float>();
-        }
+        case FactorType::ID:
+            return context.getVariableValue(id);
         case FactorType::FUNCTION_CALL:
             return functionCall->execute(context);
         case FactorType::EXPRESSION:

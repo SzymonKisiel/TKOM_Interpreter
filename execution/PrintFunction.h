@@ -18,11 +18,10 @@ public:
         return parameters;
     };
     variant<std::monostate, string, int, float> execute(Context & context) {
+        auto value = context.getVariableValue(PRINT_VAR_ID);
+
         std::cout << "print: ";
-        auto variables = context.getVariables();
-        if (auto variable = variables.find(PRINT_VAR_ID); variable != variables.end()) {
-            std::visit(VisitPrintValue(), variable->second);
-        }
+        std::visit(VisitPrintValue(), value);
         cout << endl;
 
         return monostate();

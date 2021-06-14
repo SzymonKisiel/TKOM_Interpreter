@@ -1,5 +1,4 @@
 #include "ExpressionNode.h"
-#include "AddExpressionNode.h"
 
 
 void ExpressionNode::addOperand(std::unique_ptr<AddExpressionNode> node) {
@@ -56,8 +55,6 @@ variant<std::monostate, string, int, float> ExpressionNode::evaluate(Context & c
             case TokenType::T_NOT_EQUAL:
                 lhs = std::visit(VisitNotEqual(), lhs, rhs);
                 break;
-            default:
-                ; //ExecutionException
         }
     }
     return lhs;

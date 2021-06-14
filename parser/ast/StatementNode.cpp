@@ -57,7 +57,6 @@ variant<std::monostate, string, int, float> StatementNode::execute(Context &cont
         case StatementType::SIMPLE:
             return simpleStatement->execute(context);;
         case StatementType::BLOCK:
-            cout << "block\n";
             for (const auto &statement: statements) {
                 statement->execute(context);
             }
