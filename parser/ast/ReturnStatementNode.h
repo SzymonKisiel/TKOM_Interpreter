@@ -17,7 +17,7 @@ public:
     void setReturnExpression(std::unique_ptr<ExpressionNode> returnExpression);
     std::string toString();
     void print(int depth = 0);
-    void execute(Context & context);
+    variant<std::monostate, string, int, float> execute(Context & context);
 };
 
 

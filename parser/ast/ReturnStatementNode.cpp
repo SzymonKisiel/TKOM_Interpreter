@@ -1,4 +1,5 @@
 #include "ReturnStatementNode.h"
+#include "../../execution/VisitPrint.h" //debug
 
 void ReturnStatementNode::setReturnExpression(std::unique_ptr <ExpressionNode> returnExpression) {
     this->returnExpression = std::move(returnExpression);
@@ -16,6 +17,6 @@ void ReturnStatementNode::print(int depth) {
         returnExpression->print(depth + 1);
 }
 
-void ReturnStatementNode::execute(Context &context) {
-    cout << "TODO: return statement\n";
+variant<std::monostate, string, int, float> ReturnStatementNode::execute(Context &context) {
+    return returnExpression->evaluate(context);
 }

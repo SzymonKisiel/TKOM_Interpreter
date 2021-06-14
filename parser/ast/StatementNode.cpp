@@ -1,4 +1,5 @@
 #include "StatementNode.h"
+#include "../../execution/VisitPrint.h" //debug
 #include <memory>
 
 
@@ -45,7 +46,7 @@ void StatementNode::print(int depth) {
         simpleStatement->print(depth+1);
 }
 
-void StatementNode::execute(Context &context) {
+variant<std::monostate, string, int, float> StatementNode::execute(Context &context) {
     switch (statementType) {
         case StatementType::IF:
             ifStatement->execute(context);
@@ -54,8 +55,7 @@ void StatementNode::execute(Context &context) {
             whileStatement->execute(context);
             break;
         case StatementType::SIMPLE:
-            simpleStatement->execute(context);
-            break;
+            return simpleStatement->execute(context);;
         case StatementType::BLOCK:
             cout << "block\n";
             for (const auto &statement: statements) {
@@ -63,5 +63,5 @@ void StatementNode::execute(Context &context) {
             }
             break;
     }
-
+    return std::monostate();
 }

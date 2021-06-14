@@ -26,11 +26,11 @@ public:
     void setReturnType(TokenType returnType);
 
     const string &getId();
-    shared_ptr<ParametersNode> getParameters(); //shared_ptr?
+    std::shared_ptr<ParametersNode> getParameters();
 
     std::string toString();
     void print(int depth = 0);
-    void execute(Context & context);
+    variant<std::monostate, string, int, float> execute(Context & context);
 };
 
 

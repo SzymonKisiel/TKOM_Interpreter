@@ -43,7 +43,7 @@ void Context::addFunction(std::string id, std::shared_ptr<Function> function) {
 //        throw ExecutionException(std::string("Function ").append(id).append(" not found"));
 //}
 
-void Context::callFunction(std::string id, std::unique_ptr<ArgumentsNode> argumentsNode) {
+std::variant<std::monostate, string, int, float> Context::callFunction(std::string id, std::unique_ptr<ArgumentsNode> argumentsNode) {
     if (auto function = functions.find(id); function != functions.end()) {
         Context functionContext;
         if (argumentsNode != nullptr) {
@@ -72,9 +72,14 @@ void Context::callFunction(std::string id, std::unique_ptr<ArgumentsNode> argume
                 ++itrParam;
             }
         }
-        this->print();
-        functionContext.print();
-        function->second->execute(functionContext);
+//        this->print();
+//        functionContext.print();
+
+//        auto returnValue = function->second->execute(functionContext);
+//        std::visit(VisitPrintValue(), returnValue); cout << endl;
+//        return returnValue;
+
+        return function->second->execute(functionContext);
     }
     else
         throw ExecutionException(std::string("Function ").append(id).append(" not found"));

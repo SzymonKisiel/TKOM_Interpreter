@@ -1,4 +1,5 @@
 #include "SimpleStatementNode.h"
+#include "../../execution/VisitPrint.h" //debug
 
 void SimpleStatementNode::setDeclaration(std::unique_ptr <DeclarationNode> declaration) {
     this->declaration = std::move(declaration);
@@ -38,7 +39,7 @@ void SimpleStatementNode::print(int depth) {
         returnStatement->print(depth + 1);
 }
 
-void SimpleStatementNode::execute(Context &context) {
+variant<std::monostate, string, int, float> SimpleStatementNode::execute(Context &context) {
     switch (simpleStatementType) {
         case SimpleStatementType::DECLARATION:
             declaration->execute(context);
@@ -50,7 +51,7 @@ void SimpleStatementNode::execute(Context &context) {
             functionCall->execute(context);
             break;
         case SimpleStatementType::RETURN_STATEMENT:
-            returnStatement->execute(context);
-            break;
+            return returnStatement->execute(context);
     }
+    return std::monostate();
 }

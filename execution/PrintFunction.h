@@ -7,7 +7,7 @@
 #include "VisitPrint.h" //debug
 
 class PrintFunction : public Function {
-    void execute(Context & context) {
+    variant<std::monostate, string, int, float> execute(Context & context) {
         std::cout << "test\n";
 
         //debug print
@@ -17,6 +17,7 @@ class PrintFunction : public Function {
             std::visit(VisitPrintValue(), variable.second);
             std::cout << std::endl;
         }
+        return std::monostate();
     }
 };
 

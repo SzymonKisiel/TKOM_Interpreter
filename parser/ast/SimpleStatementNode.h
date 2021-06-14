@@ -34,7 +34,7 @@ public:
     void setReturnStatement(std::unique_ptr <ReturnStatementNode> returnStatement);
     std::string toString();
     void print(int depth = 0);
-    void execute(Context & context);
+    variant<std::monostate, string, int, float> execute(Context & context);
 };
 
 

@@ -34,11 +34,15 @@ void FunctionNode::print(int depth) {
     }
 }
 
-void FunctionNode::execute(Context &context) {
+variant<std::monostate, string, int, float> FunctionNode::execute(Context &context) {
     cout << "TODO: Function execute (" << id << ")\n";
     for (const auto& statement: statements) {
-        statement->execute(context);
+        auto value = statement->execute(context);
+        if (!std::get_if<std::monostate>(&value)) {
+            return value;
+        }
     }
+    return std::monostate();
 }
 
 const string &FunctionNode::getId() {
