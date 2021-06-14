@@ -1,6 +1,6 @@
 #include "ArgumentsNode.h"
 
-void ArgumentsNode::addArgument(std::unique_ptr<ExpressionNode> argument) {
+void ArgumentsNode::addArgument(std::shared_ptr<ExpressionNode> argument) {
     if (argument != nullptr)
         arguments.push_back(std::move(argument));
 }
@@ -18,7 +18,6 @@ void ArgumentsNode::print(int depth) {
     }
 }
 
-std::vector<std::unique_ptr<ExpressionNode>> ArgumentsNode::getArguments() {
-    //return arguments;
-    return std::move(arguments);
+std::vector<std::shared_ptr<ExpressionNode>> ArgumentsNode::getArguments() {
+    return arguments;
 }

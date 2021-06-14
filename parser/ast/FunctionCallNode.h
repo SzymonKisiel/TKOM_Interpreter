@@ -15,10 +15,10 @@ class ArgumentsNode;
 // function_call    = id ,  "(" , [arguments] , ")" ;
 class FunctionCallNode : public Node {
     std::string id;
-    std::unique_ptr<ArgumentsNode> arguments;
+    std::shared_ptr<ArgumentsNode> arguments;
 public:
     void setId(std::string id);
-    void setArguments(std::unique_ptr<ArgumentsNode> arguments);
+    void setArguments(std::shared_ptr<ArgumentsNode> arguments);
     std::string toString();
     void print(int depth = 0);
     std::variant<std::monostate, string, int, float> execute(Context & context);

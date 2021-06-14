@@ -4,7 +4,7 @@ void FunctionCallNode::setId(std::string id) {
     this->id = id;
 }
 
-void FunctionCallNode::setArguments(std::unique_ptr<ArgumentsNode> arguments) {
+void FunctionCallNode::setArguments(std::shared_ptr<ArgumentsNode> arguments) {
     this->arguments = std::move(arguments);
 }
 
@@ -21,5 +21,5 @@ void FunctionCallNode::print(int depth) {
 }
 
 std::variant<std::monostate, string, int, float> FunctionCallNode::execute(Context &context) {
-    return context.callFunction(id, std::move(arguments));
+    return context.callFunction(id, arguments);
 }

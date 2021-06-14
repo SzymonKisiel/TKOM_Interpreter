@@ -14,10 +14,10 @@ class ExpressionNode;
 // arguments  = argument , {"," , argument} ;
 // argument   = expression ;
 class ArgumentsNode : public Node {
-    std::vector<std::unique_ptr<ExpressionNode>> arguments;
+    std::vector<std::shared_ptr<ExpressionNode>> arguments;
 public:
-    void addArgument(std::unique_ptr<ExpressionNode> argument);
-    std::vector<std::unique_ptr<ExpressionNode>> getArguments();
+    void addArgument(std::shared_ptr<ExpressionNode> argument);
+    std::vector<std::shared_ptr<ExpressionNode>> getArguments();
     std::string toString();
     void print(int depth = 0);
     void execute(Context & context);

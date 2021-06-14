@@ -33,6 +33,10 @@ void Context::deleteVariable(std::string id) {
     }
 }
 
+void Context::deleteAllVariables() {
+    variables.clear();
+}
+
 //functions
 
 void Context::addFunction(std::string id, std::shared_ptr<Function> function) {
@@ -41,9 +45,10 @@ void Context::addFunction(std::string id, std::shared_ptr<Function> function) {
         throw ExecutionException(std::string("Function ").append(id).append(" already declared"));
 }
 
-std::variant<std::monostate, string, int, float> Context::callFunction(std::string id, std::unique_ptr<ArgumentsNode> argumentsNode) {
+std::variant<std::monostate, string, int, float> Context::callFunction(std::string id, std::shared_ptr<ArgumentsNode> argumentsNode) {
     if (auto function = functions.find(id); function != functions.end()) {
         Context functionContext = *this;
+        functionContext.deleteAllVariables();
 
         auto functionNode = function->second;
         auto parameters = functionNode->getParameters();
@@ -91,15 +96,16 @@ std::variant<std::monostate, string, int, float> Context::callFunction(std::stri
         throw ExecutionException(std::string("Use of undeclared function: ").append(id));
 }
 
-void Context::print() {
-    cout << "Context print:\n";
+void Context::print(std::string id) {
+    cout << "Context print {\n";
     // debug print
     for (auto variable: variables) {
-        cout << variable.first << " = ";
+        cout << '\t' << variable.first << " = ";
         std::visit(VisitPrintValue(), variable.second);
         cout << endl;
     }
     for (auto function: functions) {
-        cout << function.first << endl;
+        cout << '\t' << function.first << endl;
     }
+    cout << "}\n";
 }
