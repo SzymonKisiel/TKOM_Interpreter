@@ -36,12 +36,15 @@ void FunctionNode::print(int depth) {
 
 void FunctionNode::execute(Context &context) {
     cout << "TODO: Function execute (" << id << ")\n";
+    for (const auto& statement: statements) {
+        statement->execute(context);
+    }
 }
 
 const string &FunctionNode::getId() {
     return id;
 }
 
-unique_ptr<ParametersNode> FunctionNode::getParameters() {
-    return std::move(parameters);
+std::shared_ptr<ParametersNode> FunctionNode::getParameters() {
+    return parameters;
 }

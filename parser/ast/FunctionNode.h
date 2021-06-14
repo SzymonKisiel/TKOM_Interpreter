@@ -16,8 +16,8 @@ class ParametersNode;
 // function = type , id ,  "(" , [parameters] , ")" , "{" , {statement} , "}" ;
 class FunctionNode : public Function {
     std::string id;
-    std::unique_ptr<ParametersNode> parameters;
-    std::vector<std::unique_ptr<StatementNode>> statements;
+    std::shared_ptr<ParametersNode> parameters;
+    std::vector<std::shared_ptr<StatementNode>> statements;
     TokenType returnType;
 public:
     void setId(std::string id);
@@ -26,7 +26,7 @@ public:
     void setReturnType(TokenType returnType);
 
     const string &getId();
-    unique_ptr<ParametersNode> getParameters(); //shared_ptr?
+    shared_ptr<ParametersNode> getParameters(); //shared_ptr?
 
     std::string toString();
     void print(int depth = 0);

@@ -9,7 +9,7 @@ class ParametersNode;
 class Function {
 public:
     virtual void execute(Context & context) = 0;
-    virtual std::unique_ptr<ParametersNode> getParameters() {
+    virtual std::shared_ptr<ParametersNode> getParameters() {
         return nullptr;
     };
 };

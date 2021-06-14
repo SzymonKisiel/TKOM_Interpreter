@@ -61,7 +61,7 @@ public:
     std::unique_ptr<ProgramNode> parse() {
         std::unique_ptr<ProgramNode> result = std::make_unique<ProgramNode>();
         while (currentToken->getType() != TokenType::T_END) {
-            std::shared_ptr<FunctionNode> function = parseFunction();
+            std::unique_ptr<FunctionNode> function = parseFunction();
             if (function != nullptr) {
                 result->addFunction(std::move(function));
             }
@@ -76,8 +76,9 @@ public:
     }
 
     // function = type , id ,  "(" , [parameters] , ")" , "{" , {statement} , "}" ;
-    std::shared_ptr<FunctionNode> parseFunction() {
-        std::shared_ptr<FunctionNode> result = std::make_shared<FunctionNode>();
+    // var_declaration  = type , id, "=", expression ;
+    std::unique_ptr<FunctionNode> parseFunction() {
+        std::unique_ptr<FunctionNode> result = std::make_unique<FunctionNode>();
         //var_declaration?
         if (!currentToken->isType()) {
             return nullptr;
@@ -459,9 +460,9 @@ public:
         }
         else {
             if (currentToken->getType() != TokenType::T_ID &&
-                    currentToken->getType() != TokenType::T_INT &&
-                    currentToken->getType() != TokenType::T_FLOAT &&
-                    currentToken->getType() != TokenType::T_STRING
+                currentToken->getType() != TokenType::T_INT &&
+                currentToken->getType() != TokenType::T_FLOAT &&
+                currentToken->getType() != TokenType::T_STRING
                     )
                 throw ParserException(std::move(currentToken), "Expected expression");
             if (currentToken->getType() == TokenType::T_ID) {
