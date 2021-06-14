@@ -46,19 +46,20 @@ void StatementNode::print(int depth) {
         simpleStatement->print(depth+1);
 }
 
-variant<std::monostate, string, int, float> StatementNode::execute(Context &context) {
+std::variant<std::monostate, std::string, int, float> StatementNode::execute(Context &context) {
     switch (statementType) {
         case StatementType::IF:
-            ifStatement->execute(context);
-            break;
+            return ifStatement->execute(context);
         case StatementType::WHILE:
-            whileStatement->execute(context);
-            break;
+            return whileStatement->execute(context);
         case StatementType::SIMPLE:
             return simpleStatement->execute(context);;
         case StatementType::BLOCK:
             for (const auto &statement: statements) {
-                statement->execute(context);
+                auto value = statement->execute(context);
+                if (!std::get_if<std::monostate>(&value)) {
+                    return value;
+                }
             }
             break;
     }

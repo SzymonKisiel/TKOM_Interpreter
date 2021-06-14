@@ -27,7 +27,7 @@ public:
     void addElsifStatement(std::unique_ptr<StatementNode> node);
     void setElseStatement(std::unique_ptr<StatementNode> node);
     void print(int depth = 0);
-    void execute(Context & context);
+    std::variant<std::monostate, string, int, float> execute(Context & context);
 };
 
 #endif //_TKOM__INTERPRETER_IFSTATEMENTNODE_H

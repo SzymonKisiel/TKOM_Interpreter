@@ -22,11 +22,14 @@ void WhileStatementNode::print(int depth) {
     statement->print(depth+1);
 }
 
-void WhileStatementNode::execute(Context &context) {
-    cout << "TODO: while statement execution\n";
+std::variant<std::monostate, std::string, int, float> WhileStatementNode::execute(Context &context) {
     auto cond = condition->evaluate(context);
     while (std::visit(VisitCondition(), cond)) {
-        statement->execute(context);
+        auto value = statement->execute(context);
+        if (!std::get_if<std::monostate>(&value)) {
+            return value;
+        }
         cond = condition->evaluate(context);
     }
+    return std::monostate();
 }
