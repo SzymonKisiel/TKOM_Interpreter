@@ -41,6 +41,8 @@ void Context::assignToVariable(std::string id, std::variant<std::monostate, std:
     if (auto variable = variables.find(id); variable != variables.end()) {
         variable->second = value;
     }
+    else
+        throw ExecutionException(std::string("Use of undeclared variable: ").append(id));
 }
 
 variant<std::monostate, string, int, float> Context::getVariableValue(std::string id) {

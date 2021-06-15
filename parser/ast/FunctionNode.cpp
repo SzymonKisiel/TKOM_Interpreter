@@ -1,4 +1,5 @@
 #include "FunctionNode.h"
+#include "../../execution/VisitCheckType.h"
 
 void FunctionNode::setId(std::string id) {
     this->id = id;
@@ -38,6 +39,12 @@ variant<std::monostate, string, int, float> FunctionNode::execute(Context &conte
     for (const auto& statement: statements) {
         auto value = statement->execute(context);
         if (!std::get_if<std::monostate>(&value)) {
+            std::variant<TokenType> test = returnType;
+            if (!std::visit(VisitCheckType(), value, test))
+                throw ExecutionException(std::string("Wrong return value type in '")
+                                                 .append(id).append("' function, expected ")
+                                                 .append(tokenTypeToString(returnType))
+                );
             return value;
         }
     }
