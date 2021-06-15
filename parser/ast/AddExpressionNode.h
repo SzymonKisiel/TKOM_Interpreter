@@ -27,6 +27,7 @@ public:
         void operator()(float& lhs, float& rhs) { lhs = lhs + rhs; }
         void operator()(int& lhs, float& rhs) { lhs = lhs + rhs; }
         void operator()(float& lhs, int& rhs) { lhs = lhs + rhs; }
+        void operator()(std::string& lhs, std::string& rhs) { lhs.append(rhs); }
         void operator()(auto& lhs, auto& rhs) { throw ExecutionException("Addition error"); }
     };
     struct VisitSubstract {
