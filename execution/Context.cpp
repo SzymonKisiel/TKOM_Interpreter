@@ -2,9 +2,29 @@
 #include "PrintFunction.h"
 
 Context::Context() {
+    enterScope();
     auto printFun = std::make_unique<PrintFunction>();
     addFunction("print", std::move(printFun));
 }
+
+Context::~Context() {
+    exitScope();
+}
+
+void Context::enterScope() {
+    variablesCountStack.push(0);
+}
+
+void Context::exitScope() {
+    auto localCount = variablesCountStack.top();
+    for (int i = 0; i < localCount; ++i) {
+        auto variableToDelete = variablesStack.top();
+        deleteVariable(variableToDelete);
+        variablesStack.pop();
+    }
+    variablesCountStack.pop();
+}
+
 
 //variables
 
@@ -12,6 +32,9 @@ void Context::addVariable(std::string id, std::variant<std::monostate, std::stri
     const auto [it, success] = variables.insert(std::make_pair(id, value));
     if (!success)
         throw ExecutionException(std::string("Variable ").append(id).append(" already declared"));
+
+    variablesCountStack.top()++;
+    variablesStack.push(id);
 }
 
 void Context::assignToVariable(std::string id, std::variant<std::monostate, std::string, int, float> value) {

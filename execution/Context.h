@@ -2,6 +2,7 @@
 #define _TKOM__INTERPRETER_CONTEXT_H
 
 #include <map>
+#include <stack>
 #include <string>
 #include <variant>
 #include <memory>
@@ -12,8 +13,14 @@ class ArgumentsNode;
 class Context {
     std::map<std::string, std::shared_ptr<Function>> functions;
     std::map<std::string, std::variant<std::monostate, std::string, int, float>> variables;
+    std::stack<std::string> variablesStack;
+    std::stack<int> variablesCountStack;
 public:
     Context();
+    ~Context();
+    void enterScope();
+    void exitScope();
+
     void addVariable(std::string id, std::variant<std::monostate, std::string, int, float> value);
     void assignToVariable(std::string id, std::variant<std::monostate, std::string, int, float> value);
     variant<std::monostate, string, int, float> getVariableValue(std::string id);
