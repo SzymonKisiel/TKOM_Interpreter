@@ -1,14 +1,6 @@
 #ifndef _TKOM__INTERPRETER_VISITPRINT_H
 #define _TKOM__INTERPRETER_VISITPRINT_H
 
-
-struct VisitPrint {
-    void operator()(int& x)         { std::cout << "int: " << x << std::endl; }
-    void operator()(float& x)       { std::cout << "float: " << x << std::endl; }
-    void operator()(std::string& x) { std::cout << "string: " << x << std::endl; }
-    void operator()(auto)           { std::cout << "empty/unknown\n"; }
-};
-
 struct VisitPrintValue {
     void operator()(int& x)         { std::cout << x; }
     void operator()(float& x)       { std::cout << x; }

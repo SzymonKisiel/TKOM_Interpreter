@@ -4,7 +4,7 @@
 
 #include <iostream>
 #include "Function.h"
-#include "VisitPrint.h" //debug
+#include "VisitPrint.h"
 
 class PrintFunction : public Function {
     std::shared_ptr<ParametersNode> parameters;
@@ -20,7 +20,6 @@ public:
     variant<std::monostate, string, int, float> execute(Context & context) {
         auto value = context.getVariableValue(PRINT_VAR_ID);
 
-        std::cout << "print: ";
         std::visit(VisitPrintValue(), value);
         cout << endl;
 

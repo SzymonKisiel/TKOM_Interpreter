@@ -30,7 +30,7 @@ public:
 
     std::string toString();
     void print(int depth = 0);
-    variant<std::monostate, string, int, float> execute(Context & context);
+    std::variant<std::monostate, std::string, int, float> execute(Context & context);
 };
 
 

@@ -465,7 +465,7 @@ public:
             }
             else {
                 factor->setValue(currentToken->getType(), currentToken->getValue());
-                //geo
+                //parsowanie typów geo
                 nextToken();
             }
         }
