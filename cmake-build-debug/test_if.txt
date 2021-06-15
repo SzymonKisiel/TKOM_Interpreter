@@ -1,0 +1,34 @@
+{
+    int x = 0;
+    x = 1;
+    if (x == 1) {
+        print("if");
+        int z = 3;
+    }
+
+    int z = 3;
+    x = z;
+    if (x == 1) {
+        print("if");
+    }
+    elsif (x == 2) {
+        print("elsif 1");
+    }
+    elsif (x == 3) {
+        print("elsif 2");
+    }
+
+    x = 5;
+    if (x < 1) {
+        print("if");
+    }
+    elsif (x < 3) {
+        print("elsif 1");
+    }
+    elsif (x < 5) {
+        print("elsif 2");
+    }
+    else {
+        print("else");
+    }
+}

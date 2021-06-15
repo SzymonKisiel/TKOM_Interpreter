@@ -11,10 +11,8 @@ using namespace std;
 
 
 int main() {
-//    StringSource source("int x = 10;\n"
-//                               "while (x > 5) x = x - 2;");
-    FileSource source("test_parser.txt");
-
+    StringSource testSource("print(5*5-2*5);");
+    FileSource source("test.txt");
 
     Lexer lexer(source);
     Parser parser(lexer);
