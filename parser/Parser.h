@@ -6,6 +6,7 @@
 #include "../lexer/Lexer.h"
 #include "../exception/Exception.h"
 #include "../exception/ParserException.h"
+#include "../structures/GeographicCoordinate.h"
 #include <memory>
 
 #include <iostream>
@@ -464,14 +465,61 @@ public:
                 }
             }
             else {
-                factor->setValue(currentToken->getType(), currentToken->getValue());
-                //parsowanie typów geo
+                auto value = currentToken->getValue();
+                factor->setValue(currentToken->getType(), value);
+                nextToken();
+                auto geoCoord = parseCoordinate(value);
+                if (geoCoord) {
+                    geoCoord->print();
+                    //factor->setGeo();
+                }
+            }
+        }
+        return factor;
+    }
+
+    std::optional<GeographicCoordinate> parseCoordinate(std::variant<std::monostate, std::string, int, float> & value) {
+        std::optional<GeographicCoordinate> result;
+        if (currentToken->getType() == TokenType::T_GEO_DEGREE) {
+            result = GeographicCoordinate();
+
+            result->setDegree(std::visit(VisitGetInt(), value));
+            nextToken();
+            if (currentToken->getType() == TokenType::T_INT) {
+                value = currentToken->getValue();
                 nextToken();
             }
         }
+        if (currentToken->getType() == TokenType::T_GEO_MINUTE) {
+            if (!result)
+                result = GeographicCoordinate();
 
-        return factor;
+            result->setMinute(std::visit(VisitGetInt(), value));
+            nextToken();
+            if (currentToken->getType() == TokenType::T_INT) {
+                value = currentToken->getValue();
+                nextToken();
+            }
+        }
+        if (currentToken->getType() == TokenType::T_GEO_SECOND) {
+            if (!result)
+                result = GeographicCoordinate();
+
+            result->setSecond(std::visit(VisitGetInt(), value));
+            nextToken();
+        }
+        if (result) {
+            if (!currentToken->isGeoDirection())
+                throw ParserException(std::move(currentToken), "Expected geographic direction");
+            result->setDirection(currentToken->getType());
+            nextToken();
+        }
+        return result;
     }
+    struct VisitGetInt {
+        int operator()(int& x)  { return x; }
+        int operator()(auto&)   { throw ParserException("Wrong value type, expected int"); }
+    };
 };
 
 

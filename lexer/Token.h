@@ -111,24 +111,31 @@ public:
             "T_END",
             "T_UNKNOWN",
     };
+
     Token(TokenType type, int row, int column, variant<std::monostate, string, int, float> value) :
             type(type), row(row), column(column), value(std::move(value)) {
     }
+
     Token(TokenType type, int row, int column) :
+
             type(type), row(row), column(column), value(std::monostate{}) {
     }
     Token(TokenType type) : type(type) {
         Token(type, 0, 0);
     }
+
     const TokenType getType() {
         return this->type;
     }
+
     variant<std::monostate, string, int, float> getValue() {
         return value;
     }
+
     const string getStringValue() {
         return std::get<string>(this->value);
     }
+
     const int getIntValue() {
         return std::get<int>(this->value);
     }
@@ -137,62 +144,56 @@ public:
         return std::get<float>(this->value);
     }
 
-//    variant<std::monostate, string, int, float> getValue() {
-//        return value;
-//    }
-
     const int getRow() {
         return this->row;
     }
+
     const int getColumn() {
         return this->column;
     }
 
-    bool isType() {
+    const bool isType() {
         if (this->type >= TokenType::T_TYPE_VOID && this->type <= TokenType::T_TYPE_GEOCOORD)
             return true;
         return false;
     }
 
-    bool isCompOperator() {
+    const bool isCompOperator() {
         if (this->type >= TokenType::T_LESS && this->type <= TokenType::T_NOT_EQUAL)
             return true;
         return false;
     }
-    bool isMultOperator() {
+    const bool isMultOperator() {
         if (this->type == TokenType::T_MUL ||
             this->type == TokenType::T_DIV ||
             this->type == TokenType::T_AND)
             return true;
         return false;
     }
-    bool isAddOperator() {
+    const bool isAddOperator() {
         if (this->type == TokenType::T_PLUS ||
             this->type == TokenType::T_MINUS ||
             this->type == TokenType::T_OR)
             return true;
         return false;
     }
-    bool isOperator() {
+    const bool isOperator() {
         if (this->type >= TokenType::T_LESS && this->type <= TokenType::T_AND)
             return true;
         return false;
     }
-    bool isExpressionPart() {
-        if (isOperator())
-            return true;
-        if (this->type == TokenType::T_INT ||
-            this->type == TokenType::T_FLOAT ||
-            this->type == TokenType::T_STRING ||
-            this->type == TokenType::T_OPEN ||
-            this->type == TokenType::T_CLOSE ||
-            this->type == TokenType::T_ID /*||
-            this->type == TokenType::T_COMMA*/)
+
+    const bool isGeoDirection() {
+        if (this->type == TokenType::T_GEO_DIRECTION_N ||
+            this->type == TokenType::T_GEO_DIRECTION_S ||
+            this->type == TokenType::T_GEO_DIRECTION_W ||
+            this->type == TokenType::T_GEO_DIRECTION_E
+            )
             return true;
         return false;
     }
 
-    string getTypeString() {
+    const string getTypeString() {
         return tokenTypeNames[this->getType()];
     }
 
