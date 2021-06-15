@@ -198,8 +198,23 @@ public:
                     throw LexerException("Expected string end");
                 if (character == '\\') {
                     character = source.getNextChar();
+                    switch (character) {
+                        case 'n':
+                            value.push_back('\n');
+                            break;
+                        case 't':
+                            value.push_back('\t');
+                            break;
+                        case '"':
+                        case '\\':
+                            value.push_back(character);
+                            break;
+                        default:
+                            LexerException(std::string("Unknown escape sequence \\" + character));
+                    }
                 }
-                value.push_back(character);
+                else
+                    value.push_back(character);
                 character = source.getNextChar();
             }
             character = source.getNextChar();
