@@ -210,7 +210,7 @@ public:
     std::unique_ptr<Token> buildId() {
         if (isalpha(character)) {
             string value = "";
-            while (isalpha(character)) {
+            while (isalnum(character)) {
                 value.push_back(character);
                 character = source.getNextChar();
             }
