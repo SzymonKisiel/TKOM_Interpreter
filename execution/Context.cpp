@@ -1,5 +1,6 @@
 #include "Context.h"
 #include "PrintFunction.h"
+#include "VisitCheckType.h"
 
 Context::Context() {
     enterScope();
@@ -39,7 +40,10 @@ void Context::addVariable(std::string id, std::variant<std::monostate, std::stri
 
 void Context::assignToVariable(std::string id, std::variant<std::monostate, std::string, int, float> value) {
     if (auto variable = variables.find(id); variable != variables.end()) {
-        variable->second = value;
+        auto& oldValue = variable->second;
+        if (!std::visit(VisitCompareType(), oldValue, value))
+            throw ExecutionException(std::string("Can't assign value to ").append(id));
+        oldValue = value;
     }
     else
         throw ExecutionException(std::string("Use of undeclared variable: ").append(id));

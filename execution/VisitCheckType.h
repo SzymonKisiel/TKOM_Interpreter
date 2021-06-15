@@ -10,5 +10,12 @@ struct VisitCheckType {
     bool operator()(auto&, auto&)                { return false; }
 };
 
+struct VisitCompareType {
+    bool operator()(int&, int&)       { return true; }
+    bool operator()(float&, float&)   { return true; }
+    bool operator()(string&, string&) { return true; }
+    bool operator()(auto&, auto&)     { return false; }
+};
+
 
 #endif //_TKOM__INTERPRETER_VISITCHECKTYPE_H
