@@ -10,13 +10,7 @@
 #include <memory>
 
 #include <iostream>
-#include <ProgramNode.h>
-#include <SimpleStatementNode.h>
-#include <DeclarationNode.h>
-#include <ArgumentsNode.h>
-#include <FactorNode.h>
-#include <MultExpressionNode.h>
-#include <AddExpressionNode.h>
+#include "ast/Node.h"
 
 class Parser
 {
