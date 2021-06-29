@@ -1,6 +1,7 @@
 #ifndef _TKOM__INTERPRETER_GEOGRAPHICCOORDINATE_H
 #define _TKOM__INTERPRETER_GEOGRAPHICCOORDINATE_H
 
+#include "../lexer/Token.h"
 
 class GeographicCoordinate {
 public:
