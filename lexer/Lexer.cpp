@@ -172,7 +172,8 @@ std::unique_ptr<Token> Lexer::buildString() {
                         value.push_back(character);
                         break;
                     default:
-                        LexerException(std::string("Unknown escape sequence \\" + character));
+                        //LexerException("Test");
+                        throw LexerException(std::string("Unknown escape sequence \\") + character);
                 }
             }
             else

@@ -1,6 +1,7 @@
 #include "Context.h"
 #include "PrintFunction.h"
 #include "VisitCheckType.h"
+#include "VisitPrint.h"
 
 Context::Context() {
     enterScope();

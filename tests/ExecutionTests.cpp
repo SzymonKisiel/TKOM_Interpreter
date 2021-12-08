@@ -11,7 +11,8 @@ void checkOutput(const std::string str) {
     fstream output;
     string val;
     output.open("output.txt", ios::in);
-    output >> val;
+    getline(output, val);
+    //output >> val;
     output.close();
     CHECK(val == str);
 }
@@ -944,7 +945,7 @@ TEST_CASE("Variables", "[Execution tests]") {
     }
 }
 
-TEST_CASE("While", "[Execution tests]") {
+TEST_CASE("While statement", "[Execution tests]") {
     // TODO: More tests
     StringSource source(    "int i = 0;\n"
                             "while (i < 5) {\n"
@@ -973,7 +974,6 @@ TEST_CASE("While", "[Execution tests]") {
 }
 
 TEST_CASE("If statement", "[Execution tests]") {
-    // TODO
     SECTION("if") {
         SECTION("if true") {
             StringSource source("if (1)\n"
@@ -992,7 +992,7 @@ TEST_CASE("If statement", "[Execution tests]") {
             checkOutput("");
         }
     }
-    SECTION("if else") {
+    SECTION("else") {
         SECTION("if true") {
             StringSource source("if (1)\n"
                                 "    print(\"if\");\n"
@@ -1014,8 +1014,86 @@ TEST_CASE("If statement", "[Execution tests]") {
             checkOutput("else");
         }
     }
+    SECTION("elsif") {
+        // TODO: More tests?
+        SECTION("test1") {
+            StringSource source("if (0)\n"
+                                "    print(\"if\");\n"
+                                "elsif (0)\n"
+                                "    print(\"elsif 1\");\n"
+                                "elsif (1)\n"
+                                "    print(\"elsif 2\");\n"
+                                "elsif (1)\n"
+                                "    print(\"elsif 3\");\n"
+                                "else\n"
+                                "    print(\"else\");");
+            Lexer lexer(source);
+            Parser parser(lexer);
+            parser.parse()->execute();
+            checkOutput("elsif 2");
+        }
+    }
 }
 
 TEST_CASE("Functions", "[Execution tests]") {
-    // TODO
+    SECTION("Simple function") {
+        StringSource source("int add(int x, int y) {"
+                            "    return x + y;"
+                            "}"
+                            "print(add(1, 2));"
+                            "print(add(24, 24));");
+        Lexer lexer(source);
+        Parser parser(lexer);
+        parser.parse()->execute();
+
+        fstream output;
+        string val;
+        output.open("output.txt", ios::in);
+        output >> val;
+        CHECK(val == "3");
+        output >> val;
+        CHECK(val == "48");
+        output.close();
+    }
+    SECTION("Argument type exception") {
+        // TODO
+    }
+    SECTION("Return type exception") {
+        // TODO
+    }
+
+    SECTION("Simple function 2") {
+        StringSource source("string concatenate(string text1, string text2) {\n"
+                            "    return text1 + \" \" + text2;\n"
+                            "}"
+                            "print(concatenate(\"abc\", \"def\"));");
+        Lexer lexer(source);
+        Parser parser(lexer);
+        parser.parse()->execute();
+        checkOutput("abc def");
+    }
+    SECTION("Recursive function") {
+        StringSource source("int factorial(int x) {\n"
+                            "    if (x <= 1)\n"
+                            "        return 1;\n"
+                            "    return x * factorial(x-1);\n"
+                            "}"
+                            "print(factorial(0));"
+                            "print(factorial(2));"
+                            "print(factorial(6));");
+        Lexer lexer(source);
+        Parser parser(lexer);
+        parser.parse()->execute();
+
+        fstream output;
+        string val;
+        output.open("output.txt", ios::in);
+        output >> val;
+        CHECK(val == "1");
+        output >> val;
+        CHECK(val == "2");
+        output >> val;
+        CHECK(val == "720");
+        output.close();
+    }
 }

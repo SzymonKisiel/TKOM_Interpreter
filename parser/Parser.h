@@ -17,19 +17,45 @@ class Parser
 private:
     Lexer & lexer;
     std::unique_ptr<Token> currentToken;
+    // TODO: Refactor buffer
+    std::unique_ptr<Token> firstBufferedToken;
+    std::unique_ptr<Token> secondBufferedToken;
 public:
     Parser(Lexer & lexer) : lexer(lexer) {
         nextToken();
     }
 
     void nextToken() {
-        currentToken = std::move(lexer.getNextToken());
-        while (currentToken->getType() == TokenType::T_MULTICOMMENT)
+        if (firstBufferedToken == nullptr) {
             currentToken = std::move(lexer.getNextToken());
+            while (currentToken->getType() == TokenType::T_MULTICOMMENT)
+                currentToken = std::move(lexer.getNextToken());
+        }
+        else
+        if (secondBufferedToken == nullptr) {
+            currentToken = std::move(firstBufferedToken);
+        }
+        else {
+            currentToken = std::move(firstBufferedToken);
+            firstBufferedToken = std::move(secondBufferedToken);
+        }
+    }
+
+    void bufferToken() {
+        if (firstBufferedToken == nullptr) {
+            firstBufferedToken = std::move(lexer.getNextToken());
+            while (firstBufferedToken->getType() == TokenType::T_MULTICOMMENT)
+                firstBufferedToken = std::move(lexer.getNextToken());
+        }
+        else if (secondBufferedToken == nullptr) {
+            secondBufferedToken = std::move(lexer.getNextToken());
+            while (secondBufferedToken->getType() == TokenType::T_MULTICOMMENT)
+                secondBufferedToken = std::move(lexer.getNextToken());
+        }
     }
 
     void test() {
-        std::cerr << std::string("Current token: ")
+        std::cout << std::string("Current token: ")
                 .append(tokenTypeToString(currentToken->getType()))
                 .append("\tRow: ")
                 .append(std::to_string(currentToken->getRow()))
@@ -60,20 +86,24 @@ public:
     // var_declaration  = type , id, "=", expression ;
     std::unique_ptr<FunctionNode> parseFunction() {
         std::unique_ptr<FunctionNode> result = std::make_unique<FunctionNode>();
+
         //var_declaration?
         if (!currentToken->isType()) {
             return nullptr;
         }
         result->setReturnType(currentToken->getType());
-        nextToken();
-        if (currentToken->getType() != TokenType::T_ID) {
-            throw ParserException(std::move(currentToken), TokenType::T_ID);
+        bufferToken();
+        if (firstBufferedToken->getType() != TokenType::T_ID) {
+            return nullptr;
+            //throw ParserException(std::move(currentToken), TokenType::T_ID);
         }
-        result->setId(currentToken->getStringValue());
-        nextToken();
-        if (currentToken->getType() != TokenType::T_OPEN) {
-            throw ParserException(std::move(currentToken), TokenType::T_OPEN);
+        result->setId(firstBufferedToken->getStringValue());
+        bufferToken();
+        if (secondBufferedToken->getType() != TokenType::T_OPEN) {
+            return nullptr;
         }
+        nextToken();
+        nextToken();
         nextToken();
         std::unique_ptr<ParametersNode> parameters = parseParameters();
         result->setParameters(std::move(parameters));

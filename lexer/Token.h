@@ -17,7 +17,7 @@ class Token {
     enum TokenType type;
     int row;
     int column;
-    std::variant<std::monostate, std::string, int, float> value;
+    std::variant<std::monostate, std::string, int, float> value = std::monostate();
 public:
     inline static const std::string tokenTypeNames[50] = {
             "T_WHILE",
@@ -70,7 +70,7 @@ public:
     Token(enum TokenType type, int row, int column);
     Token(enum TokenType type);
     const enum TokenType getType();
-    variant<std::monostate, string, int, float> getValue();
+    std::variant<std::monostate, string, int, float> getValue();
     const string getStringValue();
     const int getIntValue();
     const float getFloatValue();

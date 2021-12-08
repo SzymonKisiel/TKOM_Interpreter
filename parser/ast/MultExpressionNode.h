@@ -24,18 +24,18 @@ public:
     void print(int depth = 0);
     variant<std::monostate, string, int, float> evaluate(Context & context);
     struct VisitMult {
-        void operator()(int& lhs, int& rhs) { lhs = lhs * rhs; }
-        void operator()(float& lhs, float& rhs) { lhs = lhs * rhs; }
-        void operator()(int& lhs, float& rhs) { lhs = lhs * rhs; }
-        void operator()(float& lhs, int& rhs) { lhs = lhs * rhs; }
-        void operator()(auto& lhs, auto& rhs) { throw ExecutionException("Multiplication error"); }
+        std::variant<std::monostate, std::string, int, float> operator()(int& lhs, int& rhs) { return lhs * rhs; }
+        std::variant<std::monostate, std::string, int, float> operator()(float& lhs, float& rhs) { return lhs * rhs; }
+        std::variant<std::monostate, std::string, int, float> operator()(int& lhs, float& rhs) { return lhs * rhs; }
+        std::variant<std::monostate, std::string, int, float> operator()(float& lhs, int& rhs) { return lhs * rhs; }
+        std::variant<std::monostate, std::string, int, float> operator()(auto& lhs, auto& rhs) { throw ExecutionException("Multiplication error"); }
     };
     struct VisitDiv {
-        void operator()(int& lhs, int& rhs) { lhs = lhs / rhs; }
-        void operator()(float& lhs, float& rhs) { lhs = lhs / rhs; }
-        void operator()(int& lhs, float& rhs) { lhs = lhs / rhs; }
-        void operator()(float& lhs, int& rhs) { lhs = lhs / rhs; }
-        void operator()(auto& lhs, auto& rhs) { throw ExecutionException("Division error"); }
+        std::variant<std::monostate, std::string, int, float> operator()(int& lhs, int& rhs) { return lhs / rhs; }
+        std::variant<std::monostate, std::string, int, float> operator()(float& lhs, float& rhs) { return lhs / rhs; }
+        std::variant<std::monostate, std::string, int, float> operator()(int& lhs, float& rhs) { return lhs / rhs; }
+        std::variant<std::monostate, std::string, int, float> operator()(float& lhs, int& rhs) { return lhs / rhs; }
+        std::variant<std::monostate, std::string, int, float> operator()(auto& lhs, auto& rhs) { throw ExecutionException("Division error"); }
     };
     struct VisitAnd {
         void operator()(int& lhs, int& rhs) {

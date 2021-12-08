@@ -30,18 +30,19 @@ void AddExpressionNode::print(int depth) {
 
 variant<std::monostate, string, int, float> AddExpressionNode::evaluate(Context & context) {
     variant<std::monostate, string, int, float> lhs = operands[0]->evaluate(context);
-    variant<std::monostate, string, int, float> rhs;
+    variant<monostate, string, int, float> rhs;
     TokenType operation;
     for (int i = 0; i < addOperations.size(); ++i) {
         operation = addOperations[i];
         rhs = operands[i+1]->evaluate(context);
         if (operation == TokenType::T_PLUS) {
-            std::visit(VisitAdd(), lhs, rhs);
+            lhs = std::visit(VisitAdd(), lhs, rhs);
         }
         else if (operation == TokenType::T_MINUS) {
-            std::visit(VisitSubstract(), lhs, rhs);
+            lhs = std::visit(VisitSubstract(), lhs, rhs);
         }
         else if (operation == TokenType::T_OR) {
+            // TODO? lhs = ...
             std::visit(VisitOr(), lhs, rhs);
         }
     }

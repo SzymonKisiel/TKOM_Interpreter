@@ -36,12 +36,13 @@ variant<std::monostate, string, int, float> MultExpressionNode::evaluate(Context
         operation = multOperations[i];
         rhs = operands[i+1]->evaluate(context);
         if (operation == TokenType::T_MUL) {
-            std::visit(VisitMult(), lhs, rhs);
+            lhs = std::visit(VisitMult(), lhs, rhs);
         }
         else if (operation == TokenType::T_DIV) {
-            std::visit(VisitDiv(), lhs, rhs);
+            lhs = std::visit(VisitDiv(), lhs, rhs);
         }
         else if (operation == TokenType::T_AND) {
+            // TODO? lhs = ...
             std::visit(VisitAnd(), lhs, rhs);
         }
     }

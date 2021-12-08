@@ -1,4 +1,5 @@
 #include "Token.h"
+#include "../execution/VisitPrint.h"
 
 std::string tokenTypeToString(TokenType tokenType) {
     return Token::tokenTypeNames[tokenType];
@@ -24,16 +25,16 @@ std::variant<std::monostate, std::string, int, float> Token::getValue() {
     return value;
 }
 
-const string Token::getStringValue() {
-    return std::get<string>(this->value);
+const string* Token::getStringValue() {
+    return std::get_if<string>(&this->value);
 }
 
-const int Token::getIntValue() {
-    return std::get<int>(this->value);
+const int* Token::getIntValue() {
+    return std::get_if<int>(&this->value);
 }
 
-const float Token::getFloatValue() {
-    return std::get<float>(this->value);
+const float* Token::getFloatValue() {
+    return std::get_if<float>(&this->value);
 }
 
 const int Token::getRow() {
@@ -96,11 +97,13 @@ void Token::print() {
     cout << this->getRow() << '\t'
          << this->getColumn() << '\t'
          << tokenTypeNames[this->getType()] << '\t';
-    if (this->getType() == TokenType::T_INT)
-        cout << this->getIntValue();
-    else if (this->getType() == TokenType::T_FLOAT)
-        cout << this->getFloatValue();
-    else if (this->getType() == TokenType::T_STRING)
-        cout << this->getStringValue();
-    cout << endl;
+    if (auto val = this->getIntValue() != nullptr) {
+        cout << val << '\n';
+    }
+    else if (auto val = this->getFloatValue() != nullptr) {
+        cout << val << '\n';
+    }
+    else if (auto val = this->getStringValue() != nullptr) {
+        cout << val << '\n';
+    }
 }
