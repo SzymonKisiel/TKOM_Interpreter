@@ -1,0 +1,23 @@
+test();
+
+if (x)
+    int x = 5;
+
+void test(int x) {
+    return x;
+}
+
+if (x)
+    x = 5;
+
+while (test)
+    x = x + 5 * 2 < 1;
+
+if (x < 5)
+    x = 0;
+elsif (x < 7)
+    x = 1;
+elsif (x < 9)
+    x = 2;
+else
+    x = 3;

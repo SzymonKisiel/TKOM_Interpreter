@@ -1,0 +1,36 @@
+int factorial(int x) {
+    if (x <= 1)
+        return 1;
+    return x * factorial(x-1);
+}
+int add(int x, int y) {
+    return x + y;
+}
+void count(int x) {
+    print(x);
+    if (x > 0)
+        count(x-1);
+}
+string concatenate(string text1, string text2) {
+    return text1 + " " + text2;
+}
+
+print("count:");
+count(5);
+
+print("add:");
+print(add(3, 6));
+
+print("factorial:");
+print(factorial(6));
+
+print("concatenate:");
+{
+    string test1 = "test";
+    string test2 = "konkatenacji";
+    print(concatenate(test1, test2));
+}
+
+int add(int x, int y) {
+    return x + y;
+}
