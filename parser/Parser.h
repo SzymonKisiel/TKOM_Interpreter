@@ -19,15 +19,41 @@ class Parser
 private:
     Lexer & lexer;
     std::unique_ptr<Token> currentToken;
+    std::queue<std::unique_ptr<Token>> tokensBuffer;
 public:
     Parser(Lexer & lexer) : lexer(lexer) {
         nextToken();
     }
 
     void nextToken() {
+        if (tokensBuffer.empty()) {
+            currentToken = std::move(lexer.getNextToken());
+            while (currentToken->getType() == TokenType::T_MULTICOMMENT)
+                currentToken = std::move(lexer.getNextToken());
+        }
+        else {
+            currentToken = std::move(tokensBuffer.front());
+            tokensBuffer.pop();
+        }
+    }
+
+    void bufferToken() {
+        tokensBuffer.push(std::move(currentToken));
+
         currentToken = std::move(lexer.getNextToken());
         while (currentToken->getType() == TokenType::T_MULTICOMMENT)
             currentToken = std::move(lexer.getNextToken());
+    }
+
+    void bufferTokenAndNextFromQueue() {
+        tokensBuffer.push(std::move(currentToken));
+        currentToken = std::move(tokensBuffer.front());
+        tokensBuffer.pop();
+    }
+
+    void clearBuffer() {
+        std::queue<std::unique_ptr<Token>> emptyBuffer;
+        std::swap(tokensBuffer, emptyBuffer);
     }
 
     void test() {
@@ -59,23 +85,23 @@ public:
     }
 
     // function = type , id ,  "(" , [parameters] , ")" , "{" , {statement} , "}" ;
-    // var_declaration  = type , id, "=", expression ;
     std::unique_ptr<FunctionNode> parseFunction() {
         std::unique_ptr<FunctionNode> result = std::make_unique<FunctionNode>();
-        //var_declaration?
         if (!currentToken->isType()) {
             return nullptr;
         }
         result->setReturnType(currentToken->getType());
-        nextToken();
+        bufferToken();
         if (currentToken->getType() != TokenType::T_ID) {
             throw ParserException(std::move(currentToken), TokenType::T_ID);
         }
         result->setId(*currentToken->getStringValue()); //check if nullptr
-        nextToken();
+        bufferToken();
         if (currentToken->getType() != TokenType::T_OPEN) {
-            throw ParserException(std::move(currentToken), TokenType::T_OPEN);
+            bufferTokenAndNextFromQueue();
+            return nullptr;
         }
+        clearBuffer();
         nextToken();
         std::unique_ptr<ParametersNode> parameters = parseParameters();
         result->setParameters(std::move(parameters));
