@@ -2,6 +2,8 @@
 #define _TKOM__INTERPRETER_GEOGRAPHICCOORDINATE_H
 
 #include "../lexer/Token.h"
+#include "GeographicDistance.h"
+#include "GeographicDirection.h"
 
 class GeographicCoordinate {
 public:
@@ -21,6 +23,16 @@ public:
         GeographicCoordinate::direction = directionType;
     }
 
+    std::string toString() {
+        return std::string(to_string(degree))
+                            .append("^ ")
+                            .append(to_string(minute))
+                            .append("' ")
+                            .append(to_string(second))
+                            .append("'' ")
+                            .append(direction.toString());
+    }
+
     void print() {
         std::cout << "GeographicCoordinate = ";
         if (degree)
@@ -29,16 +41,16 @@ public:
             std::cout << minute << "' ";
         if (second)
             std::cout << second << "'' ";
-        std::cout << tokenTypeToString(direction) << std::endl;
+        std::cout << direction.toString() << std::endl;
     }
 
-    GeographicCoordinate operator+(GeographicCoordinate const &geoPos);
-    GeographicCoordinate operator-(GeographicCoordinate const &geoPos);
+    GeographicDistance operator+(GeographicCoordinate const &geoPos);
+    GeographicDistance operator-(GeographicCoordinate const &geoPos);
 private:
     int degree = 0;
     int minute = 0;
     int second = 0;
-    TokenType direction;
+    GeographicDirection direction;
 };
 
 

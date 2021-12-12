@@ -8,16 +8,20 @@
 #include "Node.h"
 #include "../../lexer/Token.h"
 //#include "../../execution/Context.h"
+#include "../../structures/GeographicCoordinate.h"
+#include "../../structures/GeographicDistance.h"
+#include "../../structures/GeographicPosition.h"
 
+using Value = std::variant<std::monostate, std::string, int, float,
+        GeographicCoordinate, GeographicDistance, GeographicPosition>;
 
 class FunctionCallNode;
 class ExpressionNode;
 
 // factor          = integer | float | geo | string | (["-"] , id) | function_call | "(" , expression , ")"  ;
 class FactorNode : public Node {
-    TokenType type;
     bool isPositive = true;
-    variant<std::monostate, string, int, float /*, GeographicalCoordinate*/> value;
+    Value value;
     std::string id;
     std::unique_ptr<FunctionCallNode> functionCall;
     std::unique_ptr<ExpressionNode> expression;
@@ -29,16 +33,16 @@ class FactorNode : public Node {
     };
     FactorType factorType;
 public:
-    void setValue(TokenType type, variant<std::monostate, string, int, float> value);
+    void setValue(Value value);
+    void setValue(std::variant<std::monostate, std::string, int, float> value);
     void setId(std::string id);
     void setFunction(std::unique_ptr<FunctionCallNode> functionCall);
-    void setGeo();
     void setExpression(std::unique_ptr<ExpressionNode> expression);
     void setNegative();
     FactorType getType();
     std::string toString();
     void print(int depth = 0);
-//    variant<std::monostate, string, int, float> evaluate(Context & context);
+//    std::variant<std::monostate, std::string, int, float> evaluate(Context & context);
     inline static const std::string factorTypeNames[4] = {
             "VALUE",
             "ID",

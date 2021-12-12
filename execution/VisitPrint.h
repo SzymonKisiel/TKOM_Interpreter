@@ -19,6 +19,7 @@ struct VisitToString {
     std::string operator()(int& x)         { return to_string(x); }
     std::string operator()(float& x)       { return to_string(x); }
     std::string operator()(std::string& x) { return x; }
+    std::string operator()(GeographicCoordinate& x) { return x.toString(); }
     std::string operator()(auto)           { return "empty/unknown"; }
 };
 

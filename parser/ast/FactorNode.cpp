@@ -1,10 +1,13 @@
 #include "FactorNode.h"
 #include "../../execution/VisitPrint.h"
 
-void FactorNode::setValue(TokenType type, variant<std::monostate, string, int, float> value) {
-    this->type = type;
+void FactorNode::setValue(Value value) {
     this->value = std::move(value);
     factorType = FactorType::VALUE;
+}
+
+void FactorNode::setValue(std::variant<std::monostate, std::string, int, float> value) {
+    this->setValue(std::visit([](auto v) -> Value { return v; }, value));
 }
 
 void FactorNode::setId(std::string id) {

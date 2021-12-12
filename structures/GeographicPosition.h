@@ -1,8 +1,8 @@
 #ifndef _TKOM__INTERPRETER_GEOGRAPHICPOSITION_H
 #define _TKOM__INTERPRETER_GEOGRAPHICPOSITION_H
 
-
 #include "GeographicCoordinate.h"
+#include "GeographicDistance.h"
 
 class GeographicPosition {
 public:
@@ -20,11 +20,11 @@ public:
         GeographicPosition::longitude = longitude;
     }
 
-    GeographicPosition operator+(GeographicPosition const &geoPos);
-    GeographicPosition operator-(GeographicPosition const &geoPos);
+    GeographicDistance operator+(GeographicPosition const &geoPos);
+    GeographicDistance operator-(GeographicPosition const &geoPos);
 private:
     GeographicCoordinate latitude;
-    GeographicCoordinate longitude
+    GeographicCoordinate longitude;
 };
 
 

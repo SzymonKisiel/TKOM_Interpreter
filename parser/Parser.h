@@ -488,11 +488,12 @@ public:
             }
             else {
                 auto value = currentToken->getValue();
-                factor->setValue(currentToken->getType(), value);
+                factor->setValue(value);
                 nextToken();
                 auto geoCoord = parseCoordinate(value);
                 if (geoCoord) {
                     geoCoord->print();
+                    factor->setValue(*geoCoord);
                     //factor->setGeo();
                 }
             }
