@@ -22,6 +22,13 @@ public:
 
     GeographicDistance operator+(GeographicPosition const &geoPos);
     GeographicDistance operator-(GeographicPosition const &geoPos);
+
+    std::string toString() {
+        return std::string(latitude.toString())
+                    .append("\t")
+                    .append(longitude.toString());
+    }
+
 private:
     GeographicCoordinate latitude;
     GeographicCoordinate longitude;

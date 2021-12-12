@@ -44,6 +44,16 @@ const int Token::getColumn() {
     return this->column;
 }
 
+const bool Token::isValue() {
+    if (this->getType() == TokenType::T_ID ||
+        this->getType() == TokenType::T_INT ||
+        this->getType() == TokenType::T_FLOAT ||
+        this->getType() == TokenType::T_STRING
+        )
+        return true;
+    return false;
+}
+
 const bool Token::isType() {
     if (this->type >= TokenType::T_TYPE_VOID && this->type <= TokenType::T_TYPE_GEOCOORD)
         return true;
@@ -82,8 +92,15 @@ const bool Token::isGeoDirection() {
     if (this->type == TokenType::T_GEO_DIRECTION_N ||
         this->type == TokenType::T_GEO_DIRECTION_S ||
         this->type == TokenType::T_GEO_DIRECTION_W ||
-        this->type == TokenType::T_GEO_DIRECTION_E
-            )
+        this->type == TokenType::T_GEO_DIRECTION_E)
+        return true;
+    return false;
+}
+
+const bool Token::isGeoUnit() {
+    if (this->type == TokenType::T_GEO_DEGREE ||
+        this->type == TokenType::T_GEO_MINUTE ||
+        this->type == TokenType::T_GEO_SECOND)
         return true;
     return false;
 }

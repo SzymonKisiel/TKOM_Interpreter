@@ -77,12 +77,14 @@ public:
     const float* getFloatValue();
     const int getRow();
     const int getColumn();
+    const bool isValue();
     const bool isType();
     const bool isCompOperator();
     const bool isMultOperator();
     const bool isAddOperator();
     const bool isOperator();
     const bool isGeoDirection();
+    const bool isGeoUnit();
     const string getTypeString();
     void print();
 };
