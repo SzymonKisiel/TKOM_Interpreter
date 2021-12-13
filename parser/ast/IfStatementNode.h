@@ -26,7 +26,7 @@ public:
     void addElsifCondition(std::unique_ptr<ExpressionNode> node);
     void addElsifStatement(std::unique_ptr<StatementNode> node);
     void setElseStatement(std::unique_ptr<StatementNode> node);
-    void print(int depth = 0);
+    std::string toString(int depth = 0);
 //    std::variant<std::monostate, string, int, float> execute(Context & context);
 };
 

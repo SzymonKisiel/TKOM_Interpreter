@@ -9,16 +9,18 @@ void AssignmentNode::setExpression(std::unique_ptr<ExpressionNode> expression) {
     this->expression = std::move(expression);
 }
 
-std::string AssignmentNode::toString() {
-    return std::string("ASSIGNMENT - ").append(id);
-}
-
-void AssignmentNode::print(int depth) {
+std::string AssignmentNode::toString(int depth) {
+    std::string result = std::string();
     for (int i = 0; i < depth; ++i)
-        std::cout << "  ";
-    std::cout << toString() << std::endl;
+        result.append(prefix);
+    result.append("ASSIGNMENT ")
+            .append(id)
+            .append("\n");
+
     if (expression != nullptr)
-        expression->print(depth + 1);
+        result.append(expression->toString(depth + 1));
+
+    return result;
 }
 
 //void AssignmentNode::execute(Context &context) {

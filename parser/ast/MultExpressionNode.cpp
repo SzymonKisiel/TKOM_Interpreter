@@ -8,24 +8,23 @@ void MultExpressionNode::addOperation(TokenType multOperation) {
     multOperations.push_back(multOperation);
 }
 
-std::string MultExpressionNode::toString() {
-    std::string result("MULT_EXPRESSION");
+std::string MultExpressionNode::toString(int depth) {
+    std::string result = std::string();
+    for (int i = 0; i < depth; ++i)
+        result.append(prefix);
+    result.append("MULT_EXPRESSION");
+
     if (!multOperations.empty()) {
-        result.append(" -");
         for (const auto &operation: multOperations) {
             result.append(" ").append(tokenTypeToString(operation));
         }
     }
-    return result;
-}
+    result.append("\n");
 
-void MultExpressionNode::print(int depth) {
-    for (int i = 0; i < depth; ++i)
-        std::cout << "  ";
-    std::cout << toString() << std::endl;
     for (const auto &child: operands) {
-        child->print(depth+1);
+        result.append(child->toString(depth+1));
     }
+    return result;
 }
 
 //variant<std::monostate, string, int, float> MultExpressionNode::evaluate(Context & context) {

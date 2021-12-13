@@ -5,17 +5,17 @@ void ArgumentsNode::addArgument(std::shared_ptr<ExpressionNode> argument) {
         arguments.push_back(std::move(argument));
 }
 
-std::string ArgumentsNode::toString() {
-    return "ARGUMENTS";
-}
-
-void ArgumentsNode::print(int depth) {
+std::string ArgumentsNode::toString(int depth) {
+    std::string result = std::string();
     for (int i = 0; i < depth; ++i)
-        std::cout << "  ";
-    std::cout << toString() << std::endl;
+        result.append(prefix);
+    result.append("ARGUMENTS\n");
+
     for (const auto &child: arguments) {
-        child->print(depth + 1);
+        result.append(child->toString(depth + 1));
     }
+
+    return result;
 }
 
 std::vector<std::shared_ptr<ExpressionNode>> ArgumentsNode::getArguments() {

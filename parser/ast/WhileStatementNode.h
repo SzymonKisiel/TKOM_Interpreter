@@ -22,7 +22,7 @@ public:
     WhileStatementNode(std::string name);
     void setCondition(std::unique_ptr<ExpressionNode> node);
     void setStatement(std::unique_ptr<StatementNode> node);
-    void print(int depth = 0);
+    std::string toString(int depth = 0);
 //    std::variant<std::monostate, std::string, int, float> execute(Context & context);
 };
 

@@ -9,24 +9,23 @@ void ExpressionNode::addOperation(TokenType compOperation) {
     compOperations.push_back(compOperation);
 }
 
-std::string ExpressionNode::toString() {
-    std::string result("EXPRESSION");
+std::string ExpressionNode::toString(int depth) {
+    std::string result = std::string();
+    for (int i = 0; i < depth; ++i)
+        result.append(prefix);
+    result.append("EXPRESSION");
+
     if (!compOperations.empty()) {
-        result.append(" -");
         for (const auto &operation: compOperations) {
             result.append(" ").append(tokenTypeToString(operation));
         }
     }
-    return result;
-}
+    result.append("\n");
 
-void ExpressionNode::print(int depth) {
-    for (int i = 0; i < depth; ++i)
-        std::cout << "  ";
-    std::cout << toString() << std::endl;
     for (const auto &child: operands) {
-        child->print(depth+1);
+        result.append(child->toString(depth+1));
     }
+    return result;
 }
 
 //variant<std::monostate, string, int, float> ExpressionNode::evaluate(Context & context) {

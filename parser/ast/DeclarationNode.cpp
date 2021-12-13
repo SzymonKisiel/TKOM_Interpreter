@@ -13,19 +13,19 @@ void DeclarationNode::setExpression(std::unique_ptr<ExpressionNode> expression) 
     this->expression = std::move(expression);
 }
 
-std::string DeclarationNode::toString() {
-    return std::string("DECLARATION - ")
+std::string DeclarationNode::toString(int depth) {
+    std::string result = std::string();
+    for (int i = 0; i < depth; ++i)
+        result.append(prefix);
+    result.append("DECLARATION ")
             .append(tokenTypeToString(type))
             .append(" ")
-            .append(id);
-}
+            .append(id)
+            .append("\n");
 
-void DeclarationNode::print(int depth) {
-    for (int i = 0; i < depth; ++i)
-        std::cout << "  ";
-    std::cout << toString() << std::endl;
     if (expression != nullptr)
-        expression->print(depth + 1);
+        result.append(expression->toString(depth + 1));
+    return result;
 }
 
 //void DeclarationNode::execute(Context &context) {

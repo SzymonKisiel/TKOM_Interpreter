@@ -8,23 +8,21 @@ void ParametersNode::addIdentifier(std::string identifier) {
     identifiers.push_back(identifier);
 }
 
-std::string ParametersNode::toString() {
-    std::string result("PARAMETERS");
-//        for (int i = 0; i < std::min(types.size(), identifiers.size()); ++i) {
-//            result.append(tokenTypeToString(types[i]));
-//            //<< '\t' << tokenTypeToString(types[i]) << '\t' << identifiers[i];
-//        }
-    return result;
-}
-
-void ParametersNode::print(int depth) {
+std::string ParametersNode::toString(int depth) {
+    std::string result = std::string();
     for (int i = 0; i < depth; ++i)
-        std::cout << "  ";
-    std::cout << toString();
+        result.append(prefix);
+    result.append("PARAMETERS");
+
     for (int i = 0; i < std::min(types.size(), identifiers.size()); ++i) {
-        std::cout << '\t' << tokenTypeToString(types[i]) << '\t' << identifiers[i];
+        result.append("\t")
+                .append(tokenTypeToString(types[i]))
+                .append("\t")
+                .append(identifiers[i]);
     }
-    std::cout << std::endl;
+    result.append("\n");
+
+    return result;
 }
 
 const vector<TokenType> &ParametersNode::getTypes() {

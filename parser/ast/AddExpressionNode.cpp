@@ -8,25 +8,25 @@ void AddExpressionNode::addOperation(TokenType addOperation) {
     addOperations.push_back(addOperation);
 }
 
-std::string AddExpressionNode::toString() {
-    std::string result("ADD_EXPRESSION");
+std::string AddExpressionNode::toString(int depth) {
+    std::string result = std::string();
+    for (int i = 0; i < depth; ++i)
+        result.append(prefix);
+    result.append("ADD_EXPRESSION");
+
     if (!addOperations.empty()) {
-        result.append(" -");
         for (const auto &operation: addOperations) {
             result.append(" ").append(tokenTypeToString(operation));
         }
     }
+    result.append("\n");
+
+    for (const auto &child: operands) {
+        result.append(child->toString(depth+1));
+    }
     return result;
 }
 
-void AddExpressionNode::print(int depth) {
-    for (int i = 0; i < depth; ++i)
-        std::cout << "  ";
-    std::cout << toString() << std::endl;
-    for (const auto &child: operands) {
-        child->print(depth+1);
-    }
-}
 
 //std::variant<std::monostate, std::string, int, float> AddExpressionNode::evaluate(Context & context) {
 //    std::variant<std::monostate, std::string, int, float> lhs = operands[0]->evaluate(context);

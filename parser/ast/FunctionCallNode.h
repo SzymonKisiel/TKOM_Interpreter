@@ -19,8 +19,7 @@ class FunctionCallNode : public Node {
 public:
     void setId(std::string id);
     void setArguments(std::shared_ptr<ArgumentsNode> arguments);
-    std::string toString();
-    void print(int depth = 0);
+    std::string toString(int depth = 0);
 //    std::variant<std::monostate, string, int, float> execute(Context & context);
 };
 

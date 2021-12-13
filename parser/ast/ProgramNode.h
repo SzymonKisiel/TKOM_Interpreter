@@ -20,6 +20,7 @@ public:
     void addStatement(std::unique_ptr<StatementNode> node);
     const bool isTerminal();
     void print(int depth = 0);
+    const std::string toString();
 //    void execute();
 };
 

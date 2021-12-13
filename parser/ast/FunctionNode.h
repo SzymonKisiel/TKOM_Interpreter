@@ -14,7 +14,7 @@ class StatementNode;
 class ParametersNode;
 
 // function = type , id ,  "(" , [parameters] , ")" , "{" , {statement} , "}" ;
-class FunctionNode : public Function {
+class FunctionNode : public Function, Node {
     std::string id;
     std::shared_ptr<ParametersNode> parameters;
     std::vector<std::shared_ptr<StatementNode>> statements;
@@ -28,8 +28,7 @@ public:
     const string &getId();
     std::shared_ptr<ParametersNode> getParameters();
 
-    std::string toString();
-    void print(int depth = 0);
+    std::string toString(int depth = 0);
 //    std::variant<std::monostate, std::string, int, float> execute(Context & context);
 };
 

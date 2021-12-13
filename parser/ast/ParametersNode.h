@@ -18,8 +18,7 @@ class ParametersNode : public Node {
 public:
     void addType(TokenType type);
     void addIdentifier(std::string identifier);
-    std::string toString();
-    void print(int depth = 0);
+    std::string toString(int depth = 0);
 //    void execute(Context & context);
 
     const vector<TokenType> &getTypes();

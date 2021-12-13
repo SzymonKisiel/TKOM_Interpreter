@@ -14,12 +14,16 @@ void WhileStatementNode::setStatement(std::unique_ptr<StatementNode> node) {
         statement = std::move(node);
 }
 
-void WhileStatementNode::print(int depth) {
+std::string WhileStatementNode::toString(int depth) {
+    std::string result = std::string();
     for (int i = 0; i < depth; ++i)
-        std::cout << "  ";
-    std::cout << "WHILE_STATEMENT" << std::endl;
-    condition->print(depth+1);
-    statement->print(depth+1);
+        result.append(prefix);
+    result.append("WHILE_STATEMENT\n");
+
+    result.append(condition->toString(depth+1));
+    result.append(statement->toString(depth+1));
+
+    return result;
 }
 
 //std::variant<std::monostate, std::string, int, float> WhileStatementNode::execute(Context &context) {

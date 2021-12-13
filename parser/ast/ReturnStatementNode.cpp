@@ -5,16 +5,16 @@ void ReturnStatementNode::setReturnExpression(std::unique_ptr <ExpressionNode> r
     this->returnExpression = std::move(returnExpression);
 }
 
-std::string ReturnStatementNode::toString() {
-    return "RETURN_STATEMENT";
-}
-
-void ReturnStatementNode::print(int depth) {
+std::string ReturnStatementNode::toString(int depth) {
+    std::string result = std::string();
     for (int i = 0; i < depth; ++i)
-        std::cout << "  ";
-    std::cout << toString() << std::endl;
+        result.append(prefix);
+    result.append("RETURN_STATEMENT\n");
+
     if (returnExpression != nullptr)
-        returnExpression->print(depth + 1);
+        result.append(returnExpression->toString(depth + 1));
+
+    return result;
 }
 
 //variant<std::monostate, string, int, float> ReturnStatementNode::execute(Context &context) {

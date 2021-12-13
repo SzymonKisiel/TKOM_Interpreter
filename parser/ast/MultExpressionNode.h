@@ -20,8 +20,7 @@ class MultExpressionNode : public Node {
 public:
     void addOperand(std::unique_ptr<FactorNode> node);
     void addOperation(TokenType multOperation);
-    std::string toString();
-    void print(int depth = 0);
+    std::string toString(int depth = 0);
 //    variant<std::monostate, string, int, float> evaluate(Context & context);
 };
 

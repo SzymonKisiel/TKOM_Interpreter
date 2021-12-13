@@ -21,22 +21,22 @@ void SimpleStatementNode::setReturnStatement(std::unique_ptr <ReturnStatementNod
     simpleStatementType = SimpleStatementType::RETURN_STATEMENT;
 }
 
-std::string SimpleStatementNode::toString() {
-    return "SIMPLE_STATEMENT";
-}
-
-void SimpleStatementNode::print(int depth) {
+std::string SimpleStatementNode::toString(int depth) {
+    std::string result = std::string();
     for (int i = 0; i < depth; ++i)
-        std::cout << "  ";
-    std::cout << toString() << std::endl;
+        result.append(prefix);
+    result.append("SIMPLE_STATEMENT\n");
+
     if (declaration != nullptr)
-        declaration->print(depth + 1);
+        result.append(declaration->toString(depth + 1));
     else if (assignment != nullptr)
-        assignment->print(depth + 1);
+        result.append(assignment->toString(depth + 1));
     else if (functionCall != nullptr)
-        functionCall->print(depth + 1);
+        result.append(functionCall->toString(depth + 1));
     else if (returnStatement != nullptr)
-        returnStatement->print(depth + 1);
+        result.append(returnStatement->toString(depth + 1));
+
+    return result;
 }
 
 //variant<std::monostate, string, int, float> SimpleStatementNode::execute(Context &context) {

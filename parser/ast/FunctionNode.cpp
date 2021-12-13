@@ -17,22 +17,23 @@ void FunctionNode::setReturnType(TokenType returnType) {
     this->returnType = returnType;
 }
 
-std::string FunctionNode::toString() {
-    return std::string("FUNCTION - ")
+std::string FunctionNode::toString(int depth) {
+    std::string result = std::string();
+    for (int i = 0; i < depth; ++i)
+        result.append(prefix);
+    result.append("FUNCTION ")
             .append(tokenTypeToString(returnType))
             .append(" ")
-            .append(id);
-}
+            .append(id)
+            .append("\n");
 
-void FunctionNode::print(int depth) {
-    for (int i = 0; i < depth; ++i)
-        std::cout << "  ";
-    std::cout << toString() << std::endl;
     if (parameters != nullptr)
-        parameters->print(depth+1);
+        result.append(parameters->toString(depth+1));
     for (const auto &child: statements) {
-        child->print(depth+1);
+        result.append(child->toString(depth+1));
     }
+
+    return result;
 }
 
 //variant<std::monostate, string, int, float> FunctionNode::execute(Context &context) {

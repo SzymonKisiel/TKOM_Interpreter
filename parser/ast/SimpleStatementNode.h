@@ -32,8 +32,7 @@ public:
     void setAssignment(std::unique_ptr <AssignmentNode> assignment);
     void setFunctionCall(std::unique_ptr <FunctionCallNode> functionCall);
     void setReturnStatement(std::unique_ptr <ReturnStatementNode> returnStatement);
-    std::string toString();
-    void print(int depth = 0);
+    std::string toString(int depth = 0);
 //    variant<std::monostate, string, int, float> execute(Context & context);
 };
 

@@ -23,22 +23,26 @@ void IfStatementNode::setElseStatement(std::unique_ptr<StatementNode> node) {
     elseStatement = std::move(node);
 }
 
-void IfStatementNode::print(int depth) {
+std::string IfStatementNode::toString(int depth) {
+    std::string result = std::string();
     for (int i = 0; i < depth; ++i)
-        std::cout << "  ";
-    std::cout << "IF_STATEMENT" << std::endl;
+        result.append(prefix);
+    result.append("IF_STATEMENT\n");
+
     if (ifCondition != nullptr)
-        ifCondition->print(depth+1);
+        result.append(ifCondition->toString(depth+1));
     if (ifStatement != nullptr)
-        ifStatement->print(depth+1);
+        result.append(ifStatement->toString(depth+1));
     if (!elsifConditions.empty()) {
         for (const auto &child: elsifConditions)
-            child->print(depth+1);
+            result.append(child->toString(depth+1));
         for (const auto &child: elsifStatements)
-            child->print(depth+1);
+            result.append(child->toString(depth+1));
     }
     if (elseStatement != nullptr)
-        elseStatement->print(depth+1);
+        result.append(elseStatement->toString(depth+1));
+
+    return result;
 }
 
 //std::variant<std::monostate, string, int, float> IfStatementNode::execute(Context & context) {
