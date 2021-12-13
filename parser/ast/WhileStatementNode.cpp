@@ -1,9 +1,6 @@
 #include "WhileStatementNode.h"
 //#include "../../execution/VisitCondition.h"
 
-WhileStatementNode::WhileStatementNode(std::string name) : name(std::move(name)) {
-}
-
 void WhileStatementNode::setCondition(std::unique_ptr<ExpressionNode> node) {
     if (node != nullptr)
         condition = std::move(node);

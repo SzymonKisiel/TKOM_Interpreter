@@ -210,7 +210,7 @@ public:
 
     // while_statement  = "while" , "(" , expression, ")", statement ;
     std::unique_ptr<WhileStatementNode> parseWhile() {
-        std::unique_ptr<WhileStatementNode> result = std::make_unique<WhileStatementNode>("WHILE_STATEMENT");
+        std::unique_ptr<WhileStatementNode> result = std::make_unique<WhileStatementNode>();
         std::unique_ptr<ExpressionNode> expression;
 
 

@@ -17,9 +17,7 @@ class Context;
 class WhileStatementNode : public Node {
     std::unique_ptr<ExpressionNode> condition;
     std::unique_ptr<StatementNode> statement;
-    std::string name = "";
 public:
-    WhileStatementNode(std::string name);
     void setCondition(std::unique_ptr<ExpressionNode> node);
     void setStatement(std::unique_ptr<StatementNode> node);
     std::string toString(int depth = 0);
