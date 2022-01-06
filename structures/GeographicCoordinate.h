@@ -7,6 +7,9 @@
 
 class GeographicCoordinate {
 public:
+    GeographicCoordinate() : degree(0), minute(0), second(0) {};
+    GeographicCoordinate(int degree, int minute, int second, TokenType direction) :
+        degree(degree), minute(minute), second(second), direction(direction) {};
     void setDegree(int degree) {
         GeographicCoordinate::degree = degree;
     }
