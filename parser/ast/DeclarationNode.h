@@ -7,7 +7,7 @@
 #include <string>
 #include "Node.h"
 #include "../../lexer/Token.h"
-//#include "../../execution/Context.h"
+#include "../../execution/Context.h"
 
 
 // var_declaration  = type , id, "=", expression ;
@@ -20,7 +20,7 @@ public:
     void setId(std::string id);
     void setExpression(std::unique_ptr<ExpressionNode> expression);
     std::string toString(int depth = 0);
-//    void execute(Context & context);
+    void execute(Context & context);
 };
 
 

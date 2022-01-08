@@ -50,29 +50,29 @@ std::string StatementNode::toString(int depth) {
     return result;
 }
 
-//std::variant<std::monostate, std::string, int, float> StatementNode::execute(Context &context) {
-//    if (statementType == StatementType::SIMPLE)
-//        return simpleStatement->execute(context);
-//
-//    context.enterScope();
-//    std::variant<std::monostate, std::string, int, float> value = std::monostate();
-//    switch (statementType) {
-//        case StatementType::IF:
-//            value = ifStatement->execute(context);
-//            break;
-//        case StatementType::WHILE:
-//            value = whileStatement->execute(context);
-//            break;
-//        case StatementType::BLOCK:
-//            for (const auto &statement: statements) {
-//                value = statement->execute(context);
-//                if (!std::get_if<std::monostate>(&value)) {
-//                    context.exitScope();
-//                    return value;
-//                }
-//            }
-//            break;
-//    }
-//    context.exitScope();
-//    return value;
-//}
+std::variant<std::monostate, std::string, int, float> StatementNode::execute(Context &context) {
+    if (statementType == StatementType::SIMPLE)
+        return simpleStatement->execute(context);
+
+    context.enterScope();
+    std::variant<std::monostate, std::string, int, float> value = std::monostate();
+    switch (statementType) {
+        case StatementType::IF:
+            value = ifStatement->execute(context);
+            break;
+        case StatementType::WHILE:
+            value = whileStatement->execute(context);
+            break;
+        case StatementType::BLOCK:
+            for (const auto &statement: statements) {
+                value = statement->execute(context);
+                if (!std::get_if<std::monostate>(&value)) {
+                    context.exitScope();
+                    return value;
+                }
+            }
+            break;
+    }
+    context.exitScope();
+    return value;
+}

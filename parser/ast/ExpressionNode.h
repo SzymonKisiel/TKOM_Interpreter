@@ -7,8 +7,8 @@
 #include <string>
 #include "Node.h"
 #include "../../lexer/Token.h"
-//#include "../../execution/Context.h"
-//#include "../../exception/ExecutionException.h"
+#include "../../execution/Context.h"
+#include "../../exception/ExecutionException.h"
 
 
 class AddExpressionNode;
@@ -21,7 +21,7 @@ public:
     void addOperand(std::unique_ptr<AddExpressionNode> node);
     void addOperation(TokenType compOperation);
     std::string toString(int depth = 0);
-//    variant<std::monostate, string, int, float> evaluate(Context & context);
+    variant<std::monostate, string, int, float> evaluate(Context & context);
 };
 
 

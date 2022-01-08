@@ -17,6 +17,6 @@ std::string ReturnStatementNode::toString(int depth) {
     return result;
 }
 
-//variant<std::monostate, string, int, float> ReturnStatementNode::execute(Context &context) {
-//    return returnExpression->evaluate(context);
-//}
+variant<std::monostate, string, int, float> ReturnStatementNode::execute(Context &context) {
+    return returnExpression->evaluate(context);
+}

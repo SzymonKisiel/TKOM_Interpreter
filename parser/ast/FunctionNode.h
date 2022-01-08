@@ -7,7 +7,7 @@
 #include <string>
 #include "Node.h"
 #include "../../lexer/Token.h"
-//#include "../../execution/Context.h"
+#include "../../execution/Context.h"
 #include "../../execution/Function.h"
 
 class StatementNode;
@@ -29,7 +29,7 @@ public:
     std::shared_ptr<ParametersNode> getParameters();
 
     std::string toString(int depth = 0);
-//    std::variant<std::monostate, std::string, int, float> execute(Context & context);
+    std::variant<std::monostate, std::string, int, float> execute(Context & context);
 };
 
 

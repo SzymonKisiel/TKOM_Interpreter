@@ -1,5 +1,5 @@
 #include "DeclarationNode.h"
-//#include "../../execution/VisitCheckType.h"
+#include "../../execution/VisitCheckType.h"
 
 void DeclarationNode::setType(TokenType type) {
     this->type = type;
@@ -28,13 +28,13 @@ std::string DeclarationNode::toString(int depth) {
     return result;
 }
 
-//void DeclarationNode::execute(Context &context) {
-//    auto value = expression->evaluate(context);
-//    std::variant<TokenType> test = type;
-//    if (!std::visit(VisitCheckType(), value, test))
-//        throw ExecutionException(std::string("Wrong value type in '")
-//                                    .append(id).append("' declaration, expected ")
-//                                    .append(tokenTypeToString(type))
-//                                );
-//    context.addVariable(id, expression->evaluate(context));
-//}
+void DeclarationNode::execute(Context &context) {
+    auto value = expression->evaluate(context);
+    std::variant<TokenType> test = type;
+    if (!std::visit(VisitCheckType(), value, test))
+        throw ExecutionException(std::string("Wrong value type in '")
+                                    .append(id).append("' declaration, expected ")
+                                    .append(tokenTypeToString(type))
+                                );
+    context.addVariable(id, expression->evaluate(context));
+}

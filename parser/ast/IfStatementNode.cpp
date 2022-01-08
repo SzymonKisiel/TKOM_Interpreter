@@ -1,5 +1,5 @@
 #include "IfStatementNode.h"
-//#include "../../execution/VisitCondition.h"
+#include "../../execution/VisitCondition.h"
 
 void IfStatementNode::setIfCondition(std::unique_ptr<ExpressionNode> node) {
     ifCondition = std::move(node);
@@ -45,23 +45,23 @@ std::string IfStatementNode::toString(int depth) {
     return result;
 }
 
-//std::variant<std::monostate, string, int, float> IfStatementNode::execute(Context & context) {
-//    auto condition = ifCondition->evaluate(context);
-//    if (std::visit(VisitCondition(), condition)) {
-//        return ifStatement->execute(context);
-//    }
-//    if (!elsifConditions.empty()) {
-//        int i = 0;
-//        for (const auto &elseIfCondition: elsifConditions) {
-//            condition = elseIfCondition->evaluate(context);
-//            if (std::visit(VisitCondition(), condition)) {
-//                return elsifStatements[i]->execute(context);
-//            }
-//            ++i;
-//        }
-//    }
-//    if (elseStatement != nullptr) {
-//        return elseStatement->execute(context);
-//    }
-//    return std::monostate();
-//}
+std::variant<std::monostate, string, int, float> IfStatementNode::execute(Context & context) {
+    auto condition = ifCondition->evaluate(context);
+    if (std::visit(VisitCondition(), condition)) {
+        return ifStatement->execute(context);
+    }
+    if (!elsifConditions.empty()) {
+        int i = 0;
+        for (const auto &elseIfCondition: elsifConditions) {
+            condition = elseIfCondition->evaluate(context);
+            if (std::visit(VisitCondition(), condition)) {
+                return elsifStatements[i]->execute(context);
+            }
+            ++i;
+        }
+    }
+    if (elseStatement != nullptr) {
+        return elseStatement->execute(context);
+    }
+    return std::monostate();
+}

@@ -1,5 +1,5 @@
 #include "FunctionNode.h"
-//#include "../../execution/VisitCheckType.h"
+#include "../../execution/VisitCheckType.h"
 
 void FunctionNode::setId(std::string id) {
     this->id = id;
@@ -36,21 +36,21 @@ std::string FunctionNode::toString(int depth) {
     return result;
 }
 
-//variant<std::monostate, string, int, float> FunctionNode::execute(Context &context) {
-//    for (const auto& statement: statements) {
-//        auto value = statement->execute(context);
-//        if (!std::get_if<std::monostate>(&value)) {
-//            std::variant<TokenType> test = returnType;
-//            if (!std::visit(VisitCheckType(), value, test))
-//                throw ExecutionException(std::string("Wrong return value type in '")
-//                                                 .append(id).append("' function, expected ")
-//                                                 .append(tokenTypeToString(returnType))
-//                );
-//            return value;
-//        }
-//    }
-//    return std::monostate();
-//}
+std::variant<std::monostate, string, int, float> FunctionNode::execute(Context &context) {
+    for (const auto& statement: statements) {
+        auto value = statement->execute(context);
+        if (!std::get_if<std::monostate>(&value)) {
+            std::variant<TokenType> test = returnType;
+            if (!std::visit(VisitCheckType(), value, test))
+                throw ExecutionException(std::string("Wrong return value type in '")
+                                                 .append(id).append("' function, expected ")
+                                                 .append(tokenTypeToString(returnType))
+                );
+            return value;
+        }
+    }
+    return std::monostate();
+}
 
 const string &FunctionNode::getId() {
     return id;

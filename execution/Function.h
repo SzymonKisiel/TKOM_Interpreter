@@ -4,16 +4,16 @@
 #include <memory>
 #include <variant>
 #include <string>
-//#include "Context.h"
+#include "Context.h"
 class Context;
 class ParametersNode;
 
 class Function {
-//public:
-//    virtual std::variant<std::monostate, std::string, int, float> execute(Context & context) = 0;
-//    virtual std::shared_ptr<ParametersNode> getParameters() {
-//        return nullptr;
-//    };
+public:
+    virtual std::variant<std::monostate, std::string, int, float> execute(Context & context) = 0;
+    virtual std::shared_ptr<ParametersNode> getParameters() {
+        return nullptr;
+    };
 };
 
 

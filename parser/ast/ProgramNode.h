@@ -7,7 +7,7 @@
 #include <string>
 #include "Node.h"
 #include "../../lexer/Token.h"
-//#include "../../execution/Context.h"
+#include "../../execution/Context.h"
 
 class FunctionNode;
 
@@ -21,7 +21,7 @@ public:
     const bool isTerminal();
     void print(int depth = 0);
     const std::string toString();
-//    void execute();
+    void execute();
 };
 
 

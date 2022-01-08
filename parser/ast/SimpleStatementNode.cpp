@@ -39,19 +39,19 @@ std::string SimpleStatementNode::toString(int depth) {
     return result;
 }
 
-//variant<std::monostate, string, int, float> SimpleStatementNode::execute(Context &context) {
-//    switch (simpleStatementType) {
-//        case SimpleStatementType::DECLARATION:
-//            declaration->execute(context);
-//            break;
-//        case SimpleStatementType::ASSIGNMENT:
-//            assignment->execute(context);
-//            break;
-//        case SimpleStatementType::FUNCTION_CALL:
-//            functionCall->execute(context);
-//            break;
-//        case SimpleStatementType::RETURN_STATEMENT:
-//            return returnStatement->execute(context);
-//    }
-//    return std::monostate();
-//}
+variant<std::monostate, string, int, float> SimpleStatementNode::execute(Context &context) {
+    switch (simpleStatementType) {
+        case SimpleStatementType::DECLARATION:
+            declaration->execute(context);
+            break;
+        case SimpleStatementType::ASSIGNMENT:
+            assignment->execute(context);
+            break;
+        case SimpleStatementType::FUNCTION_CALL:
+            functionCall->execute(context);
+            break;
+        case SimpleStatementType::RETURN_STATEMENT:
+            return returnStatement->execute(context);
+    }
+    return std::monostate();
+}

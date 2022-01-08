@@ -7,7 +7,7 @@
 #include <string>
 #include "Node.h"
 #include "../../lexer/Token.h"
-//#include "../../execution/Context.h"
+#include "../../execution/Context.h"
 
 
 class ArgumentsNode;
@@ -20,7 +20,7 @@ public:
     void setId(std::string id);
     void setArguments(std::shared_ptr<ArgumentsNode> arguments);
     std::string toString(int depth = 0);
-//    std::variant<std::monostate, string, int, float> execute(Context & context);
+    std::variant<std::monostate, string, int, float> execute(Context & context);
 };
 
 

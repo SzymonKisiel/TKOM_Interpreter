@@ -29,13 +29,13 @@ const std::string ProgramNode::toString() {
     return result;
 }
 
-//void ProgramNode::execute() {
-//    Context context;
-//    for (auto &function: functions) {
-//        std::string id = function->getId();
-//        context.addFunction(id, function);
-//    }
-//
-//    for (const auto &statement: statements)
-//        statement->execute(context);
-//}
+void ProgramNode::execute() {
+    Context context;
+    for (auto &function: functions) {
+        std::string id = function->getId();
+        context.addFunction(id, function);
+    }
+
+    for (const auto &statement: statements)
+        statement->execute(context);
+}

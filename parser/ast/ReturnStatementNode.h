@@ -7,7 +7,7 @@
 #include <string>
 #include "Node.h"
 #include "../../lexer/Token.h"
-//#include "../../execution/Context.h"
+#include "../../execution/Context.h"
 
 
 // return_statement = "return" , [expression] , ";" ;
@@ -16,7 +16,7 @@ class ReturnStatementNode : public Node {
 public:
     void setReturnExpression(std::unique_ptr<ExpressionNode> returnExpression);
     std::string toString(int depth = 0);
-//    variant<std::monostate, string, int, float> execute(Context & context);
+    variant<std::monostate, string, int, float> execute(Context & context);
 };
 
 

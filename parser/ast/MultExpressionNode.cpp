@@ -1,4 +1,5 @@
 #include "MultExpressionNode.h"
+#include "../../execution/VisitOperations.h"
 
 void MultExpressionNode::addOperand(std::unique_ptr<FactorNode> node) {
     operands.push_back(std::move(node));
@@ -27,22 +28,22 @@ std::string MultExpressionNode::toString(int depth) {
     return result;
 }
 
-//variant<std::monostate, string, int, float> MultExpressionNode::evaluate(Context & context) {
-//    variant<std::monostate, string, int, float> lhs = operands[0]->evaluate(context);
-//    variant<std::monostate, string, int, float> rhs;
-//    TokenType operation;
-//    for (int i = 0; i < multOperations.size(); ++i) {
-//        operation = multOperations[i];
-//        rhs = operands[i+1]->evaluate(context);
-//        if (operation == TokenType::T_MUL) {
-//            std::visit(VisitMult(), lhs, rhs);
-//        }
-//        else if (operation == TokenType::T_DIV) {
-//            std::visit(VisitDiv(), lhs, rhs);
-//        }
-//        else if (operation == TokenType::T_AND) {
-//            std::visit(VisitAnd(), lhs, rhs);
-//        }
-//    }
-//    return lhs;
-//}
+std::variant<std::monostate, string, int, float> MultExpressionNode::evaluate(Context & context) {
+    variant<std::monostate, string, int, float> lhs = operands[0]->evaluate(context);
+    variant<std::monostate, string, int, float> rhs;
+    TokenType operation;
+    for (int i = 0; i < multOperations.size(); ++i) {
+        operation = multOperations[i];
+        rhs = operands[i+1]->evaluate(context);
+        if (operation == TokenType::T_MUL) {
+            std::visit(VisitMult(), lhs, rhs);
+        }
+        else if (operation == TokenType::T_DIV) {
+            std::visit(VisitDiv(), lhs, rhs);
+        }
+        else if (operation == TokenType::T_AND) {
+            std::visit(VisitAnd(), lhs, rhs);
+        }
+    }
+    return lhs;
+}

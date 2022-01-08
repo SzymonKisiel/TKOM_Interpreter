@@ -1,5 +1,5 @@
 #include "WhileStatementNode.h"
-//#include "../../execution/VisitCondition.h"
+#include "../../execution/VisitCondition.h"
 
 void WhileStatementNode::setCondition(std::unique_ptr<ExpressionNode> node) {
     if (node != nullptr)
@@ -23,14 +23,14 @@ std::string WhileStatementNode::toString(int depth) {
     return result;
 }
 
-//std::variant<std::monostate, std::string, int, float> WhileStatementNode::execute(Context &context) {
-//    auto cond = condition->evaluate(context);
-//    while (std::visit(VisitCondition(), cond)) {
-//        auto value = statement->execute(context);
-//        if (!std::get_if<std::monostate>(&value)) {
-//            return value;
-//        }
-//        cond = condition->evaluate(context);
-//    }
-//    return std::monostate();
-//}
+std::variant<std::monostate, std::string, int, float> WhileStatementNode::execute(Context &context) {
+    auto cond = condition->evaluate(context);
+    while (std::visit(VisitCondition(), cond)) {
+        auto value = statement->execute(context);
+        if (!std::get_if<std::monostate>(&value)) {
+            return value;
+        }
+        cond = condition->evaluate(context);
+    }
+    return std::monostate();
+}
