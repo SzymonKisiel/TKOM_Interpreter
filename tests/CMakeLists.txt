@@ -1,1 +1,1 @@
-add_executable(Catch_tests CatchTest.cpp LexerTests.cpp ParserTests.cpp ${SOURCES})
+add_executable(Catch_tests CatchTest.cpp LexerTests.cpp ParserTests.cpp ExecutionTests.cpp ${SOURCES})

@@ -945,7 +945,7 @@ TEST_CASE("Variables", "[Execution tests]") {
     }
 }
 
-TEST_CASE("While statement", "[Execution tests]") {
+TEST_CASE("Execute while statement", "[Execution tests]") {
     // TODO: More tests
     StringSource source(    "int i = 0;\n"
                             "while (i < 5) {\n"
@@ -973,7 +973,7 @@ TEST_CASE("While statement", "[Execution tests]") {
     output.close();
 }
 
-TEST_CASE("If statement", "[Execution tests]") {
+TEST_CASE("Execute if statement", "[Execution tests]") {
     SECTION("if") {
         SECTION("if true") {
             StringSource source("if (1)\n"
