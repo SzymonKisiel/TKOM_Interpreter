@@ -39,10 +39,9 @@ public:
 
     Value execute(Context & context) {
         auto value = context.getVariableValue(PRINT_VAR_ID);
-        print(value);
-
-        std::visit(VisitPrintValue(), value); // debug
-
+        print(value); // print to output file
+        std::visit(VisitPrintValue(), value); // debug print
+        std::cout << '\n';
         return monostate();
     }
 };

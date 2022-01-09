@@ -39,11 +39,10 @@ Value AddExpressionNode::evaluate(Context & context) {
             lhs = std::visit(VisitAdd(), lhs, rhs);
         }
         else if (operation == TokenType::T_MINUS) {
-            lhs = std::visit(VisitSubstract(), lhs, rhs);
+            lhs = std::visit(VisitSubtract(), lhs, rhs);
         }
         else if (operation == TokenType::T_OR) {
-            // TODO lhs = ...
-            std::visit(VisitOr(), lhs, rhs);
+            lhs = std::visit(VisitOr(), lhs, rhs);
         }
     }
     return lhs;

@@ -42,8 +42,7 @@ Value MultExpressionNode::evaluate(Context & context) {
             lhs = std::visit(VisitDiv(), lhs, rhs);
         }
         else if (operation == TokenType::T_AND) {
-            // TODO lhs = ...
-            std::visit(VisitAnd(), lhs, rhs);
+            lhs = std::visit(VisitAnd(), lhs, rhs);
         }
     }
     return lhs;
