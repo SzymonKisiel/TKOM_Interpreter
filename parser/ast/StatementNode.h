@@ -34,7 +34,7 @@ public:
     void setIfStatement(std::unique_ptr<IfStatementNode> node);
     void setSimpleStatement(std::unique_ptr<SimpleStatementNode> node);
     std::string toString(int depth = 0);
-    variant<std::monostate, string, int, float> execute(Context & context);
+    Value execute(Context & context);
 };
 
 

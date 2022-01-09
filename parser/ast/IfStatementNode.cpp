@@ -45,7 +45,7 @@ std::string IfStatementNode::toString(int depth) {
     return result;
 }
 
-std::variant<std::monostate, string, int, float> IfStatementNode::execute(Context & context) {
+Value IfStatementNode::execute(Context & context) {
     auto condition = ifCondition->evaluate(context);
     if (std::visit(VisitCondition(), condition)) {
         return ifStatement->execute(context);

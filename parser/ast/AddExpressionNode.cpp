@@ -28,20 +28,21 @@ std::string AddExpressionNode::toString(int depth) {
     return result;
 }
 
-std::variant<std::monostate, std::string, int, float> AddExpressionNode::evaluate(Context & context) {
-    std::variant<std::monostate, std::string, int, float> lhs = operands[0]->evaluate(context);
-    std::variant<std::monostate, std::string, int, float> rhs;
+Value AddExpressionNode::evaluate(Context & context) {
+    Value lhs = operands[0]->evaluate(context);
+    Value rhs;
     TokenType operation;
     for (int i = 0; i < addOperations.size(); ++i) {
         operation = addOperations[i];
         rhs = operands[i+1]->evaluate(context);
         if (operation == TokenType::T_PLUS) {
-            std::visit(VisitAdd(), lhs, rhs);
+            lhs = std::visit(VisitAdd(), lhs, rhs);
         }
         else if (operation == TokenType::T_MINUS) {
-            std::visit(VisitSubstract(), lhs, rhs);
+            lhs = std::visit(VisitSubstract(), lhs, rhs);
         }
         else if (operation == TokenType::T_OR) {
+            // TODO lhs = ...
             std::visit(VisitOr(), lhs, rhs);
         }
     }

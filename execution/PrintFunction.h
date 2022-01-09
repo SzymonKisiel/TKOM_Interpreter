@@ -11,7 +11,7 @@ class PrintFunction : public Function {
     std::shared_ptr<ParametersNode> parameters;
     const std::string PRINT_VAR_ID = "var";
     fstream output;
-    void print(std::variant<std::monostate, std::string, int, float> & value) {
+    void print(Value & value) {
         output.open("output.txt", ios::out | ios::app);
         if (auto int_val = get_if<int>(&value))
             output << *int_val << '\n';
@@ -37,7 +37,7 @@ public:
         return parameters;
     };
 
-    std::variant<std::monostate, string, int, float> execute(Context & context) {
+    Value execute(Context & context) {
         auto value = context.getVariableValue(PRINT_VAR_ID);
         print(value);
 

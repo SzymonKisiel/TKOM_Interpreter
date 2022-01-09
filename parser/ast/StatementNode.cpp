@@ -50,12 +50,12 @@ std::string StatementNode::toString(int depth) {
     return result;
 }
 
-std::variant<std::monostate, std::string, int, float> StatementNode::execute(Context &context) {
+Value StatementNode::execute(Context &context) {
     if (statementType == StatementType::SIMPLE)
         return simpleStatement->execute(context);
 
     context.enterScope();
-    std::variant<std::monostate, std::string, int, float> value = std::monostate();
+    Value value = std::monostate();
     switch (statementType) {
         case StatementType::IF:
             value = ifStatement->execute(context);

@@ -28,9 +28,9 @@ std::string ExpressionNode::toString(int depth) {
     return result;
 }
 
-variant<std::monostate, string, int, float> ExpressionNode::evaluate(Context & context) {
-    variant<std::monostate, string, int, float> lhs = operands[0]->evaluate(context);
-    variant<std::monostate, string, int, float> rhs;
+Value ExpressionNode::evaluate(Context & context) {
+    Value lhs = operands[0]->evaluate(context);
+    Value rhs;
     TokenType operation;
     for (int i = 0; i < compOperations.size(); ++i) {
         operation = compOperations[i];

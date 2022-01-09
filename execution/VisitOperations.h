@@ -145,18 +145,18 @@ struct VisitNotEqual {
 
 // multiply operations
 struct VisitMult {
-    std::variant<std::monostate, std::string, int, float> operator()(int& lhs, int& rhs) { return lhs * rhs; }
-    std::variant<std::monostate, std::string, int, float> operator()(float& lhs, float& rhs) { return lhs * rhs; }
-    std::variant<std::monostate, std::string, int, float> operator()(int& lhs, float& rhs) { return lhs * rhs; }
-    std::variant<std::monostate, std::string, int, float> operator()(float& lhs, int& rhs) { return lhs * rhs; }
-    std::variant<std::monostate, std::string, int, float> operator()(auto& lhs, auto& rhs) { throw ExecutionException("Multiplication error"); }
+    Value operator()(int& lhs, int& rhs) { return lhs * rhs; }
+    Value operator()(float& lhs, float& rhs) { return lhs * rhs; }
+    Value operator()(int& lhs, float& rhs) { return lhs * rhs; }
+    Value operator()(float& lhs, int& rhs) { return lhs * rhs; }
+    Value operator()(auto& lhs, auto& rhs) { throw ExecutionException("Multiplication error"); }
 };
 struct VisitDiv {
-    std::variant<std::monostate, std::string, int, float> operator()(int& lhs, int& rhs) { return lhs / rhs; }
-    std::variant<std::monostate, std::string, int, float> operator()(float& lhs, float& rhs) { return lhs / rhs; }
-    std::variant<std::monostate, std::string, int, float> operator()(int& lhs, float& rhs) { return lhs / rhs; }
-    std::variant<std::monostate, std::string, int, float> operator()(float& lhs, int& rhs) { return lhs / rhs; }
-    std::variant<std::monostate, std::string, int, float> operator()(auto& lhs, auto& rhs) { throw ExecutionException("Division error"); }
+    Value operator()(int& lhs, int& rhs) { return lhs / rhs; }
+    Value operator()(float& lhs, float& rhs) { return lhs / rhs; }
+    Value operator()(int& lhs, float& rhs) { return lhs / rhs; }
+    Value operator()(float& lhs, int& rhs) { return lhs / rhs; }
+    Value operator()(auto& lhs, auto& rhs) { throw ExecutionException("Division error"); }
 };
 struct VisitAnd {
     void operator()(int& lhs, int& rhs) {
@@ -189,19 +189,19 @@ struct VisitAnd {
 
 // add operations
 struct VisitAdd {
-    std::variant<std::monostate, std::string, int, float> operator()(int& lhs, int& rhs) { return lhs + rhs; }
-    std::variant<std::monostate, std::string, int, float> operator()(float& lhs, float& rhs) { return lhs + rhs; }
-    std::variant<std::monostate, std::string, int, float> operator()(int& lhs, float& rhs) { return lhs + rhs; }
-    std::variant<std::monostate, std::string, int, float> operator()(float& lhs, int& rhs) { return lhs + rhs; }
-    std::variant<std::monostate, std::string, int, float> operator()(std::string& lhs, std::string& rhs) { return lhs.append(rhs); }
-    std::variant<std::monostate, std::string, int, float> operator()(auto& lhs, auto& rhs) { throw ExecutionException("Addition error"); }
+    Value operator()(int& lhs, int& rhs) { return lhs + rhs; }
+    Value operator()(float& lhs, float& rhs) { return lhs + rhs; }
+    Value operator()(int& lhs, float& rhs) { return lhs + rhs; }
+    Value operator()(float& lhs, int& rhs) { return lhs + rhs; }
+    Value operator()(std::string& lhs, std::string& rhs) { return lhs.append(rhs); }
+    Value operator()(auto& lhs, auto& rhs) { throw ExecutionException("Addition error"); }
 };
 struct VisitSubstract {
-    std::variant<std::monostate, std::string, int, float> operator()(int& lhs, int& rhs) { return lhs - rhs; }
-    std::variant<std::monostate, std::string, int, float> operator()(float& lhs, float& rhs) { return lhs - rhs; }
-    std::variant<std::monostate, std::string, int, float> operator()(int& lhs, float& rhs) { return lhs - rhs; }
-    std::variant<std::monostate, std::string, int, float> operator()(float& lhs, int& rhs) { return lhs - rhs; }
-    std::variant<std::monostate, std::string, int, float> operator()(auto& lhs, auto& rhs) { throw ExecutionException("Subtraction error"); }
+    Value operator()(int& lhs, int& rhs) { return lhs - rhs; }
+    Value operator()(float& lhs, float& rhs) { return lhs - rhs; }
+    Value operator()(int& lhs, float& rhs) { return lhs - rhs; }
+    Value operator()(float& lhs, int& rhs) { return lhs - rhs; }
+    Value operator()(auto& lhs, auto& rhs) { throw ExecutionException("Subtraction error"); }
 };
 struct VisitOr {
     void operator()(int& lhs, int& rhs) {

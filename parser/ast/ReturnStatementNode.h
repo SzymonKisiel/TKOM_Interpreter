@@ -16,7 +16,7 @@ class ReturnStatementNode : public Node {
 public:
     void setReturnExpression(std::unique_ptr<ExpressionNode> returnExpression);
     std::string toString(int depth = 0);
-    variant<std::monostate, string, int, float> execute(Context & context);
+    Value execute(Context & context);
 };
 
 

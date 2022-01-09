@@ -30,7 +30,7 @@ void Context::exitScope() {
 
 //variables
 
-void Context::addVariable(std::string id, std::variant<std::monostate, std::string, int, float> value) {
+void Context::addVariable(std::string id, Value value) {
     const auto [it, success] = variables.insert(std::make_pair(id, value));
     if (!success)
         throw ExecutionException(std::string("Variable ").append(id).append(" already declared"));
@@ -39,7 +39,7 @@ void Context::addVariable(std::string id, std::variant<std::monostate, std::stri
     variablesStack.push(id);
 }
 
-void Context::assignToVariable(std::string id, std::variant<std::monostate, std::string, int, float> value) {
+void Context::assignToVariable(std::string id, Value value) {
     if (auto variable = variables.find(id); variable != variables.end()) {
         auto& oldValue = variable->second;
         if (!std::visit(VisitCompareType(), oldValue, value))
@@ -50,7 +50,7 @@ void Context::assignToVariable(std::string id, std::variant<std::monostate, std:
         throw ExecutionException(std::string("Use of undeclared variable: ").append(id));
 }
 
-variant<std::monostate, string, int, float> Context::getVariableValue(std::string id) {
+Value Context::getVariableValue(std::string id) {
     if (const auto variable = variables.find(id); variable != variables.end()) {
         return variable->second;
     }
@@ -75,7 +75,7 @@ void Context::addFunction(std::string id, std::shared_ptr<Function> function) {
         throw ExecutionException(std::string("Function ").append(id).append(" already declared"));
 }
 
-std::variant<std::monostate, string, int, float> Context::callFunction(std::string id, std::shared_ptr<ArgumentsNode> argumentsNode) {
+Value Context::callFunction(std::string id, std::shared_ptr<ArgumentsNode> argumentsNode) {
     if (auto function = functions.find(id); function != functions.end()) {
         Context functionContext = *this;
         functionContext.deleteAllVariables();

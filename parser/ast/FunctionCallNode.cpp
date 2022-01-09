@@ -22,6 +22,6 @@ std::string FunctionCallNode::toString(int depth) {
     return result;
 }
 
-std::variant<std::monostate, string, int, float> FunctionCallNode::execute(Context &context) {
+Value FunctionCallNode::execute(Context &context) {
     return context.callFunction(id, arguments);
 }

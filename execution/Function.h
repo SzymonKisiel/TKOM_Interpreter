@@ -5,12 +5,19 @@
 #include <variant>
 #include <string>
 #include "Context.h"
+#include "../structures/GeographicCoordinate.h"
+#include "../structures/GeographicDistance.h"
+#include "../structures/GeographicPosition.h"
+
+using Value = std::variant<std::monostate, std::string, int, float,
+        GeographicCoordinate, GeographicDistance, GeographicPosition>;
+
 class Context;
 class ParametersNode;
 
 class Function {
 public:
-    virtual std::variant<std::monostate, std::string, int, float> execute(Context & context) = 0;
+    virtual Value execute(Context & context) = 0;
     virtual std::shared_ptr<ParametersNode> getParameters() {
         return nullptr;
     };

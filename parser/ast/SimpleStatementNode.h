@@ -33,7 +33,7 @@ public:
     void setFunctionCall(std::unique_ptr <FunctionCallNode> functionCall);
     void setReturnStatement(std::unique_ptr <ReturnStatementNode> returnStatement);
     std::string toString(int depth = 0);
-    variant<std::monostate, string, int, float> execute(Context & context);
+    Value execute(Context & context);
 };
 
 

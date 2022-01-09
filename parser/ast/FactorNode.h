@@ -41,7 +41,7 @@ public:
     void setNegative();
     FactorType getType();
     std::string toString(int depth = 0);
-    std::variant<std::monostate, std::string, int, float> evaluate(Context & context);
+    Value evaluate(Context & context);
     inline static const std::string factorTypeNames[4] = {
             "VALUE",
             "ID",

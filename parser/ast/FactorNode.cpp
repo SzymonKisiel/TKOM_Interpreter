@@ -6,10 +6,6 @@ void FactorNode::setValue(Value value) {
     factorType = FactorType::VALUE;
 }
 
-//void FactorNode::setValue(std::variant<std::monostate, std::string, int, float> value) {
-//    this->setValue(std::visit([](auto v) -> Value { return v; }, value));
-//}
-
 void FactorNode::setId(std::string id) {
     this->id = std::move(id);
     factorType = FactorType::ID;
@@ -58,7 +54,7 @@ std::string FactorNode::toString(int depth) {
     return result;
 }
 
-std::variant<std::monostate, std::string, int, float> FactorNode::evaluate(Context & context) {
+Value FactorNode::evaluate(Context & context) {
     switch (factorType) {
         case FactorType::VALUE:
             return value;
@@ -69,6 +65,6 @@ std::variant<std::monostate, std::string, int, float> FactorNode::evaluate(Conte
         case FactorType::EXPRESSION:
             return expression->evaluate(context);
         default:
-            return variant<std::monostate, string, int, float>();
+            return Value();
     }
 }

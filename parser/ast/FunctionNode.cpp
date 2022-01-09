@@ -36,7 +36,7 @@ std::string FunctionNode::toString(int depth) {
     return result;
 }
 
-std::variant<std::monostate, string, int, float> FunctionNode::execute(Context &context) {
+Value FunctionNode::execute(Context &context) {
     for (const auto& statement: statements) {
         auto value = statement->execute(context);
         if (!std::get_if<std::monostate>(&value)) {

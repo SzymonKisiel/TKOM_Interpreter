@@ -20,7 +20,7 @@ public:
     void addOperand(std::unique_ptr<MultExpressionNode> node);
     void addOperation(TokenType addOperation);
     std::string toString(int depth = 0);
-    std::variant<std::monostate, std::string, int, float> evaluate(Context & context);
+    Value evaluate(Context & context);
 };
 
 

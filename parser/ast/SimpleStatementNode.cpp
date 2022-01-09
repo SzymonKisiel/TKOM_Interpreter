@@ -39,7 +39,7 @@ std::string SimpleStatementNode::toString(int depth) {
     return result;
 }
 
-variant<std::monostate, string, int, float> SimpleStatementNode::execute(Context &context) {
+Value SimpleStatementNode::execute(Context &context) {
     switch (simpleStatementType) {
         case SimpleStatementType::DECLARATION:
             declaration->execute(context);

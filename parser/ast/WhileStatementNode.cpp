@@ -23,7 +23,7 @@ std::string WhileStatementNode::toString(int depth) {
     return result;
 }
 
-std::variant<std::monostate, std::string, int, float> WhileStatementNode::execute(Context &context) {
+Value WhileStatementNode::execute(Context &context) {
     auto cond = condition->evaluate(context);
     while (std::visit(VisitCondition(), cond)) {
         auto value = statement->execute(context);

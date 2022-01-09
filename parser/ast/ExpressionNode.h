@@ -21,7 +21,7 @@ public:
     void addOperand(std::unique_ptr<AddExpressionNode> node);
     void addOperation(TokenType compOperation);
     std::string toString(int depth = 0);
-    variant<std::monostate, string, int, float> evaluate(Context & context);
+    Value evaluate(Context & context);
 };
 
 
