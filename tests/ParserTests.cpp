@@ -120,45 +120,356 @@ TEST_CASE("Variable declaration", "[Parser tests]") {
         CHECK(ast->toString() == programNode.toString());
     }
     SECTION("Geocoord") {
-        StringSource source("geocoord gc1 = 5^ N;"); // TODO: Source
+        SECTION("Geocoord 1") {
+            StringSource source("geocoord gc1 = 5^ N;");
 
-        // Expected AST
-        ProgramNode programNode;
-        programNode.addStatement(
-            makeSimpleDeclaration(
-                TokenType::T_TYPE_GEOCOORD,
-                "gc1",
-                GeographicCoordinate(5, 0, 0, TokenType::T_GEO_DIRECTION_N)
-            )
-        );
+            // Expected AST
+            ProgramNode programNode;
+            programNode.addStatement(
+                    makeSimpleDeclaration(
+                            TokenType::T_TYPE_GEOCOORD,
+                            "gc1",
+                            GeographicCoordinate(5, 0, 0, Direction::N)
+                    )
+            );
 
-        Lexer lexer(source);
-        Parser parser(lexer);
-        auto ast = parser.parse();
-        CHECK(ast->toString() == programNode.toString());
+            Lexer lexer(source);
+            Parser parser(lexer);
+            auto ast = parser.parse();
+            CHECK(ast->toString() == programNode.toString());
+        }
+        SECTION("Geocoord 2") {
+            StringSource source("geocoord gc2 = 50' S;");
+
+            // Expected AST
+            ProgramNode programNode;
+            programNode.addStatement(
+                    makeSimpleDeclaration(
+                            TokenType::T_TYPE_GEOCOORD,
+                            "gc2",
+                            GeographicCoordinate(0, 50, 0, Direction::S)
+                    )
+            );
+
+            Lexer lexer(source);
+            Parser parser(lexer);
+            auto ast = parser.parse();
+            CHECK(ast->toString() == programNode.toString());
+        }
+        SECTION("Geocoord 3") {
+            StringSource source("geocoord gc3 = 33'' W;");
+
+            // Expected AST
+            ProgramNode programNode;
+            programNode.addStatement(
+                    makeSimpleDeclaration(
+                            TokenType::T_TYPE_GEOCOORD,
+                            "gc3",
+                            GeographicCoordinate(0, 0, 33, Direction::W)
+                    )
+            );
+
+            Lexer lexer(source);
+            Parser parser(lexer);
+            auto ast = parser.parse();
+            CHECK(ast->toString() == programNode.toString());
+        }
+        SECTION("Geocoord 4") {
+            StringSource source("geocoord gc4 = 59^ 5' E;");
+
+            // Expected AST
+            ProgramNode programNode;
+            programNode.addStatement(
+                    makeSimpleDeclaration(
+                            TokenType::T_TYPE_GEOCOORD,
+                            "gc4",
+                            GeographicCoordinate(59, 5, 0, Direction::E)
+                    )
+            );
+
+            Lexer lexer(source);
+            Parser parser(lexer);
+            auto ast = parser.parse();
+            CHECK(ast->toString() == programNode.toString());
+        }
+        SECTION("Geocoord 5") {
+            StringSource source("geocoord gc5 = 110^ 30'' W;");
+
+            // Expected AST
+            ProgramNode programNode;
+            programNode.addStatement(
+                    makeSimpleDeclaration(
+                            TokenType::T_TYPE_GEOCOORD,
+                            "gc5",
+                            GeographicCoordinate(110, 0, 30, Direction::W)
+                    )
+            );
+
+            Lexer lexer(source);
+            Parser parser(lexer);
+            auto ast = parser.parse();
+            CHECK(ast->toString() == programNode.toString());
+        }
+        SECTION("Geocoord 6") {
+            StringSource source("geocoord gc6 = 40' 45'' E;");
+
+            // Expected AST
+            ProgramNode programNode;
+            programNode.addStatement(
+                    makeSimpleDeclaration(
+                            TokenType::T_TYPE_GEOCOORD,
+                            "gc6",
+                            GeographicCoordinate(0, 40, 45, Direction::E)
+                    )
+            );
+
+            Lexer lexer(source);
+            Parser parser(lexer);
+            auto ast = parser.parse();
+            CHECK(ast->toString() == programNode.toString());
+        }
+        SECTION("Geocoord 7") {
+            StringSource source("geocoord gc7 = 78^ 10' 30'' N;");
+
+            // Expected AST
+            ProgramNode programNode;
+            programNode.addStatement(
+                    makeSimpleDeclaration(
+                            TokenType::T_TYPE_GEOCOORD,
+                            "gc7",
+                            GeographicCoordinate(78, 10, 30, Direction::N)
+                    )
+            );
+
+            Lexer lexer(source);
+            Parser parser(lexer);
+            auto ast = parser.parse();
+            CHECK(ast->toString() == programNode.toString());
+        }
+        SECTION("Geocoord exception - no specified direction") {
+            StringSource source("geocoord gc11 = 1^ 2' 3'';");
+            Lexer lexer(source);
+            Parser parser(lexer);
+            CHECK_THROWS_AS(parser.parse(), ParserException);
+        }
+        SECTION("Geocoord exception - exceed max seconds value") {
+            StringSource source("geocoord gc12 = 1^ 2' 73'' N;");
+            Lexer lexer(source);
+            Parser parser(lexer);
+            CHECK_THROWS_AS(parser.parse(), ParserException);
+        }
+        SECTION("Geocoord exception - exceed max minutes value") {
+            StringSource source("geocoord gc13 = 1^ 82' 3'' N;");
+            Lexer lexer(source);
+            Parser parser(lexer);
+            CHECK_THROWS_AS(parser.parse(), ParserException);
+        }
+        SECTION("Geocoord exception - exceed max latitude value") {
+            StringSource source("geocoord gc14 = 91^ N;");
+            Lexer lexer(source);
+            Parser parser(lexer);
+            CHECK_THROWS_AS(parser.parse(), ParserException);
+        }
+        SECTION("Geocoord exception - exceed max latitude valu") {
+            StringSource source("geocoord gc15 = 90^ 20'' S;");
+            Lexer lexer(source);
+            Parser parser(lexer);
+            CHECK_THROWS_AS(parser.parse(), ParserException);
+        }
+        SECTION("Geocoord exception - exceed max longitude value") {
+            StringSource source("geocoord gc16 = 192^ E;");
+            Lexer lexer(source);
+            Parser parser(lexer);
+            CHECK_THROWS_AS(parser.parse(), ParserException);
+        }
+        SECTION("Geocoord exception - exceed max longitude value") {
+            StringSource source("geocoord gc17 = 180^ 9' W;");
+            Lexer lexer(source);
+            Parser parser(lexer);
+            CHECK_THROWS_AS(parser.parse(), ParserException);
+        }
+        SECTION("Geocoord exception - wrong units order") {
+            StringSource source("geocoord gc18 = 1' 1^ N;");
+            Lexer lexer(source);
+            Parser parser(lexer);
+            CHECK_THROWS_AS(parser.parse(), ParserException);
+        }
     }
     SECTION("Geo") {
-        StringSource source("geo gc1 = 5^ N 10^ W;");
+        SECTION("Geo 1") {
+            StringSource source("geo g1 = 60^ S  135^ W;");
 
-        // Expected AST
-        ProgramNode programNode;
-        programNode.addStatement(
-                makeSimpleDeclaration(
-                        TokenType::T_TYPE_GEO,
-                        "gc1",
-                        GeographicPosition(
-                            GeographicCoordinate(5, 0, 0, TokenType::T_GEO_DIRECTION_N),
-                            GeographicCoordinate(10, 0, 0, TokenType::T_GEO_DIRECTION_W)
-                        )
-                )
-        );
+            // Expected AST
+            ProgramNode programNode;
+            programNode.addStatement(
+                    makeSimpleDeclaration(
+                            TokenType::T_TYPE_GEO,
+                            "g1",
+                            GeographicPosition(
+                                    GeographicCoordinate(60, 0, 0, Direction::S),
+                                    GeographicCoordinate(135, 0, 0, Direction::W)
+                            )
+                    )
+            );
 
-        Lexer lexer(source);
-        Parser parser(lexer);
-        auto ast = parser.parse();
-        CHECK(ast->toString() == programNode.toString());
+            Lexer lexer(source);
+            Parser parser(lexer);
+            auto ast = parser.parse();
+            CHECK(ast->toString() == programNode.toString());
+        }
+        SECTION("Geo 2") {
+            StringSource source("geo g2 = 0^ 30' N  170^ 30' W;");
+
+            // Expected AST
+            ProgramNode programNode;
+            programNode.addStatement(
+                    makeSimpleDeclaration(
+                            TokenType::T_TYPE_GEO,
+                            "g2",
+                            GeographicPosition(
+                                    GeographicCoordinate(0, 30, 0, Direction::N),
+                                    GeographicCoordinate(170, 30, 0, Direction::W)
+                            )
+                    )
+            );
+
+            Lexer lexer(source);
+            Parser parser(lexer);
+            auto ast = parser.parse();
+            CHECK(ast->toString() == programNode.toString());
+        }
+        SECTION("Geo 3") {
+            StringSource source("geo g3 = 10^ 20' 30'' N  95^ 40' 50'' E;");
+
+            // Expected AST
+            ProgramNode programNode;
+            programNode.addStatement(
+                    makeSimpleDeclaration(
+                            TokenType::T_TYPE_GEO,
+                            "g3",
+                            GeographicPosition(
+                                    GeographicCoordinate(10, 20, 30, Direction::N),
+                                    GeographicCoordinate(95, 40, 50, Direction::E)
+                            )
+                    )
+            );
+
+            Lexer lexer(source);
+            Parser parser(lexer);
+            auto ast = parser.parse();
+            CHECK(ast->toString() == programNode.toString());
+        }
+        SECTION("Geo exception - no latitude direction") {
+            StringSource source("geo g11 = 60^ N  30^;");
+            Lexer lexer(source);
+            Parser parser(lexer);
+            CHECK_THROWS_AS(parser.parse(), ParserException);
+        }
+        SECTION("Geo exception - no longitude direction") {
+            StringSource source("geo g12 = 60^  30^ W;");
+            Lexer lexer(source);
+            Parser parser(lexer);
+            CHECK_THROWS_AS(parser.parse(), ParserException);
+        }
+        SECTION("Geo exception - wrong coordinates order") {
+            StringSource source("geo g13 = 60^ W 30^ N;");
+            Lexer lexer(source);
+            Parser parser(lexer);
+            CHECK_THROWS_AS(parser.parse(), ParserException);
+        }
     }
+    SECTION("Geodist") {
+        SECTION("Geodist 1") {
+            StringSource source("geodist gd1 = 10^ 0' 30'', 20^ 30' 0'';");
 
+            // Expected AST
+            ProgramNode programNode;
+            programNode.addStatement(
+                    makeSimpleDeclaration(
+                            TokenType::T_TYPE_GEODIST,
+                            "gd1",
+                            GeographicDistance(
+                                    GeographicCoordinate(10, 0, 30, Direction::NONE),
+                                    GeographicCoordinate(20, 30, 0, Direction::NONE)
+                            )
+                    )
+            );
+
+            Lexer lexer(source);
+            Parser parser(lexer);
+            auto ast = parser.parse();
+            CHECK(ast->toString() == programNode.toString());
+        }
+        SECTION("Geodist 2") {
+            StringSource source("geodist gd2 = -90^, 180^;");
+
+            // Expected AST
+            ProgramNode programNode;
+            programNode.addStatement(
+                    makeSimpleDeclaration(
+                            TokenType::T_TYPE_GEODIST,
+                            "gd2",
+                            GeographicDistance(
+                                    GeographicCoordinate(90, 0, 0, Direction::NONE),
+                                    true,
+                                    GeographicCoordinate(180, 0, 0, Direction::NONE),
+                                    false
+                            )
+                    )
+            );
+
+            Lexer lexer(source);
+            Parser parser(lexer);
+            auto ast = parser.parse();
+            CHECK(ast->toString() == programNode.toString());
+        }
+        SECTION("Geodist 3") {
+            StringSource source("geodist gd3 = 45^, -90^;");
+
+            // Expected AST
+            ProgramNode programNode;
+            programNode.addStatement(
+                    makeSimpleDeclaration(
+                            TokenType::T_TYPE_GEODIST,
+                            "gd3",
+                            GeographicDistance(
+                                    GeographicCoordinate(45, 0, 0, Direction::NONE),
+                                    false,
+                                    GeographicCoordinate(90, 0, 0, Direction::NONE),
+                                    true
+                            )
+                    )
+            );
+
+            Lexer lexer(source);
+            Parser parser(lexer);
+            auto ast = parser.parse();
+            CHECK(ast->toString() == programNode.toString());
+        }
+        SECTION("Geodist 4") {
+            StringSource source("geodist gd4 = -50^ 0' 30'', -20^ 30' 0'';");
+
+            // Expected AST
+            ProgramNode programNode;
+            programNode.addStatement(
+                    makeSimpleDeclaration(
+                            TokenType::T_TYPE_GEODIST,
+                            "gd4",
+                            GeographicDistance(
+                                    GeographicCoordinate(50, 0, 30, Direction::NONE),
+                                    true,
+                                    GeographicCoordinate(20, 30, 0, Direction::NONE),
+                                    true
+                            )
+                    )
+            );
+
+            Lexer lexer(source);
+            Parser parser(lexer);
+            auto ast = parser.parse();
+            CHECK(ast->toString() == programNode.toString());
+        }
+    }
 }
 
 TEST_CASE("Assignment", "[Parser tests]") {
