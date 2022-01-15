@@ -19,6 +19,12 @@ class PrintFunction : public Function {
             output << *float_val << '\n';
         else if (auto string_val = get_if<string>(&value))
             output << *string_val << '\n';
+        else if (auto geocoord_val = get_if<GeographicCoordinate>(&value))
+            output << geocoord_val->toString() << '\n';
+        else if (auto geo_val = get_if<GeographicPosition>(&value))
+            output << geo_val->toString() << '\n';
+        else if (auto geodist_val = get_if<GeographicDistance>(&value))
+            output << geodist_val->toString() << '\n';
         else
             throw ExecutionException(""); // TODO: Exception message
         output.close();
