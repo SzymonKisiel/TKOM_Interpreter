@@ -455,8 +455,13 @@ public:
 
     // factor          = integer | float | geo | string | (["-"] , id) | function_call | "(" , expression , ")"  ;
     std::unique_ptr<FactorNode> parseFactor() {
+        bool isXNegative = false, isYNegative = false; // for geodist
+        bool parsingGeoDist = false; // for geodist (to make sure negation is not used for geo and geocoord types)
         std::unique_ptr<FactorNode> factor = std::make_unique<FactorNode>();
         if (currentToken->getType() == TokenType::T_MINUS) {
+            isXNegative = true;
+            parsingGeoDist = true;
+
             factor->setNegative();
             nextToken();
         }
@@ -483,11 +488,54 @@ public:
             }
             return factor;
         }
+        // Geographic types parsing
+        int geoParseRow = currentToken->getRow();
+        int geoParseCol = currentToken->getColumn();
         if (auto geoCoord = parseCoordinate()) {
-            if (auto geoCoord2 = parseCoordinate()) {
-                factor->setValue(GeographicPosition(*geoCoord, *geoCoord2));
+            if (currentToken->getType() == TokenType::T_COMMA)
+                nextToken();
+            if (currentToken->getType() == TokenType::T_MINUS) {
+                isYNegative = true;
+                parsingGeoDist = true;
+                nextToken();
             }
+            if (auto geoCoord2 = parseCoordinate()) {
+                // GeographicPosition
+                if (geoCoord->hasDirection() || geoCoord2->hasDirection()) {
+                    if (parsingGeoDist)
+                        throw ParserException("Can not negate GeographicCoordinate", geoParseRow, geoParseCol);
+                    GeographicPosition geoPos = GeographicPosition(*geoCoord, *geoCoord2);
+                    try {
+                        geoPos.validate();
+                    }
+                    catch (GeoException e) {
+                        throw ParserException(e, geoParseRow, geoParseCol);
+                    }
+                    factor->setValue(geoPos);
+                }
+                // GeographicDistance
+                else {
+                    GeographicDistance geoDist = GeographicDistance(*geoCoord, isXNegative,
+                                                                    *geoCoord2, isYNegative);
+                    try {
+                        geoDist.validate();
+                    }
+                    catch (GeoException e) {
+                        throw ParserException(e, geoParseRow, geoParseCol);
+                    }
+                    factor->setValue(geoDist);
+                }
+            }
+            // GeographicCoordinate
             else {
+                if (parsingGeoDist)
+                    throw ParserException("Can not negate GeographicCoordinate", geoParseRow, geoParseCol);
+                try {
+                    geoCoord->validate();
+                }
+                catch (GeoException e) {
+                    throw ParserException(e, geoParseRow, geoParseCol);
+                }
                 factor->setValue(*geoCoord);
             }
             return factor;
@@ -531,10 +579,10 @@ public:
             result->setSecond(std::visit(VisitGetInt(), value));
             nextToken();
         }
-        if (!currentToken->isGeoDirection())
-            throw ParserException(std::move(currentToken), "Expected geographic direction");
-        result->setDirection(currentToken->getType());
-        nextToken();
+        if (currentToken->isGeoDirection()) {
+            result->setDirection(currentToken->getType());
+            nextToken();
+        }
         return result;
     }
     struct VisitGetInt {

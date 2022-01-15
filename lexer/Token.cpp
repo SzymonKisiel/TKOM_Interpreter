@@ -55,7 +55,7 @@ const bool Token::isValue() {
 }
 
 const bool Token::isType() {
-    if (this->type >= TokenType::T_TYPE_VOID && this->type <= TokenType::T_TYPE_GEOCOORD)
+    if (this->type >= TokenType::T_TYPE_VOID && this->type <= TokenType::T_TYPE_GEODIST)
         return true;
     return false;
 }
