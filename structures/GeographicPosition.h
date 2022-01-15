@@ -29,6 +29,15 @@ public:
                     .append(longitude.toString());
     }
 
+    void validate() {
+        latitude.validate();
+        longitude.validate();
+        if (!latitude.isLatitude())
+            throw GeoException("GeographicPosition first coordinate is not latitude");
+        if (!longitude.isLongitude())
+            throw GeoException("GeographicPosition second coordinate is not longitude");
+    }
+
 private:
     GeographicCoordinate latitude;
     GeographicCoordinate longitude;

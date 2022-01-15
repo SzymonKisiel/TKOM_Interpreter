@@ -2,21 +2,23 @@
 #define _TKOM__INTERPRETER_GEOGRAPHICDIRECTION_H
 
 #include "../lexer/Token.h"
+#include "../exception/GeoException.h"
 
 enum Direction {
-    N, W, S, E
+    NONE, N, W, S, E
 };
 class GeographicDirection {
 private:
     Direction direction;
-    inline static const std::string directionNames[4] = {
+    inline static const std::string directionNames[5] = {
+        "",
         "N",
         "W",
         "S",
         "E"
     };
 public:
-    GeographicDirection() : direction(Direction::N) {}
+    GeographicDirection() : direction(Direction::NONE) {}
     GeographicDirection(Direction direction) : direction(direction) {}
     GeographicDirection(TokenType directionToken) {
         switch (directionToken) {
@@ -33,9 +35,32 @@ public:
                 this->direction = Direction::E;
                 break;
             default:
-                throw; //TODO: Exception
+                throw GeoException(std::string("GeographicDirection can't be converted from ")
+                                        .append(tokenTypeToString(directionToken)));
         }
     }
+
+    const bool isDirection() {
+        if (direction == Direction::NONE) {
+            return false;
+        }
+        return true;
+    }
+
+    const bool isLatitudeDirection() {
+        if (direction == Direction::N || direction == Direction::S) {
+            return true;
+        }
+        return false;
+    }
+
+    const bool isLongitudeDirection() {
+        if (direction == Direction::W || direction == Direction::E) {
+            return true;
+        }
+        return false;
+    }
+
     const std::string toString() const {
         return directionNames[direction];
     }
