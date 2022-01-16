@@ -31,13 +31,24 @@ std::string FactorNode::toString(int depth) {
         result.append(prefix);
     result.append("FACTOR ")
             .append(factorTypeNames[factorType]);
+    std::string sign = "";
+    if (this->isPositive)
+        sign = "-";
     switch (factorType) {
         case FactorType::VALUE:
-            result.append(" = ")
-                    .append(std::visit(VisitToString(), value));
+            if (std::get_if<GeographicDistance>(&value)) {
+                result.append(" = ")
+                        .append(std::visit(VisitToString(), value));
+            }
+            else {
+                result.append(" = ")
+                        .append(sign)
+                        .append(std::visit(VisitToString(), value));
+            }
             break;
         case FactorType::ID:
             result.append(" = ")
+                    .append(sign)
                     .append(id);
             break;
         case FactorType::FUNCTION_CALL:

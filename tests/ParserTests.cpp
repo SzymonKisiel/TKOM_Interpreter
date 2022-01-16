@@ -48,10 +48,12 @@ std::unique_ptr<StatementNode> makeSimpleAssignment(std::string variableId, Valu
     return std::move(statementNode);
 }
 
-std::unique_ptr<StatementNode> makeSimpleDeclaration(TokenType variableType, std::string variableId, Value value) {
+std::unique_ptr<StatementNode> makeSimpleDeclaration(TokenType variableType, std::string variableId, Value value, bool isNegative=false) {
     // Expected AST
     std::unique_ptr<FactorNode> factorNode = std::make_unique<FactorNode>();
     factorNode->setValue(value);
+    if (isNegative)
+        factorNode->setNegative();
     std::unique_ptr<MultExpressionNode> multExpressionNode = std::make_unique<MultExpressionNode>();
     multExpressionNode->addOperand(std::move(factorNode));
     std::unique_ptr<AddExpressionNode> addExpressionNode = std::make_unique<AddExpressionNode>();
@@ -84,28 +86,56 @@ TEST_CASE("Empty program", "[Parser tests]") {
 
 TEST_CASE("Variable declaration", "[Parser tests]") {
     SECTION("Int") {
-        StringSource source("int x = 5;");
+        SECTION("Positive integer") {
+            StringSource source("int x1 = 5;");
 
-        // Expected AST
-        ProgramNode programNode;
-        programNode.addStatement(makeSimpleDeclaration(TokenType::T_TYPE_INT, "x", 5));
+            // Expected AST
+            ProgramNode programNode;
+            programNode.addStatement(makeSimpleDeclaration(TokenType::T_TYPE_INT, "x1", 5));
 
-        Lexer lexer(source);
-        Parser parser(lexer);
-        auto ast = parser.parse();
-        CHECK(ast->toString() == programNode.toString());
+            Lexer lexer(source);
+            Parser parser(lexer);
+            auto ast = parser.parse();
+            CHECK(ast->toString() == programNode.toString());
+        }
+        SECTION("Negative integer") {
+            StringSource source("int x2 = -7;");
+
+            // Expected AST
+            ProgramNode programNode;
+            programNode.addStatement(makeSimpleDeclaration(TokenType::T_TYPE_INT, "x2", 7, true));
+
+            Lexer lexer(source);
+            Parser parser(lexer);
+            auto ast = parser.parse();
+            CHECK(ast->toString() == programNode.toString());
+        }
     }
     SECTION("Float") {
-        StringSource source("float f1 = 14.1;");
+        SECTION("Positive float") {
+            StringSource source("float f1 = 14.1;");
 
-        // Expected AST
-        ProgramNode programNode;
-        programNode.addStatement(makeSimpleDeclaration(TokenType::T_TYPE_FLOAT, "f1", 14.1f));
+            // Expected AST
+            ProgramNode programNode;
+            programNode.addStatement(makeSimpleDeclaration(TokenType::T_TYPE_FLOAT, "f1", 14.1f));
 
-        Lexer lexer(source);
-        Parser parser(lexer);
-        auto ast = parser.parse();
-        CHECK(ast->toString() == programNode.toString());
+            Lexer lexer(source);
+            Parser parser(lexer);
+            auto ast = parser.parse();
+            CHECK(ast->toString() == programNode.toString());
+        }
+        SECTION("Negative float") {
+            StringSource source("float f2 = -0.55;");
+
+            // Expected AST
+            ProgramNode programNode;
+            programNode.addStatement(makeSimpleDeclaration(TokenType::T_TYPE_FLOAT, "f2", 0.55f, true));
+
+            Lexer lexer(source);
+            Parser parser(lexer);
+            auto ast = parser.parse();
+            CHECK(ast->toString() == programNode.toString());
+        }
     }
     SECTION("String") {
         StringSource source("string s = \"test123\";");
