@@ -16,11 +16,11 @@ void GeographicPosition::setLongitude(const GeographicCoordinate &longitude) {
     GeographicPosition::longitude = longitude;
 }
 
-GeographicDistance GeographicPosition::operator+(const GeographicDistance &geoDist) const {
+GeographicPosition GeographicPosition::operator+(const GeographicDistance &geoDist) const {
     throw("geo + geodist not implemented");
 }
 
-GeographicDistance GeographicPosition::operator-(const GeographicDistance &geoDist) const {
+GeographicPosition GeographicPosition::operator-(const GeographicDistance &geoDist) const {
     throw("geo - geodist not implemented");
 }
 

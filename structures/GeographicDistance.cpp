@@ -24,17 +24,17 @@ void GeographicDistance::setLongitude(const GeographicCoordinate &yDistance) {
     GeographicDistance::yDistance = yDistance;
 }
 
-GeographicDistance GeographicDistance::operator+(const GeographicDistance &geoPos) const {
+GeographicDistance GeographicDistance::operator+(const GeographicDistance &geoDist) const {
     int x1SecondSum = GeographicDistance::xDistance.getSecond()
                       + GeographicDistance::xDistance.getMinute() * 60
                       + GeographicDistance::xDistance.getDegree() * 3600;
     if (GeographicDistance::isXNegative)
         x1SecondSum *= -1;
 
-    int x2SecondSum = geoPos.xDistance.getSecond()
-                      + geoPos.xDistance.getMinute() * 60
-                      + geoPos.xDistance.getDegree() * 3600;
-    if (geoPos.isXNegative)
+    int x2SecondSum = geoDist.xDistance.getSecond()
+                      + geoDist.xDistance.getMinute() * 60
+                      + geoDist.xDistance.getDegree() * 3600;
+    if (geoDist.isXNegative)
         x2SecondSum *= -1;
 
     int y1SecondSum = GeographicDistance::yDistance.getSecond()
@@ -43,10 +43,10 @@ GeographicDistance GeographicDistance::operator+(const GeographicDistance &geoPo
     if (GeographicDistance::isYNegative)
         y1SecondSum *= -1;
 
-    int y2SecondSum = geoPos.yDistance.getSecond()
-                      + geoPos.yDistance.getMinute() * 60
-                      + geoPos.yDistance.getDegree() * 3600;
-    if (geoPos.isYNegative)
+    int y2SecondSum = geoDist.yDistance.getSecond()
+                      + geoDist.yDistance.getMinute() * 60
+                      + geoDist.yDistance.getDegree() * 3600;
+    if (geoDist.isYNegative)
         y2SecondSum *= -1;
 
     // sum x to max 90 degrees
@@ -89,11 +89,11 @@ GeographicDistance GeographicDistance::operator+(const GeographicDistance &geoPo
     return result;
 }
 
-GeographicDistance GeographicDistance::operator+(const GeographicPosition &geoPos) const {
+GeographicPosition GeographicDistance::operator+(const GeographicPosition &geoPos) const {
     throw Exception("geodist - geo not implemented yet");
 }
 
-GeographicDistance GeographicDistance::operator-(GeographicDistance const &geoPos) const {
+GeographicDistance GeographicDistance::operator-(const GeographicDistance &geoDist) const {
     throw Exception("geodist - geodist not implemented yet");
 }
 

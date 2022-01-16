@@ -10,8 +10,8 @@ public:
     GeographicPosition(const GeographicCoordinate &latitude, const GeographicCoordinate &longitude) ;
     void setLatitude(const GeographicCoordinate &latitude);
     void setLongitude(const GeographicCoordinate &longitude);
-    GeographicDistance operator+(const GeographicDistance &geoDist) const;
-    GeographicDistance operator-(const GeographicDistance &geoDist) const;
+    GeographicPosition operator+(const GeographicDistance &geoDist) const;
+    GeographicPosition operator-(const GeographicDistance &geoDist) const;
     GeographicDistance operator-(const GeographicPosition &geoPos) const;
     std::string toString();
     void validate();

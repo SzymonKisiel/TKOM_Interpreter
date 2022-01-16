@@ -14,8 +14,8 @@ public:
     void setLatitude(const GeographicCoordinate &xDistance);
     void setLongitude(const GeographicCoordinate &yDistance);
     GeographicDistance operator+(const GeographicDistance &geoDist) const;
-    GeographicDistance operator+(const GeographicPosition &geoPos) const;
-    GeographicDistance operator-(GeographicDistance const &geoPos) const;
+    GeographicPosition operator+(const GeographicPosition &geoPos) const;
+    GeographicDistance operator-(const GeographicDistance &geoDist) const;
     GeographicDistance operator-() const;
     std::string toString();
     void validate();
