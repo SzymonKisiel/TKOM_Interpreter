@@ -39,6 +39,54 @@ TEST_CASE("Print", "[Execution tests]") {
         parser.parse()->execute();
         checkOutput("test");
     }
+    SECTION("Geocoord") {
+        StringSource source("print(22^ 50' 50'' E);");
+        Lexer lexer(source);
+        Parser parser(lexer);
+        parser.parse()->execute();
+        checkOutput(GeographicCoordinate(22, 50, 50, Direction::E).toString());
+    }
+    SECTION("Geo") {
+        StringSource source("print(66^ 30' S, 33^ 30'' W);");
+        Lexer lexer(source);
+        Parser parser(lexer);
+        parser.parse()->execute();
+        checkOutput(
+            GeographicPosition(
+                    GeographicCoordinate(66, 30, 0, Direction::S),
+                    GeographicCoordinate(33, 0, 30, Direction::W)
+            ).toString()
+        );
+    }
+    SECTION("Geodist") {
+        StringSource source("print(-50^ 0' 59'', 120^ 59' 0'');");
+        Lexer lexer(source);
+        Parser parser(lexer);
+        parser.parse()->execute();
+        checkOutput(
+            GeographicDistance(
+                GeographicCoordinate(50, 0, 59, Direction::NONE), true,
+                GeographicCoordinate(120, 59, 0, Direction::NONE), false
+            ).toString()
+        );
+    }
+}
+
+TEST_CASE("Negation", "[Execution tests]") {
+    SECTION("Int") {
+        StringSource source("print(-1800);");
+        Lexer lexer(source);
+        Parser parser(lexer);
+        parser.parse()->execute();
+        checkOutput("-1800");
+    }
+    SECTION("Float") {
+        StringSource source("print(-2.6);");
+        Lexer lexer(source);
+        Parser parser(lexer);
+        parser.parse()->execute();
+        checkOutput("-2.6");
+    }
 }
 
 TEST_CASE("Expressions", "[Execution tests]") {

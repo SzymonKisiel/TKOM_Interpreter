@@ -1,5 +1,6 @@
 #include "FactorNode.h"
 #include "../../execution/VisitPrint.h"
+#include "../../execution/VisitNegate.h"
 
 void FactorNode::setValue(Value value) {
     this->value = std::move(value);
@@ -66,15 +67,31 @@ std::string FactorNode::toString(int depth) {
 }
 
 Value FactorNode::evaluate(Context & context) {
+    Value returnValue;
     switch (factorType) {
         case FactorType::VALUE:
-            return value;
+            if (isPositive)
+                return value;
+            else
+                return std::visit(VisitNegate(), value);
         case FactorType::ID:
-            return context.getVariableValue(id);
+            returnValue = context.getVariableValue(id);
+            if (isPositive)
+                return returnValue;
+            else
+                return std::visit(VisitNegate(), returnValue);
         case FactorType::FUNCTION_CALL:
-            return functionCall->execute(context);
+            returnValue = functionCall->execute(context);
+            if (isPositive)
+                return returnValue;
+            else
+                return std::visit(VisitNegate(), returnValue);
         case FactorType::EXPRESSION:
-            return expression->evaluate(context);
+            returnValue = expression->evaluate(context);
+            if (isPositive)
+                return returnValue;
+            else
+                return std::visit(VisitNegate(), returnValue);
         default:
             return Value();
     }
