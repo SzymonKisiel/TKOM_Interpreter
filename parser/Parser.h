@@ -7,6 +7,8 @@
 #include "../exception/Exception.h"
 #include "../exception/ParserException.h"
 #include "../structures/GeographicCoordinate.h"
+#include "../structures/GeographicPosition.h"
+#include "../structures/GeographicDistance.h"
 #include <memory>
 #include <optional>
 #include <iostream>
@@ -583,7 +585,5 @@ public:
         int operator()(auto&)   { throw ParserException("Wrong value type, expected int"); }
     };
 };
-
-
 
 #endif //_TKOM__INTERPRETER_PARSER_H
