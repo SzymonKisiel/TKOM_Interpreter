@@ -73,19 +73,49 @@ TEST_CASE("Print", "[Execution tests]") {
 }
 
 TEST_CASE("Negation", "[Execution tests]") {
-    SECTION("Int") {
+    SECTION("Int negation") {
         StringSource source("print(-1800);");
         Lexer lexer(source);
         Parser parser(lexer);
         parser.parse()->execute();
         checkOutput("-1800");
     }
-    SECTION("Float") {
+    SECTION("Float negation") {
         StringSource source("print(-2.6);");
         Lexer lexer(source);
         Parser parser(lexer);
         parser.parse()->execute();
         checkOutput("-2.6");
+    }
+    SECTION("Geodist negation") {
+        StringSource source("print(-(10^, -5^));");
+        Lexer lexer(source);
+        Parser parser(lexer);
+        parser.parse()->execute();
+        checkOutput(
+                GeographicDistance(
+                        GeographicCoordinate(10, 0, 0, Direction::NONE), true,
+                        GeographicCoordinate(5, 0, 0, Direction::NONE), false
+                ).toString()
+        );
+    }
+    SECTION("String negation") {
+        StringSource source("print(-\"test\");");
+        Lexer lexer(source);
+        Parser parser(lexer);
+        CHECK_THROWS_AS(parser.parse()->execute(), ExecutionException);
+    }
+    SECTION("Geocoord negation") {
+        StringSource source("print(-10^ N);");
+        Lexer lexer(source);
+        Parser parser(lexer);
+        CHECK_THROWS_AS(parser.parse()->execute(), ExecutionException);
+    }
+    SECTION("Geo negation") {
+        StringSource source("print(-10^ N 20^ W);");
+        Lexer lexer(source);
+        Parser parser(lexer);
+        CHECK_THROWS_AS(parser.parse()->execute(), ExecutionException);
     }
 }
 
