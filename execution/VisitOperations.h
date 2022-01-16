@@ -190,6 +190,7 @@ struct VisitAdd {
     Value operator()(int& lhs, float& rhs) { return lhs + rhs; }
     Value operator()(float& lhs, int& rhs) { return lhs + rhs; }
     Value operator()(std::string& lhs, std::string& rhs) { return lhs.append(rhs); }
+    Value operator()(GeographicDistance& lhs, GeographicDistance& rhs) { return lhs + rhs; }
     Value operator()(auto& lhs, auto& rhs) { throw ExecutionException("Addition error"); }
 };
 struct VisitSubtract {

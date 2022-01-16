@@ -11,6 +11,23 @@ public:
         degree(degree), minute(minute), second(second), direction(direction) {};
     GeographicCoordinate(int degree, int minute, int second, Direction direction) :
             degree(degree), minute(minute), second(second), direction(direction) {};
+
+    const int getDegree() const {
+        return GeographicCoordinate::degree;
+    }
+
+    const int getMinute() const {
+        return GeographicCoordinate::minute;
+    }
+
+    const int getSecond() const {
+        return GeographicCoordinate::second;
+    }
+
+    const GeographicDirection getDirection() const {
+        return GeographicCoordinate::direction;
+    }
+
     void setDegree(int degree) {
         GeographicCoordinate::degree = degree;
     }
