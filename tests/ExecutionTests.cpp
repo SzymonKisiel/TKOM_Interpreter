@@ -1134,10 +1134,23 @@ TEST_CASE("Functions", "[Execution tests]") {
         output.close();
     }
     SECTION("Argument type exception") {
-        // TODO
+        StringSource source("string printString(string output) {"
+                            "    print(output);"
+                            "    return output;"
+                            "}"
+                            "printString(5);");
+        Lexer lexer(source);
+        Parser parser(lexer);
+        CHECK_THROWS_AS(parser.parse()->execute(), ExecutionException);
     }
     SECTION("Return type exception") {
-        // TODO
+        StringSource source("int test() {"
+                            "    return 5^ W;"
+                            "}"
+                            "test();");
+        Lexer lexer(source);
+        Parser parser(lexer);
+        CHECK_THROWS_AS(parser.parse()->execute(), ExecutionException);
     }
 
     SECTION("Simple function 2") {

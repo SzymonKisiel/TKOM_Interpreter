@@ -23,5 +23,8 @@ std::string FunctionCallNode::toString(int depth) {
 }
 
 Value FunctionCallNode::execute(Context &context) {
-    return context.callFunction(id, arguments);
+    if (id == "print")
+        return context.callFunction(id, arguments, false);
+    else
+        return context.callFunction(id, arguments);
 }

@@ -32,7 +32,7 @@ public:
     void deleteAllVariables();
 
     void addFunction(std::string id, std::shared_ptr<Function> function);
-    Value callFunction(std::string id, std::shared_ptr<ArgumentsNode> arguments = nullptr);
+    Value callFunction(std::string id, std::shared_ptr<ArgumentsNode> arguments = nullptr, bool checkType = true);
 
     void print(std::string id = "");
 

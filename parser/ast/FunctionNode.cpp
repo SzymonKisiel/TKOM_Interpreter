@@ -40,8 +40,8 @@ Value FunctionNode::execute(Context &context) {
     for (const auto& statement: statements) {
         auto value = statement->execute(context);
         if (!std::get_if<std::monostate>(&value)) {
-            std::variant<TokenType> test = returnType;
-            if (!std::visit(VisitCheckType(), value, test))
+            std::variant<TokenType> returnTypeV = returnType;
+            if (!std::visit(VisitCheckType(), value, returnTypeV))
                 throw ExecutionException(std::string("Wrong return value type in '")
                                                  .append(id).append("' function, expected ")
                                                  .append(tokenTypeToString(returnType))

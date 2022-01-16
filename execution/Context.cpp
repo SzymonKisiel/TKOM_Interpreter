@@ -75,7 +75,7 @@ void Context::addFunction(std::string id, std::shared_ptr<Function> function) {
         throw ExecutionException(std::string("Function ").append(id).append(" already declared"));
 }
 
-Value Context::callFunction(std::string id, std::shared_ptr<ArgumentsNode> argumentsNode) {
+Value Context::callFunction(std::string id, std::shared_ptr<ArgumentsNode> argumentsNode, bool checkType) {
     if (auto function = functions.find(id); function != functions.end()) {
         Context functionContext = *this;
         functionContext.deleteAllVariables();
@@ -112,12 +112,30 @@ Value Context::callFunction(std::string id, std::shared_ptr<ArgumentsNode> argum
                                                      .append(", provided: ")
                                                      .append(std::to_string(arguments.size()))
                     );
-                auto itrArg = arguments.begin();
-                auto itrParam = paramIds.begin();
-                while(itrArg != arguments.end() && itrParam != paramIds.end()) {
-                    functionContext.addVariable(*itrParam, (*itrArg)->evaluate(*this));
-                    ++itrArg;
-                    ++itrParam;
+                auto paramTypes = parameters->getTypes();
+
+                auto itrArgs = arguments.begin();
+                auto itrParamNames = paramIds.begin();
+                auto itrParamTypes = paramTypes.begin();
+
+
+                while(itrArgs != arguments.end() && itrParamNames != paramIds.end()) {
+                    Value value = (*itrArgs)->evaluate(*this);
+                    if (checkType) {
+                        std::variant<TokenType> paramType = *itrParamTypes;
+                        if (!std::visit(VisitCheckType(), value, paramType))
+                            throw ExecutionException(std::string("Wrong argument type for parameter ")
+                                                             .append(*itrParamNames)
+                                                             .append(", expected: ")
+                                                             .append(tokenTypeToString(*itrParamTypes))
+                                                             .append(", provided: ")
+                                                             .append(tokenTypeToString(std::visit(VisitGetType(), value)))
+                            );
+                    }
+                    functionContext.addVariable(*itrParamNames, value);
+                    ++itrArgs;
+                    ++itrParamNames;
+                    ++itrParamTypes;
                 }
                 return function->second->execute(functionContext);
             }

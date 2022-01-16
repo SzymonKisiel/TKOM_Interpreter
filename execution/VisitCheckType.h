@@ -13,6 +13,16 @@ struct VisitCheckType {
     bool operator()(auto&, auto&) { return false; }
 };
 
+struct VisitGetType {
+    TokenType operator()(int&)    { return TokenType::T_TYPE_INT; }
+    TokenType operator()(float&)  { return TokenType::T_TYPE_FLOAT; }
+    TokenType operator()(string&) { return TokenType::T_TYPE_STRING; }
+    TokenType operator()(GeographicCoordinate&) { return TokenType::T_TYPE_GEOCOORD; }
+    TokenType operator()(GeographicPosition&)   { return TokenType::T_TYPE_GEO; }
+    TokenType operator()(GeographicDistance&)   { return TokenType::T_TYPE_GEODIST; }
+    TokenType operator()(auto&) { return TokenType::T_UNKNOWN; }
+};
+
 struct VisitCompareType {
     bool operator()(int&, int&)       { return true; }
     bool operator()(float&, float&)   { return true; }
