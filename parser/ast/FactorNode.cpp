@@ -22,6 +22,10 @@ void FactorNode::setExpression(std::unique_ptr<ExpressionNode> expression) {
     factorType = FactorType::EXPRESSION;
 }
 
+void FactorNode::setPositive() {
+    isPositive = true;
+}
+
 void FactorNode::setNegative() {
     isPositive = false;
 }

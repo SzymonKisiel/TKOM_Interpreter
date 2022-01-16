@@ -38,6 +38,7 @@ public:
     void setId(std::string id);
     void setFunction(std::unique_ptr<FunctionCallNode> functionCall);
     void setExpression(std::unique_ptr<ExpressionNode> expression);
+    void setPositive();
     void setNegative();
     FactorType getType();
     std::string toString(int depth = 0);

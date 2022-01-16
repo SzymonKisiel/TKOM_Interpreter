@@ -29,8 +29,13 @@ public:
     GeographicDistance operator+(GeographicDistance const &geoPos);
     GeographicDistance operator-(GeographicDistance const &geoPos);
 
+    GeographicDistance operator-() const {
+        GeographicDistance result = GeographicDistance(xDistance, !isXNegative, yDistance, !isYNegative);
+        return result;
+    }
+
     std::string toString() {
-        std::string xSign = "", ySign = "";
+        std::string xSign, ySign;
         if (isXNegative)
             xSign = "-";
         if (isYNegative)
