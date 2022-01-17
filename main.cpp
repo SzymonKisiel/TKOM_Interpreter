@@ -1,21 +1,16 @@
-#include <iostream>
-#include "lexer/Token.h"
-#include "lexer/Source.h"
 #include "lexer/Lexer.h"
 #include "lexer/FileSource.h"
 #include "lexer/StringSource.h"
-#include "exception/Exception.h"
+#include "parser/Parser.h"
 
 using namespace std;
 
-
 int main() {
-    FileSource source("test_lexer.txt");
+    FileSource source("input.txt");
     Lexer lexer(source);
-    auto token = lexer.getNextToken();
-    while (token->getType() != TokenType::T_END) {
-        token->print();
-        token = lexer.getNextToken();
-    }
+    Parser parser(lexer);
+    auto ast = parser.parse();
+    ast->execute();
+
     return 0;
 }
