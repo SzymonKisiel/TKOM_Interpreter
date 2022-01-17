@@ -16,6 +16,23 @@ GeographicDistance::GeographicDistance(const GeographicCoordinate &xDistance, co
     GeographicDistance::isYNegative = isYNegative;
 }
 
+GeographicCoordinate GeographicDistance::getXDistance() const {
+    return xDistance;
+}
+
+bool GeographicDistance::getIfXNegative() const {
+    return isXNegative;
+}
+
+GeographicCoordinate GeographicDistance::getYDistance() const {
+    return yDistance;
+}
+
+bool GeographicDistance::getIfYNegative() const {
+    return isYNegative;
+}
+
+
 void GeographicDistance::setLatitude(const GeographicCoordinate &xDistance) {
     GeographicDistance::xDistance = xDistance;
 }
@@ -49,17 +66,19 @@ GeographicDistance GeographicDistance::operator+(const GeographicDistance &geoDi
     if (geoDist.isYNegative)
         y2SecondSum *= -1;
 
-    // sum x to max 90 degrees
-    int xSecondSum = min(x1SecondSum + x2SecondSum, 90 * 3600);
+    // sum x to max 180 degrees
+    int xSecondSum = x1SecondSum + x2SecondSum;
+    xSecondSum = min(xSecondSum, 180 * 3600);
+    xSecondSum = max(xSecondSum, -180 * 3600);
 
-    // sum y to max 360 degrees and normalize to (-180, 180) range
+    // sum y to max 360 degrees and normalize to (-360, 360) range
     int ySecondSum = (y1SecondSum + y2SecondSum) % (360 * 3600);
-    if (ySecondSum > 180 * 3600) {
-        ySecondSum = 360 * 3600 - ySecondSum;
-    }
-    if (ySecondSum < -180 * 3600) {
-        ySecondSum = 360 * 3600 + ySecondSum;
-    }
+//    if (ySecondSum > 180 * 3600) {
+//        ySecondSum = 360 * 3600 - ySecondSum;
+//    }
+//    if (ySecondSum < -180 * 3600) {
+//        ySecondSum = 360 * 3600 + ySecondSum;
+//    }
 
     bool isResultXNegative = false;
     if (xSecondSum < 0) {
@@ -90,11 +109,11 @@ GeographicDistance GeographicDistance::operator+(const GeographicDistance &geoDi
 }
 
 GeographicPosition GeographicDistance::operator+(const GeographicPosition &geoPos) const {
-    throw Exception("geodist - geo not implemented yet");
+    return geoPos.operator+(*this);
 }
 
 GeographicDistance GeographicDistance::operator-(const GeographicDistance &geoDist) const {
-    throw Exception("geodist - geodist not implemented yet");
+    return this->operator+(-geoDist);
 }
 
 GeographicDistance GeographicDistance::operator-() const {

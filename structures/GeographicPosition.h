@@ -8,6 +8,8 @@ class GeographicPosition {
 public:
     GeographicPosition();
     GeographicPosition(const GeographicCoordinate &latitude, const GeographicCoordinate &longitude) ;
+    const GeographicCoordinate getLatitude() const;
+    const GeographicCoordinate getLongitude() const;
     void setLatitude(const GeographicCoordinate &latitude);
     void setLongitude(const GeographicCoordinate &longitude);
     GeographicPosition operator+(const GeographicDistance &geoDist) const;

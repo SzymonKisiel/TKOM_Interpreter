@@ -20,7 +20,11 @@ private:
 public:
     GeographicDirection();
     GeographicDirection(Direction direction);
-    GeographicDirection(TokenType directionToken) ;
+    GeographicDirection(TokenType directionToken);
+    const bool isNorth() const;
+    const bool isSouth() const;
+    const bool isWest() const;
+    const bool isEast() const;
     const bool isDirection();
     const bool isLatitudeDirection();
     const bool isLongitudeDirection();

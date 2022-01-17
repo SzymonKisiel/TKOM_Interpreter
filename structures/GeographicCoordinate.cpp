@@ -105,7 +105,7 @@ void GeographicCoordinate::validateAsXDistance() {
     if (minute > 59)
         throw GeoException("GeographicCoordinate exceeds max minutes value");
     double decimalDegree = static_cast<double>(second + 60*minute + 3600*degree) / 3600;
-    if (decimalDegree > 90) {
+    if (decimalDegree > 180) {
         throw GeoException("GeographicCoordinate exceeds max x distance value");
     }
 }
@@ -116,7 +116,7 @@ void GeographicCoordinate::validateAsYDistance() {
     if (minute > 59)
         throw GeoException("GeographicCoordinate exceeds max minutes value");
     double decimalDegree = static_cast<double>(second + 60*minute + 3600*degree) / 3600;
-    if (decimalDegree > 180) {
+    if (decimalDegree > 360) {
         throw GeoException("GeographicCoordinate exceeds max y distance value");
     }
 }

@@ -24,6 +24,34 @@ GeographicDirection::GeographicDirection(TokenType directionToken) {
     }
 }
 
+const bool GeographicDirection::isNorth() const {
+    if (direction == Direction::N) {
+        return true;
+    }
+    return false;
+}
+
+const bool GeographicDirection::isSouth() const{
+    if (direction == Direction::S) {
+        return true;
+    }
+    return false;
+}
+
+const bool GeographicDirection::isWest() const {
+    if (direction == Direction::W) {
+        return true;
+    }
+    return false;
+}
+
+const bool GeographicDirection::isEast() const {
+    if (direction == Direction::E) {
+        return true;
+    }
+    return false;
+}
+
 const bool GeographicDirection::isDirection() {
     if (direction == Direction::NONE) {
         return false;
