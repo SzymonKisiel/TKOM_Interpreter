@@ -47,14 +47,14 @@ TEST_CASE("Print", "[Execution tests]") {
         checkOutput(GeographicCoordinate(22, 50, 50, Direction::E).toString());
     }
     SECTION("Geo") {
-        StringSource source("print(66^ 30' S, 33^ 30'' W);");
+        StringSource source("print(66^ 30' S, 33^ 5' 30'' W);");
         Lexer lexer(source);
         Parser parser(lexer);
         parser.parse()->execute();
         checkOutput(
             GeographicPosition(
                     GeographicCoordinate(66, 30, 0, Direction::S),
-                    GeographicCoordinate(33, 0, 30, Direction::W)
+                    GeographicCoordinate(33, 5, 30, Direction::W)
             ).toString()
         );
     }
@@ -99,19 +99,19 @@ TEST_CASE("Negation", "[Execution tests]") {
                 ).toString()
         );
     }
-    SECTION("String negation") {
+    SECTION("String negation exception") {
         StringSource source("print(-\"test\");");
         Lexer lexer(source);
         Parser parser(lexer);
         CHECK_THROWS_AS(parser.parse()->execute(), ExecutionException);
     }
-    SECTION("Geocoord negation") {
+    SECTION("Geocoord negation exception") {
         StringSource source("print(-10^ N);");
         Lexer lexer(source);
         Parser parser(lexer);
         CHECK_THROWS_AS(parser.parse()->execute(), ExecutionException);
     }
-    SECTION("Geo negation") {
+    SECTION("Geo negation exception") {
         StringSource source("print(-10^ N 20^ W);");
         Lexer lexer(source);
         Parser parser(lexer);
@@ -156,11 +156,121 @@ TEST_CASE("Expressions", "[Execution tests]") {
             parser.parse()->execute();
             checkOutput("abc123");
         }
-        SECTION("Addition exception") {
-            StringSource source("print(\"abc\" + 123);");
+        SECTION("geodist + geodist") {
+            SECTION("Simple addition") {
+                StringSource source("print(5^ 10', 10^ 5'' + 1^ 2' 3'', 4^ 5' 6'');");
+                Lexer lexer(source);
+                Parser parser(lexer);
+                parser.parse()->execute();
+                checkOutput(
+                        GeographicDistance(
+                                GeographicCoordinate(6, 12, 3, Direction::NONE),
+                                GeographicCoordinate(14, 5, 11, Direction::NONE)
+                        ).toString()
+                );
+            }
+            SECTION("Minutes/seconds overflow") {
+                StringSource source("print(50^ 15' 20'', 100^ 20' 40'' + 10^ 50' 20'', 20^ 10' 30'');");
+                Lexer lexer(source);
+                Parser parser(lexer);
+                parser.parse()->execute();
+                checkOutput(
+                        GeographicDistance(
+                                GeographicCoordinate(61, 5, 40, Direction::NONE),
+                                GeographicCoordinate(120, 31, 10, Direction::NONE)
+                        ).toString()
+                );
+            }
+            SECTION("Negative geodist") {
+                StringSource source("print(-50^ 15' 40'', 100^ 20' 40'' + 10^ 50' 20'', -20^ 10' 30'');");
+                Lexer lexer(source);
+                Parser parser(lexer);
+                parser.parse()->execute();
+                checkOutput(
+                        GeographicDistance(
+                                GeographicCoordinate(39, 25, 20, Direction::NONE), true,
+                                GeographicCoordinate(80, 10, 10, Direction::NONE), false
+                        ).toString()
+                );
+            }
+            SECTION("Max vertical distance") {
+                SECTION("Max vertical distance 1") {
+                    StringSource source("print(100^, 0^ + 90^, 0^);");
+                    Lexer lexer(source);
+                    Parser parser(lexer);
+                    parser.parse()->execute();
+                    checkOutput(
+                            GeographicDistance(
+                                    GeographicCoordinate(180, 0, 0, Direction::NONE), false,
+                                    GeographicCoordinate(0, 0, 0, Direction::NONE), false
+                            ).toString()
+                    );
+                }
+                SECTION("Max vertical distance 2") {
+                    StringSource source("print(-179^ 30', 0^ + -30' 30'', 0^);");
+                    Lexer lexer(source);
+                    Parser parser(lexer);
+                    parser.parse()->execute();
+                    checkOutput(
+                            GeographicDistance(
+                                    GeographicCoordinate(180, 0, 0, Direction::NONE), true,
+                                    GeographicCoordinate(0, 0, 0, Direction::NONE), false
+                            ).toString()
+                    );
+                }
+            }
+            SECTION("Max horizontal distance") {
+                SECTION("Max horizontal distance 1") {
+                    StringSource source("print(0^, 300^+ 0^, 120^);");
+                    Lexer lexer(source);
+                    Parser parser(lexer);
+                    parser.parse()->execute();
+                    checkOutput(
+                            GeographicDistance(
+                                    GeographicCoordinate(0, 0, 0, Direction::NONE), false,
+                                    GeographicCoordinate(60, 0, 0, Direction::NONE), false
+                            ).toString()
+                    );
+                }
+                SECTION("Max horizontal distance 2") {
+                    StringSource source("print(0^, -350^ + 0^, -10^ 30' 30'');");
+                    Lexer lexer(source);
+                    Parser parser(lexer);
+                    parser.parse()->execute();
+                    checkOutput(
+                            GeographicDistance(
+                                    GeographicCoordinate(0, 0, 0, Direction::NONE), false,
+                                    GeographicCoordinate(0, 30, 30, Direction::NONE), true
+                            ).toString()
+                    );
+                }
+            }
+        }
+        SECTION("geo + geodist") {
+            StringSource source("print(30^ 40' N 60^ 40'' E + 50^ 30' 15'', 45^ 15' 30''); ");
             Lexer lexer(source);
             Parser parser(lexer);
-            CHECK_THROWS_AS(parser.parse()->execute(), ExecutionException);
+            parser.parse()->execute();
+            checkOutput(
+                    GeographicPosition(
+                            GeographicCoordinate(81, 10, 15, Direction::N),
+                            GeographicCoordinate(105, 16, 10, Direction::E)
+                    ).toString()
+            );
+        }
+        SECTION("Addition exception") {
+            SECTION("Addition exception 1") {
+                StringSource source("print(\"abc\" + 123);");
+                Lexer lexer(source);
+                Parser parser(lexer);
+                CHECK_THROWS_AS(parser.parse()->execute(), ExecutionException);
+            }
+            SECTION("Addition exception 2") {
+                StringSource source("print(5^ N + 10^ S);");
+                Lexer lexer(source);
+                Parser parser(lexer);
+                CHECK_THROWS_AS(parser.parse()->execute(), ExecutionException);
+            }
         }
     }
     SECTION("Subtraction") {
@@ -191,6 +301,42 @@ TEST_CASE("Expressions", "[Execution tests]") {
             Parser parser(lexer);
             parser.parse()->execute();
             checkOutput("2.6");
+        }
+        SECTION("geo - geo") {
+            StringSource source("print(45^ 20' 30'' N 70^ 40' 30'' E - 60^ 30' 10'' S 45^ 15' 45'' W);");
+            Lexer lexer(source);
+            Parser parser(lexer);
+            parser.parse()->execute();
+            checkOutput(
+                    GeographicDistance(
+                            GeographicCoordinate(105, 50, 40, Direction::NONE),
+                            GeographicCoordinate(115, 56, 15, Direction::NONE)
+                    ).toString()
+            );
+        }
+        SECTION("geo - geodist") {
+            StringSource source("print(30^ 40' N 60^ 40'' E - 50^ 30' 15'', 45^ 15' 30'');");
+            Lexer lexer(source);
+            Parser parser(lexer);
+            parser.parse()->execute();
+            checkOutput(
+                    GeographicPosition(
+                            GeographicCoordinate(19, 50, 15, Direction::S),
+                            GeographicCoordinate(14, 45, 10, Direction::E)
+                    ).toString()
+            );
+        }
+        SECTION("geodist - geodist") {
+            StringSource source("print(50^ 15' 20'', 100^ 20' 40'' - 10^ 50' 20'', 20^ 10' 30'');");
+            Lexer lexer(source);
+            Parser parser(lexer);
+            parser.parse()->execute();
+            checkOutput(
+                    GeographicDistance(
+                            GeographicCoordinate(39, 25, 0, Direction::NONE),
+                            GeographicCoordinate(80, 10, 10, Direction::NONE)
+                    ).toString()
+            );
         }
         SECTION("Subtraction exception") {
             StringSource source("print(\"abc\" - \"123\");");
@@ -1024,7 +1170,6 @@ TEST_CASE("Variables", "[Execution tests]") {
 }
 
 TEST_CASE("Execute while statement", "[Execution tests]") {
-    // TODO: More tests
     StringSource source(    "int i = 0;\n"
                             "while (i < 5) {\n"
                             "    print(i);\n"
@@ -1093,7 +1238,6 @@ TEST_CASE("Execute if statement", "[Execution tests]") {
         }
     }
     SECTION("elsif") {
-        // TODO: More tests?
         SECTION("test1") {
             StringSource source("if (0)\n"
                                 "    print(\"if\");\n"
