@@ -189,7 +189,7 @@ std::unique_ptr<Token> Lexer::buildString() {
 std::unique_ptr<Token> Lexer::buildId() {
     if (isalpha(character)) {
         string value = "";
-        while (isalnum(character)) {
+        while (isalnum(character) || character == '_') {
             value.push_back(character);
             character = source.getNextChar();
         }
