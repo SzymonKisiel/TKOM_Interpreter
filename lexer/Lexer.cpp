@@ -155,9 +155,12 @@ std::unique_ptr<Token> Lexer::buildString() {
     if (character == '"') {
         string value = "";
         character = source.getNextChar();
+        int length = 0;
         while (character != '"') {
             if (character == EOF)
                 throw LexerException("Expected string end");
+            if (length >= MAX_STRING_LENGTH)
+                throw LexerException("String is too long");
             if (character == '\\') {
                 character = source.getNextChar();
                 switch (character) {
@@ -179,6 +182,7 @@ std::unique_ptr<Token> Lexer::buildString() {
             else
                 value.push_back(character);
             character = source.getNextChar();
+            ++length;
         }
         character = source.getNextChar();
         return std::make_unique<Token>(TokenType::T_STRING, row, column, value);
@@ -189,9 +193,13 @@ std::unique_ptr<Token> Lexer::buildString() {
 std::unique_ptr<Token> Lexer::buildId() {
     if (isalpha(character)) {
         string value = "";
+        int length = 0;
         while (isalnum(character) || character == '_') {
+            if (length >= MAX_ID_LENGTH)
+                throw LexerException("Identifier is too long");
             value.push_back(character);
             character = source.getNextChar();
+            ++length;
         }
         if (const auto itr = keywords.find(value); itr != keywords.end()) {
             return std::make_unique<Token>(itr->second, row, column);
