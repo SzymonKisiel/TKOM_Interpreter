@@ -26,7 +26,7 @@ class PrintFunction : public Function {
         else if (auto geodist_val = get_if<GeographicDistance>(&value))
             output << geodist_val->toString() << '\n';
         else
-            throw ExecutionException(""); // TODO: Exception message
+            throw ExecutionException("Can't print"); // TODO: Exception message
         output.close();
 
     }
@@ -46,8 +46,8 @@ public:
     Value execute(Context & context) {
         auto value = context.getVariableValue(PRINT_VAR_ID);
         print(value); // print to output file
-        std::visit(VisitPrintValue(), value); // debug print
-        std::cout << '\n';
+//        std::visit(VisitPrintValue(), value); // debug print
+//        std::cout << '\n';
         return monostate();
     }
 };
