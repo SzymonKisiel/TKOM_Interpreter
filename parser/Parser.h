@@ -455,7 +455,8 @@ public:
         return result;
     }
 
-    // factor          = integer | float | geo | string | (["-"] , id) | function_call | "(" , expression , ")"  ;
+    // factor = ["-"] , ( integer | float | id | function_call | "(" , expression , ")" )
+    //        | string | geo_dist | geo | geo_coord ;
     std::unique_ptr<FactorNode> parseFactor() {
         bool isXNegative = false, isYNegative = false; // for geodist
         std::unique_ptr<FactorNode> factor = std::make_unique<FactorNode>();
@@ -540,6 +541,9 @@ public:
         return factor;
     }
 
+//    geo_coord = integer , "^" , [integer , "'"] , [integer , "‘‘"]
+//              | [integer , "^"] , integer , "'" , [integer , "‘‘"]
+//              | [integer , "^"] , [integer , "'"] , integer , "‘‘" ;
     std::optional<GeographicCoordinate> parseCoordinate() {
         std::optional<GeographicCoordinate> result;
         if (currentToken->getType() != TokenType::T_INT) {

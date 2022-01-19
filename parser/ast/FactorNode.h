@@ -18,7 +18,8 @@ using Value = std::variant<std::monostate, std::string, int, float,
 class FunctionCallNode;
 class ExpressionNode;
 
-// factor          = integer | float | geo | string | (["-"] , id) | function_call | "(" , expression , ")"  ;
+//factor = ["-"] , ( integer | float | id | function_call | "(" , expression , ")" )
+//       | string | geo_dist | geo | geo_coord ;
 class FactorNode : public Node {
     bool isPositive = true;
     Value value;
