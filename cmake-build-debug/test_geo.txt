@@ -1,0 +1,36 @@
+# poprawne
+geocoord gc1 = 5^ N;
+geocoord gc2 = 70' S;
+geocoord gc3 = 33'' W;
+geocoord gc4 = 60^ 5' E;
+geocoord gc5 = 110^ 30'' W;
+geocoord gc6 = 40' 45'' E;
+geocoord gc7 = 78^ 10' 30'' N;
+
+/*
+geo g1 = 60^ S  135^ W;
+geo g2 = 0^ 30' N  170^ 30' W
+geo g3 = 10^ 20' 30'' N  95^ 40' 50'' E;
+*/
+
+/*
+# niepoprawne
+geocoord gc11 = 1^ 2' 3'';      # brak kierunku geograficznego
+geocoord gc12 = 1^ 2' 73'' N;   # przekroczenie maksymalnej wartości sekund
+geocoord gc13 = 1^ 82' 3'' N;   # przekroczenie maksymalnej wartości minut
+geocoord gc14 = 91^ N;          # przekroczenie zakresu szerokości geograficznej
+geocoord gc15 = 90^ 20'' S;     # przekroczenie zakresu szerokości geograficznej
+geocoord gc16 = 192^ E;         # przekroczenie zakresu długości geograficznej
+geocoord gc17 = 180^ 9' W;      # przekroczenie zakresu długości geograficznej
+geocoord gc18 = 1' 1^ N;        # niepoprawna kolejność jednostek
+
+geo g11 = 60^ N  30^; # brak kierunku geograficznego
+geo g12 = 60^  30^ W; # brak kierunku geograficznego
+geo g13 = 60^ W 30^ N # niepoprawna kolejność kierunków geograficznych
+geo g14 = # x
+geo g15 = # x
+geo g16 = # x
+geo g17 = # x
+geo g18 = # x
+geo g19 = # x
+*/
