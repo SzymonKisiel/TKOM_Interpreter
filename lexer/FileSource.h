@@ -1,7 +1,3 @@
-//
-// Created by kislu on 01.06.2021.
-//
-
 #ifndef _TKOM__INTERPRETER_FILESOURCE_H
 #define _TKOM__INTERPRETER_FILESOURCE_H
 

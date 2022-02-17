@@ -30,3 +30,7 @@ print("concatenate:");
     string test2 = "konkatenacji";
     print(concatenate(test1, test2));
 }
+
+int add(int x, int y) {
+    return x + y;
+}

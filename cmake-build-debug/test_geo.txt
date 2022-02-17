@@ -1,0 +1,10 @@
+{
+    geocoord pos1 = 55^ 45' 30'' N;
+    geocoord pos2 = 11^ 5' S;
+    geocoord pos3 = 20^ 50' W;
+    geocoord pos4 = 45' 30'' N;
+    geocoord pos5 = 1^ N;
+    geocoord pos6 = 2' N;
+    geocoord pos7 = 3'' N;
+    #geo pos = 55^ 45' 30'' N 37^ 37' 45'' E;
+}
