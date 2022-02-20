@@ -30,7 +30,7 @@ void Context::exitScope() {
 
 //variables
 
-void Context::addVariable(std::string id, std::variant<std::monostate, std::string, int, float> value) {
+void Context::addVariable(std::string id, Value value) {
     const auto [it, success] = variables.insert(std::make_pair(id, value));
     if (!success)
         throw ExecutionException(std::string("Variable ").append(id).append(" already declared"));
@@ -39,7 +39,7 @@ void Context::addVariable(std::string id, std::variant<std::monostate, std::stri
     variablesStack.push(id);
 }
 
-void Context::assignToVariable(std::string id, std::variant<std::monostate, std::string, int, float> value) {
+void Context::assignToVariable(std::string id, Value value) {
     if (auto variable = variables.find(id); variable != variables.end()) {
         auto& oldValue = variable->second;
         if (!std::visit(VisitCompareType(), oldValue, value))
@@ -50,7 +50,7 @@ void Context::assignToVariable(std::string id, std::variant<std::monostate, std:
         throw ExecutionException(std::string("Use of undeclared variable: ").append(id));
 }
 
-variant<std::monostate, string, int, float> Context::getVariableValue(std::string id) {
+Value Context::getVariableValue(std::string id) {
     if (const auto variable = variables.find(id); variable != variables.end()) {
         return variable->second;
     }
@@ -75,7 +75,7 @@ void Context::addFunction(std::string id, std::shared_ptr<Function> function) {
         throw ExecutionException(std::string("Function ").append(id).append(" already declared"));
 }
 
-std::variant<std::monostate, string, int, float> Context::callFunction(std::string id, std::shared_ptr<ArgumentsNode> argumentsNode) {
+Value Context::callFunction(std::string id, std::shared_ptr<ArgumentsNode> argumentsNode, bool checkType) {
     if (auto function = functions.find(id); function != functions.end()) {
         Context functionContext = *this;
         functionContext.deleteAllVariables();
@@ -112,12 +112,30 @@ std::variant<std::monostate, string, int, float> Context::callFunction(std::stri
                                                      .append(", provided: ")
                                                      .append(std::to_string(arguments.size()))
                     );
-                auto itrArg = arguments.begin();
-                auto itrParam = paramIds.begin();
-                while(itrArg != arguments.end() && itrParam != paramIds.end()) {
-                    functionContext.addVariable(*itrParam, (*itrArg)->evaluate(*this));
-                    ++itrArg;
-                    ++itrParam;
+                auto paramTypes = parameters->getTypes();
+
+                auto itrArgs = arguments.begin();
+                auto itrParamNames = paramIds.begin();
+                auto itrParamTypes = paramTypes.begin();
+
+
+                while(itrArgs != arguments.end() && itrParamNames != paramIds.end()) {
+                    Value value = (*itrArgs)->evaluate(*this);
+                    if (checkType) {
+                        std::variant<TokenType> paramType = *itrParamTypes;
+                        if (!std::visit(VisitCheckType(), value, paramType))
+                            throw ExecutionException(std::string("Wrong argument type for parameter ")
+                                                             .append(*itrParamNames)
+                                                             .append(", expected: ")
+                                                             .append(tokenTypeToString(*itrParamTypes))
+                                                             .append(", provided: ")
+                                                             .append(tokenTypeToString(std::visit(VisitGetType(), value)))
+                            );
+                    }
+                    functionContext.addVariable(*itrParamNames, value);
+                    ++itrArgs;
+                    ++itrParamNames;
+                    ++itrParamTypes;
                 }
                 return function->second->execute(functionContext);
             }

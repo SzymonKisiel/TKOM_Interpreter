@@ -19,8 +19,7 @@ public:
     void setType(TokenType type);
     void setId(std::string id);
     void setExpression(std::unique_ptr<ExpressionNode> expression);
-    std::string toString();
-    void print(int depth = 0);
+    std::string toString(int depth = 0);
     void execute(Context & context);
 };
 

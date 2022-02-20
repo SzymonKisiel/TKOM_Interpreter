@@ -8,11 +8,15 @@
 #include <memory>
 #include "Function.h"
 #include "../parser/ast/ArgumentsNode.h"
+
+using Value = std::variant<std::monostate, std::string, int, float,
+        GeographicCoordinate, GeographicDistance, GeographicPosition>;
+
 class ArgumentsNode;
 
 class Context {
     std::map<std::string, std::shared_ptr<Function>> functions;
-    std::map<std::string, std::variant<std::monostate, std::string, int, float>> variables;
+    std::map<std::string, Value> variables;
     std::stack<std::string> variablesStack;
     std::stack<int> variablesCountStack;
 public:
@@ -21,14 +25,14 @@ public:
     void enterScope();
     void exitScope();
 
-    void addVariable(std::string id, std::variant<std::monostate, std::string, int, float> value);
-    void assignToVariable(std::string id, std::variant<std::monostate, std::string, int, float> value);
-    variant<std::monostate, string, int, float> getVariableValue(std::string id);
+    void addVariable(std::string id, Value value);
+    void assignToVariable(std::string id, Value value);
+    Value getVariableValue(std::string id);
     void deleteVariable(std::string id);
     void deleteAllVariables();
 
     void addFunction(std::string id, std::shared_ptr<Function> function);
-    variant<std::monostate, string, int, float> callFunction(std::string id, std::shared_ptr<ArgumentsNode> arguments = nullptr);
+    Value callFunction(std::string id, std::shared_ptr<ArgumentsNode> arguments = nullptr, bool checkType = true);
 
     void print(std::string id = "");
 

@@ -11,7 +11,7 @@ class PrintFunction : public Function {
     std::shared_ptr<ParametersNode> parameters;
     const std::string PRINT_VAR_ID = "var";
     fstream output;
-    void print(std::variant<std::monostate, std::string, int, float> & value) {
+    void print(Value & value) {
         output.open("output.txt", ios::out | ios::app);
         if (auto int_val = get_if<int>(&value))
             output << *int_val << '\n';
@@ -19,8 +19,14 @@ class PrintFunction : public Function {
             output << *float_val << '\n';
         else if (auto string_val = get_if<string>(&value))
             output << *string_val << '\n';
+        else if (auto geocoord_val = get_if<GeographicCoordinate>(&value))
+            output << geocoord_val->toString() << '\n';
+        else if (auto geo_val = get_if<GeographicPosition>(&value))
+            output << geo_val->toString() << '\n';
+        else if (auto geodist_val = get_if<GeographicDistance>(&value))
+            output << geodist_val->toString() << '\n';
         else
-            throw ExecutionException(""); // TODO: Exception message
+            throw ExecutionException("Can't print"); // TODO: Exception message
         output.close();
 
     }
@@ -37,12 +43,11 @@ public:
         return parameters;
     };
 
-    std::variant<std::monostate, string, int, float> execute(Context & context) {
+    Value execute(Context & context) {
         auto value = context.getVariableValue(PRINT_VAR_ID);
-        print(value);
-
-        std::visit(VisitPrintValue(), value); // debug
-
+        print(value); // print to output file
+//        std::visit(VisitPrintValue(), value); // debug print
+//        std::cout << '\n';
         return monostate();
     }
 };

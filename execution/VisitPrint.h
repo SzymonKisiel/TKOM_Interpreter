@@ -2,31 +2,31 @@
 #define _TKOM__INTERPRETER_VISITPRINT_H
 
 struct VisitPrintValue {
-    void operator()(int& x)         { std::cout << x << std::endl; }
-    void operator()(float& x)       { std::cout << x << std::endl; }
-    void operator()(std::string& x) { std::cout << x << std::endl; }
-    void operator()(auto)           { std::cout << "empty/unknown" << std::endl; }
+    void operator()(int& x)         { std::cout << x; }
+    void operator()(float& x)       { std::cout << x; }
+    void operator()(std::string& x) { std::cout << x; }
+    void operator()(GeographicCoordinate& x) { std::cout << x.toString(); }
+    void operator()(GeographicPosition& x)   { std::cout << x.toString(); }
+    void operator()(GeographicDistance& x)   { std::cout << x.toString(); }
+    void operator()(auto) { std::cout << "empty/unknown"; }
 };
 
-struct VisitGetValue {
-    int operator()(int& x) { return x; }
-    float operator()(float& x) { return x; }
-    std::string operator()(std::string& x) { return x; }
-    int operator()(auto) { return 0;}
-};
+//struct VisitGetValue {
+//    int operator()(int& x) { return x; }
+//    float operator()(float& x) { return x; }
+//    std::string operator()(std::string& x) { return x; }
+//    int operator()(auto) { return 0;}
+//};
 
 struct VisitToString {
-    std::string operator()(int& x)         { return std::to_string(x); }
-    std::string operator()(float& x)       { return std::to_string(x); }
+    std::string operator()(int& x)         { return to_string(x); }
+    std::string operator()(float& x)       { return to_string(x); }
     std::string operator()(std::string& x) { return x; }
-    std::string operator()(auto)           { return "empty"; }
+    std::string operator()(GeographicCoordinate& x) { return x.toString(); }
+    std::string operator()(GeographicPosition& x)   { return x.toString(); }
+    std::string operator()(GeographicDistance& x)   { return x.toString(); }
+    std::string operator()(auto) { return "empty/unknown"; }
 };
 
-struct VisitTest {
-    std::string operator()(int&)         { return "int"; }
-    std::string operator()(float&)       { return "float"; }
-    std::string operator()(std::string&) { return "string"; }
-    std::string operator()(auto)         { return "empty"; }
-};
 
 #endif //_TKOM__INTERPRETER_VISITPRINT_H

@@ -20,51 +20,8 @@ class MultExpressionNode : public Node {
 public:
     void addOperand(std::unique_ptr<FactorNode> node);
     void addOperation(TokenType multOperation);
-    std::string toString();
-    void print(int depth = 0);
-    variant<std::monostate, string, int, float> evaluate(Context & context);
-    struct VisitMult {
-        std::variant<std::monostate, std::string, int, float> operator()(int& lhs, int& rhs) { return lhs * rhs; }
-        std::variant<std::monostate, std::string, int, float> operator()(float& lhs, float& rhs) { return lhs * rhs; }
-        std::variant<std::monostate, std::string, int, float> operator()(int& lhs, float& rhs) { return lhs * rhs; }
-        std::variant<std::monostate, std::string, int, float> operator()(float& lhs, int& rhs) { return lhs * rhs; }
-        std::variant<std::monostate, std::string, int, float> operator()(auto& lhs, auto& rhs) { throw ExecutionException("Multiplication error"); }
-    };
-    struct VisitDiv {
-        std::variant<std::monostate, std::string, int, float> operator()(int& lhs, int& rhs) { return lhs / rhs; }
-        std::variant<std::monostate, std::string, int, float> operator()(float& lhs, float& rhs) { return lhs / rhs; }
-        std::variant<std::monostate, std::string, int, float> operator()(int& lhs, float& rhs) { return lhs / rhs; }
-        std::variant<std::monostate, std::string, int, float> operator()(float& lhs, int& rhs) { return lhs / rhs; }
-        std::variant<std::monostate, std::string, int, float> operator()(auto& lhs, auto& rhs) { throw ExecutionException("Division error"); }
-    };
-    struct VisitAnd {
-        void operator()(int& lhs, int& rhs) {
-            cout << lhs << " and " << rhs << endl;
-            if (lhs != 0 && rhs != 0)
-                lhs = 1;
-            else
-                lhs = 0;
-        }
-        void operator()(float& lhs, float& rhs) {
-            if (lhs != 0 && rhs != 0)
-                lhs = 1;
-            else
-                lhs = 0;
-        }
-        void operator()(int& lhs, float& rhs) {
-            if (lhs != 0 && rhs != 0)
-                lhs = 1;
-            else
-                lhs = 0;
-        }
-        void operator()(float& lhs, int& rhs) {
-            if (lhs != 0 && rhs != 0)
-                lhs = 1;
-            else
-                lhs = 0;
-        }
-        void operator()(auto& lhs, auto& rhs) { throw ExecutionException("Logical and error"); }
-    };
+    std::string toString(int depth = 0);
+    Value evaluate(Context & context);
 };
 
 

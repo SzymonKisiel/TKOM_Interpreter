@@ -31,27 +31,31 @@ void StatementNode::setSimpleStatement(std::unique_ptr<SimpleStatementNode> node
     }
 }
 
-void StatementNode::print(int depth) {
+std::string StatementNode::toString(int depth) {
+    std::string result = std::string();
     for (int i = 0; i < depth; ++i)
-        std::cout << "  ";
-    std::cout << "STATEMENT" << std::endl;
+        result.append(prefix);
+    result.append("STATEMENT\n");
+
     for (const auto &child: statements) {
-        child->print(depth+1);
+        result.append(child->toString(depth+1));
     }
     if (whileStatement != nullptr)
-        whileStatement->print(depth+1);
+        result.append(whileStatement->toString(depth+1));
     if (ifStatement != nullptr)
-        ifStatement->print(depth+1);
+        result.append(ifStatement->toString(depth+1));
     if (simpleStatement != nullptr)
-        simpleStatement->print(depth+1);
+        result.append(simpleStatement->toString(depth+1));
+
+    return result;
 }
 
-std::variant<std::monostate, std::string, int, float> StatementNode::execute(Context &context) {
+Value StatementNode::execute(Context &context) {
     if (statementType == StatementType::SIMPLE)
         return simpleStatement->execute(context);
 
     context.enterScope();
-    std::variant<std::monostate, std::string, int, float> value = std::monostate();
+    Value value = std::monostate();
     switch (statementType) {
         case StatementType::IF:
             value = ifStatement->execute(context);

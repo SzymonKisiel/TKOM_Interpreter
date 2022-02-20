@@ -7,9 +7,13 @@
 #include "../exception/Exception.h"
 #include "../exception/ParserException.h"
 #include "../structures/GeographicCoordinate.h"
+#include "../structures/GeographicPosition.h"
+#include "../structures/GeographicDistance.h"
 #include <memory>
-
+#include <optional>
 #include <iostream>
+#include <queue>
+
 #include "ast/Node.h"
 
 class Parser
@@ -17,45 +21,45 @@ class Parser
 private:
     Lexer & lexer;
     std::unique_ptr<Token> currentToken;
-    // TODO: Refactor buffer
-    std::unique_ptr<Token> firstBufferedToken;
-    std::unique_ptr<Token> secondBufferedToken;
+    std::queue<std::unique_ptr<Token>> tokensBuffer;
 public:
     Parser(Lexer & lexer) : lexer(lexer) {
         nextToken();
     }
 
     void nextToken() {
-        if (firstBufferedToken == nullptr) {
+        if (tokensBuffer.empty()) {
             currentToken = std::move(lexer.getNextToken());
             while (currentToken->getType() == TokenType::T_MULTICOMMENT)
                 currentToken = std::move(lexer.getNextToken());
         }
-        else
-        if (secondBufferedToken == nullptr) {
-            currentToken = std::move(firstBufferedToken);
-        }
         else {
-            currentToken = std::move(firstBufferedToken);
-            firstBufferedToken = std::move(secondBufferedToken);
+            currentToken = std::move(tokensBuffer.front());
+            tokensBuffer.pop();
         }
     }
 
     void bufferToken() {
-        if (firstBufferedToken == nullptr) {
-            firstBufferedToken = std::move(lexer.getNextToken());
-            while (firstBufferedToken->getType() == TokenType::T_MULTICOMMENT)
-                firstBufferedToken = std::move(lexer.getNextToken());
-        }
-        else if (secondBufferedToken == nullptr) {
-            secondBufferedToken = std::move(lexer.getNextToken());
-            while (secondBufferedToken->getType() == TokenType::T_MULTICOMMENT)
-                secondBufferedToken = std::move(lexer.getNextToken());
-        }
+        tokensBuffer.push(std::move(currentToken));
+
+        currentToken = std::move(lexer.getNextToken());
+        while (currentToken->getType() == TokenType::T_MULTICOMMENT)
+            currentToken = std::move(lexer.getNextToken());
+    }
+
+    void bufferTokenAndGetNextFromBuffer() {
+        tokensBuffer.push(std::move(currentToken));
+        currentToken = std::move(tokensBuffer.front());
+        tokensBuffer.pop();
+    }
+
+    void clearBuffer() {
+        std::queue<std::unique_ptr<Token>> emptyBuffer;
+        std::swap(tokensBuffer, emptyBuffer);
     }
 
     void test() {
-        std::cout << std::string("Current token: ")
+        std::cerr << std::string("Current token: ")
                 .append(tokenTypeToString(currentToken->getType()))
                 .append("\tRow: ")
                 .append(std::to_string(currentToken->getRow()))
@@ -83,27 +87,23 @@ public:
     }
 
     // function = type , id ,  "(" , [parameters] , ")" , "{" , {statement} , "}" ;
-    // var_declaration  = type , id, "=", expression ;
     std::unique_ptr<FunctionNode> parseFunction() {
         std::unique_ptr<FunctionNode> result = std::make_unique<FunctionNode>();
-
-        //var_declaration?
         if (!currentToken->isType()) {
             return nullptr;
         }
         result->setReturnType(currentToken->getType());
         bufferToken();
-        if (firstBufferedToken->getType() != TokenType::T_ID) {
-            return nullptr;
-            //throw ParserException(std::move(currentToken), TokenType::T_ID);
+        if (currentToken->getType() != TokenType::T_ID) {
+            throw ParserException(std::move(currentToken), TokenType::T_ID);
         }
-        result->setId(firstBufferedToken->getStringValue());
+        result->setId(*currentToken->getStringValue()); //check if nullptr
         bufferToken();
-        if (secondBufferedToken->getType() != TokenType::T_OPEN) {
+        if (currentToken->getType() != TokenType::T_OPEN) {
+            bufferTokenAndGetNextFromBuffer();
             return nullptr;
         }
-        nextToken();
-        nextToken();
+        clearBuffer();
         nextToken();
         std::unique_ptr<ParametersNode> parameters = parseParameters();
         result->setParameters(std::move(parameters));
@@ -212,7 +212,7 @@ public:
 
     // while_statement  = "while" , "(" , expression, ")", statement ;
     std::unique_ptr<WhileStatementNode> parseWhile() {
-        std::unique_ptr<WhileStatementNode> result = std::make_unique<WhileStatementNode>("WHILE_STATEMENT");
+        std::unique_ptr<WhileStatementNode> result = std::make_unique<WhileStatementNode>();
         std::unique_ptr<ExpressionNode> expression;
 
 
@@ -261,7 +261,7 @@ public:
         if (currentToken->getType() != TokenType::T_ID) {
             return nullptr;
         }
-        std::string tempId = currentToken->getStringValue();
+        std::string tempId = *currentToken->getStringValue(); //check if nullptr
         nextToken();
 
         std::unique_ptr<AssignmentNode> assignment = parseAssignment(tempId);
@@ -295,7 +295,7 @@ public:
         if (currentToken->getType() != TokenType::T_ID) {
             throw ParserException(std::move(currentToken), TokenType::T_ID);
         }
-        result->setId(currentToken->getStringValue());
+        result->setId(*currentToken->getStringValue()); //check if nullptr
         nextToken();
         if (currentToken->getType() != TokenType::T_ASSIGN) {
             throw ParserException(std::move(currentToken), TokenType::T_ASSIGN);
@@ -366,7 +366,7 @@ public:
         nextToken();
         if (currentToken->getType() != TokenType::T_ID)
             return nullptr;
-        result->addIdentifier(currentToken->getStringValue());
+        result->addIdentifier(*currentToken->getStringValue()); //check if nullptr
         nextToken();
         if (currentToken->getType() != TokenType::T_COMMA)
             return result;
@@ -379,7 +379,7 @@ public:
             nextToken();
             if (currentToken->getType() != TokenType::T_ID)
                 throw ParserException(std::move(currentToken), TokenType::T_ID);
-            result->addIdentifier(currentToken->getStringValue());
+            result->addIdentifier(*currentToken->getStringValue()); //check if nullptr
             nextToken();
         }
         return result;
@@ -455,10 +455,13 @@ public:
         return result;
     }
 
-    // factor          = integer | float | geo | string | (["-"] , id) | function_call | "(" , expression , ")"  ;
+    // factor = ["-"] , ( integer | float | id | function_call | "(" , expression , ")" )
+    //        | string | geo_dist | geo | geo_coord ;
     std::unique_ptr<FactorNode> parseFactor() {
+        bool isXNegative = false, isYNegative = false; // for geodist
         std::unique_ptr<FactorNode> factor = std::make_unique<FactorNode>();
         if (currentToken->getType() == TokenType::T_MINUS) {
+            isXNegative = true;
             factor->setNegative();
             nextToken();
         }
@@ -469,44 +472,93 @@ public:
             if (currentToken->getType() != TokenType::T_CLOSE)
                 throw ParserException(std::move(currentToken), TokenType::T_CLOSE);
             nextToken();
+            return factor;
         }
-        else {
-            if (currentToken->getType() != TokenType::T_ID &&
-                currentToken->getType() != TokenType::T_INT &&
-                currentToken->getType() != TokenType::T_FLOAT &&
-                currentToken->getType() != TokenType::T_STRING
-                )
-                throw ParserException(std::move(currentToken), "Expected expression");
-            if (currentToken->getType() == TokenType::T_ID) {
-                std::string id = currentToken->getStringValue();
-                nextToken();
-                auto functionCall = parseFunctionCall(id);
-                if (functionCall == nullptr) {
-                    factor->setId(id);
-                }
-                else {
-                    factor->setFunction(std::move(functionCall));
-                }
+        if (!currentToken->isValue())
+            throw ParserException(std::move(currentToken), "Expected expression");
+        if (currentToken->getType() == TokenType::T_ID) {
+            std::string id = *currentToken->getStringValue(); //check if nullptr
+            nextToken();
+            auto functionCall = parseFunctionCall(id);
+            if (functionCall == nullptr) {
+                factor->setId(id);
             }
             else {
-                auto value = currentToken->getValue();
-                factor->setValue(currentToken->getType(), value);
+                factor->setFunction(std::move(functionCall));
+            }
+            return factor;
+        }
+        // Geographic types parsing
+        int factorRow = currentToken->getRow();
+        int factorCol = currentToken->getColumn();
+        if (auto geoCoord = parseCoordinate()) {
+            if (currentToken->getType() == TokenType::T_COMMA)
                 nextToken();
-                auto geoCoord = parseCoordinate(value);
-                if (geoCoord) {
-                    geoCoord->print();
-                    //factor->setGeo();
+            if (currentToken->getType() == TokenType::T_MINUS) {
+                isYNegative = true;
+                nextToken();
+            }
+            if (auto geoCoord2 = parseCoordinate()) {
+                // GeographicPosition
+                if (geoCoord->hasDirection() || geoCoord2->hasDirection()) {
+                    GeographicPosition geoPos = GeographicPosition(*geoCoord, *geoCoord2);
+                    try {
+                        geoPos.validate();
+                    }
+                    catch (GeoException e) {
+                        throw ParserException(e, factorRow, factorCol);
+                    }
+                    factor->setValue(geoPos);
+                }
+                // GeographicDistance
+                else {
+                    factor->setPositive(); // info about negation from Factor to GeographicDistance
+                    GeographicDistance geoDist = GeographicDistance(*geoCoord, isXNegative,
+                                                                    *geoCoord2, isYNegative);
+                    try {
+                        geoDist.validate();
+                    }
+                    catch (GeoException e) {
+                        throw ParserException(e, factorRow, factorCol);
+                    }
+                    factor->setValue(geoDist);
                 }
             }
+            // GeographicCoordinate
+            else {
+                try {
+                    geoCoord->validate();
+                }
+                catch (GeoException e) {
+                    throw ParserException(e, factorRow, factorCol);
+                }
+                factor->setValue(*geoCoord);
+            }
+            return factor;
         }
+        factor->setValue(std::visit([](auto v) -> Value { return v; }, currentToken->getValue())); //convert to other variant
+        nextToken();
         return factor;
     }
 
-    std::optional<GeographicCoordinate> parseCoordinate(std::variant<std::monostate, std::string, int, float> & value) {
+//    geo_coord = integer , "^" , [integer , "'"] , [integer , "‘‘"]
+//              | [integer , "^"] , integer , "'" , [integer , "‘‘"]
+//              | [integer , "^"] , [integer , "'"] , integer , "‘‘" ;
+    std::optional<GeographicCoordinate> parseCoordinate() {
         std::optional<GeographicCoordinate> result;
-        if (currentToken->getType() == TokenType::T_GEO_DEGREE) {
-            result = GeographicCoordinate();
+        if (currentToken->getType() != TokenType::T_INT) {
+            return result;
+        }
+        std::variant<std::monostate, std::string, int, float> value = currentToken->getValue();
+        bufferToken();
+        if (!currentToken->isGeoUnit()) {
+            bufferTokenAndGetNextFromBuffer();
+            return result;
+        }
+        clearBuffer();
 
+        result = GeographicCoordinate();
+        if (currentToken->getType() == TokenType::T_GEO_DEGREE) {
             result->setDegree(std::visit(VisitGetInt(), value));
             nextToken();
             if (currentToken->getType() == TokenType::T_INT) {
@@ -515,9 +567,6 @@ public:
             }
         }
         if (currentToken->getType() == TokenType::T_GEO_MINUTE) {
-            if (!result)
-                result = GeographicCoordinate();
-
             result->setMinute(std::visit(VisitGetInt(), value));
             nextToken();
             if (currentToken->getType() == TokenType::T_INT) {
@@ -526,15 +575,10 @@ public:
             }
         }
         if (currentToken->getType() == TokenType::T_GEO_SECOND) {
-            if (!result)
-                result = GeographicCoordinate();
-
             result->setSecond(std::visit(VisitGetInt(), value));
             nextToken();
         }
-        if (result) {
-            if (!currentToken->isGeoDirection())
-                throw ParserException(std::move(currentToken), "Expected geographic direction");
+        if (currentToken->isGeoDirection()) {
             result->setDirection(currentToken->getType());
             nextToken();
         }
@@ -545,7 +589,5 @@ public:
         int operator()(auto&)   { throw ParserException("Wrong value type, expected int"); }
     };
 };
-
-
 
 #endif //_TKOM__INTERPRETER_PARSER_H

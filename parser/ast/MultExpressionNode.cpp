@@ -1,4 +1,5 @@
 #include "MultExpressionNode.h"
+#include "../../execution/VisitOperations.h"
 
 void MultExpressionNode::addOperand(std::unique_ptr<FactorNode> node) {
     operands.push_back(std::move(node));
@@ -8,29 +9,28 @@ void MultExpressionNode::addOperation(TokenType multOperation) {
     multOperations.push_back(multOperation);
 }
 
-std::string MultExpressionNode::toString() {
-    std::string result("MULT_EXPRESSION");
+std::string MultExpressionNode::toString(int depth) {
+    std::string result = std::string();
+    for (int i = 0; i < depth; ++i)
+        result.append(prefix);
+    result.append("MULT_EXPRESSION");
+
     if (!multOperations.empty()) {
-        result.append(" -");
         for (const auto &operation: multOperations) {
             result.append(" ").append(tokenTypeToString(operation));
         }
     }
+    result.append("\n");
+
+    for (const auto &child: operands) {
+        result.append(child->toString(depth+1));
+    }
     return result;
 }
 
-void MultExpressionNode::print(int depth) {
-    for (int i = 0; i < depth; ++i)
-        std::cout << "  ";
-    std::cout << toString() << std::endl;
-    for (const auto &child: operands) {
-        child->print(depth+1);
-    }
-}
-
-variant<std::monostate, string, int, float> MultExpressionNode::evaluate(Context & context) {
-    variant<std::monostate, string, int, float> lhs = operands[0]->evaluate(context);
-    variant<std::monostate, string, int, float> rhs;
+Value MultExpressionNode::evaluate(Context & context) {
+    Value lhs = operands[0]->evaluate(context);
+    Value rhs;
     TokenType operation;
     for (int i = 0; i < multOperations.size(); ++i) {
         operation = multOperations[i];
@@ -42,8 +42,7 @@ variant<std::monostate, string, int, float> MultExpressionNode::evaluate(Context
             lhs = std::visit(VisitDiv(), lhs, rhs);
         }
         else if (operation == TokenType::T_AND) {
-            // TODO? lhs = ...
-            std::visit(VisitAnd(), lhs, rhs);
+            lhs = std::visit(VisitAnd(), lhs, rhs);
         }
     }
     return lhs;

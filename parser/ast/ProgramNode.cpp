@@ -15,18 +15,18 @@ const bool ProgramNode::isTerminal() {
 }
 
 void ProgramNode::print(int depth) {
-    for (int i = 0; i < depth; ++i)
-        std::cout << "  ";
-    std::cout << "PROGRAM" << std::endl;
-    if (isTerminal()) {
-        return;
-    }
+    std::cout << this->toString() << std::endl;
+}
+
+const std::string ProgramNode::toString() {
+    std::string result = "PROGRAM\n";
     for (const auto &child: functions) {
-        child->print(depth+1);
+        result.append(child->toString(1));
     }
     for (const auto &child: statements) {
-        child->print(depth+1);
+        result.append(child->toString(1));
     }
+    return result;
 }
 
 void ProgramNode::execute() {

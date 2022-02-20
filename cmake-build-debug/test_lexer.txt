@@ -29,6 +29,7 @@ float   # T_TYPE_FLOAT
 string  # T_TYPE_STRING
 geo     # T_TYPE_GEO
 geocoord# T_TYPE_GEOCOORD
+geodist # T_TYPE_GEODIST
 5206    # T_INT
 200.367 # T_FLOAT
 "test2" # T_STRING

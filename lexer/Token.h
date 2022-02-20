@@ -51,6 +51,7 @@ public:
             "T_TYPE_STRING",
             "T_TYPE_GEO",
             "T_TYPE_GEOCOORD",
+            "T_TYPE_GEODIST",
             "T_INT",
             "T_FLOAT",
             "T_STRING",
@@ -71,17 +72,19 @@ public:
     Token(enum TokenType type);
     const enum TokenType getType();
     std::variant<std::monostate, string, int, float> getValue();
-    const string getStringValue();
-    const int getIntValue();
-    const float getFloatValue();
+    const string* getStringValue();
+    const int* getIntValue();
+    const float* getFloatValue();
     const int getRow();
     const int getColumn();
+    const bool isValue();
     const bool isType();
     const bool isCompOperator();
     const bool isMultOperator();
     const bool isAddOperator();
     const bool isOperator();
     const bool isGeoDirection();
+    const bool isGeoUnit();
     const string getTypeString();
     void print();
 };

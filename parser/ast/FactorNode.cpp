@@ -1,8 +1,8 @@
 #include "FactorNode.h"
 #include "../../execution/VisitPrint.h"
+#include "../../execution/VisitNegate.h"
 
-void FactorNode::setValue(TokenType type, variant<std::monostate, string, int, float> value) {
-    this->type = type;
+void FactorNode::setValue(Value value) {
     this->value = std::move(value);
     factorType = FactorType::VALUE;
 }
@@ -22,33 +22,81 @@ void FactorNode::setExpression(std::unique_ptr<ExpressionNode> expression) {
     factorType = FactorType::EXPRESSION;
 }
 
+void FactorNode::setPositive() {
+    isPositive = true;
+}
+
 void FactorNode::setNegative() {
     isPositive = false;
 }
 
-std::string FactorNode::toString() {
-    return std::string("FACTOR - ").append(factorTypeNames[factorType]/*tokenTypeToString(type)*/);
-}
-
-void FactorNode::print(int depth) {
+std::string FactorNode::toString(int depth) {
+    std::string result = std::string();
     for (int i = 0; i < depth; ++i)
-        std::cout << "  ";
-    std::cout << toString() << std::endl;
-    if (expression != nullptr)
-        expression->print(depth+1);
-}
-
-variant<std::monostate, string, int, float> FactorNode::evaluate(Context & context) {
+        result.append(prefix);
+    result.append("FACTOR ")
+            .append(factorTypeNames[factorType]);
+    std::string sign = "";
+    if (this->isPositive)
+        sign = "-";
     switch (factorType) {
         case FactorType::VALUE:
-            return value;
+            if (std::get_if<GeographicDistance>(&value)) {
+                result.append(" = ")
+                        .append(std::visit(VisitToString(), value));
+            }
+            else {
+                result.append(" = ")
+                        .append(sign)
+                        .append(std::visit(VisitToString(), value));
+            }
+            break;
         case FactorType::ID:
-            return context.getVariableValue(id);
+            result.append(" = ")
+                    .append(sign)
+                    .append(id);
+            break;
         case FactorType::FUNCTION_CALL:
-            return functionCall->execute(context);
+            if (functionCall != nullptr)
+                result.append(functionCall->toString(depth+1));
+            break;
         case FactorType::EXPRESSION:
-            return expression->evaluate(context);
+            if (expression != nullptr)
+                result.append(expression->toString(depth+1));
+            break;
+    }
+
+    result.append("\n");
+    return result;
+}
+
+Value FactorNode::evaluate(Context & context) {
+    Value returnValue;
+    switch (factorType) {
+        case FactorType::VALUE:
+            if (isPositive)
+                return value;
+            else
+                return std::visit(VisitNegate(), value);
+        case FactorType::ID:
+            returnValue = context.getVariableValue(id);
+            if (isPositive)
+                return returnValue;
+            else
+                return std::visit(VisitNegate(), returnValue);
+        case FactorType::FUNCTION_CALL:
+            returnValue = functionCall->execute(context);
+            if (isPositive)
+                return returnValue;
+            else
+                return std::visit(VisitNegate(), returnValue);
+        case FactorType::EXPRESSION:
+            returnValue = expression->evaluate(context);
+            if (isPositive)
+                return returnValue;
+            else
+                return std::visit(VisitNegate(), returnValue);
         default:
-            return variant<std::monostate, string, int, float>();
+            return Value();
     }
 }

@@ -7,7 +7,7 @@
 #include <string>
 #include "Node.h"
 #include "../../lexer/Token.h"
-#include "../../execution/Context.h"
+//#include "../../execution/Context.h"
 
 
 // parameters = parameter , {"," , parameter} ;
@@ -18,9 +18,8 @@ class ParametersNode : public Node {
 public:
     void addType(TokenType type);
     void addIdentifier(std::string identifier);
-    std::string toString();
-    void print(int depth = 0);
-    void execute(Context & context);
+    std::string toString(int depth = 0);
+//    void execute(Context & context);
 
     const vector<TokenType> &getTypes();
     const vector<std::string> &getIdentifiers();

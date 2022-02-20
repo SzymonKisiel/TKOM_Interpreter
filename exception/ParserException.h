@@ -2,6 +2,7 @@
 #define _TKOM__INTERPRETER_PARSEREXCEPTION_H
 
 #include "Exception.h"
+#include "GeoException.h"
 
 class ParserException : public Exception {
     std::unique_ptr<Token> unexpectedToken;
@@ -34,6 +35,22 @@ public:
 
         this->unexpectedToken = std::move(unexpectedToken);
         this->expectedTokenType = expectedTokenType;
+    }
+
+    ParserException(GeoException e, int row, int col) : Exception() {
+        this->msg = std::string(e.what())
+                .append(" at row ")
+                .append(std::to_string(row))
+                .append(", column ")
+                .append(std::to_string(col));
+    }
+
+    ParserException(std::string msg, int row, int col) : Exception() {
+        this->msg = std::string(msg)
+                .append(" at row ")
+                .append(std::to_string(row))
+                .append(", column ")
+                .append(std::to_string(col));
     }
 };
 

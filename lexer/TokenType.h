@@ -33,6 +33,7 @@ enum TokenType {
     T_TYPE_STRING,
     T_TYPE_GEO,
     T_TYPE_GEOCOORD,
+    T_TYPE_GEODIST,
     T_INT,
     T_FLOAT,
     T_STRING,

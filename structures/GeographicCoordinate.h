@@ -2,43 +2,34 @@
 #define _TKOM__INTERPRETER_GEOGRAPHICCOORDINATE_H
 
 #include "../lexer/Token.h"
+#include "GeographicDirection.h"
 
 class GeographicCoordinate {
 public:
-    void setDegree(int degree) {
-        GeographicCoordinate::degree = degree;
-    }
-
-    void setMinute(int minute) {
-        GeographicCoordinate::minute = minute;
-    }
-
-    void setSecond(int second) {
-        GeographicCoordinate::second = second;
-    }
-
-    void setDirection(TokenType directionType) {
-        GeographicCoordinate::direction = directionType;
-    }
-
-    void print() {
-        std::cout << "GeographicCoordinate = ";
-        if (degree)
-            std::cout << degree << "^ ";
-        if (minute)
-            std::cout << minute << "' ";
-        if (second)
-            std::cout << second << "'' ";
-        std::cout << tokenTypeToString(direction) << std::endl;
-    }
-
-    GeographicCoordinate operator+(GeographicCoordinate const &geoPos);
-    GeographicCoordinate operator-(GeographicCoordinate const &geoPos);
+    GeographicCoordinate();
+    GeographicCoordinate(int degree, int minute, int second, TokenType direction);
+    GeographicCoordinate(int degree, int minute, int second, Direction direction);
+    const int getDegree() const;
+    const int getMinute() const;
+    const int getSecond() const;
+    const GeographicDirection getDirection() const;
+    void setDegree(int degree);
+    void setMinute(int minute);
+    void setSecond(int second);
+    void setDirection(TokenType directionType);
+    const bool hasDirection();
+    const bool isLatitude();
+    const bool isLongitude();
+    std::string toString();
+    void print();
+    void validate();
+    void validateAsXDistance();
+    void validateAsYDistance();
 private:
     int degree = 0;
     int minute = 0;
     int second = 0;
-    TokenType direction;
+    GeographicDirection direction;
 };
 
 

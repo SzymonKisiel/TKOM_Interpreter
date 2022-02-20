@@ -76,20 +76,21 @@ TEST_CASE("Comma token", "[Lexer tests]") {
 }
 
 TEST_CASE("Id token", "[Lexer tests]") {
-    // TODO: Check id
     SECTION("Id 1") {
         StringSource source("test");
         Lexer lexer(source);
         auto token = lexer.getNextToken();
         CHECK(token->getType() == TokenType::T_ID);
-        CHECK(token->getStringValue() == "test");
+        REQUIRE(token->getStringValue() != nullptr);
+        CHECK(*token->getStringValue() == "test");
     }
     SECTION("Id 2") {
         StringSource source("test5");
         Lexer lexer(source);
         auto token = lexer.getNextToken();
         CHECK(token->getType() == TokenType::T_ID);
-        CHECK(token->getStringValue() == "test5");
+        REQUIRE(token->getStringValue() != nullptr);
+        CHECK(*token->getStringValue() == "test5");
     }
 }
 
@@ -201,35 +202,44 @@ TEST_CASE("TypeGeocoord token", "[Lexer tests]") {
     CHECK(lexer.getNextToken()->getType() == TokenType::T_TYPE_GEOCOORD);
 }
 
+TEST_CASE("TypeGeodist token", "[Lexer tests]") {
+    StringSource source("geodist");
+    Lexer lexer(source);
+    CHECK(lexer.getNextToken()->getType() == TokenType::T_TYPE_GEODIST);
+}
+
 TEST_CASE("Int token", "[Lexer tests]") {
-    // TODO: Check value
     SECTION("0") {
         StringSource source("0");
         Lexer lexer(source);
         auto token = lexer.getNextToken();
         CHECK(token->getType() == TokenType::T_INT);
-        CHECK(token->getIntValue() == 0);
+        REQUIRE(token->getIntValue() != nullptr);
+        CHECK(*token->getIntValue() == 0);
     }
     SECTION("4") {
         StringSource source("4");
         Lexer lexer(source);
         auto token = lexer.getNextToken();
         CHECK(token->getType() == TokenType::T_INT);
-        CHECK(token->getIntValue() == 4);
+        REQUIRE(token->getIntValue() != nullptr);
+        CHECK(*token->getIntValue() == 4);
     }
     SECTION("12345") {
         StringSource source("12345");
         Lexer lexer(source);
         auto token = lexer.getNextToken();
         CHECK(token->getType() == TokenType::T_INT);
-        CHECK(token->getIntValue() == 12345);
+        REQUIRE(token->getIntValue() != nullptr);
+        CHECK(*token->getIntValue() == 12345);
     }
     SECTION("Largest integer") {
         StringSource source("2147483647");
         Lexer lexer(source);
         auto token = lexer.getNextToken();
         CHECK(token->getType() == TokenType::T_INT);
-        CHECK(token->getIntValue() == 2147483647);
+        REQUIRE(token->getIntValue() != nullptr);
+        CHECK(*token->getIntValue() == 2147483647);
     }
     SECTION("Overflow") {
         StringSource source("2147483648");
@@ -239,24 +249,24 @@ TEST_CASE("Int token", "[Lexer tests]") {
 }
 
 TEST_CASE("Float token", "[Lexer tests]") {
-    // TODO: Check value
     SECTION("Test") {
         StringSource source("5.2");
         Lexer lexer(source);
         auto token = lexer.getNextToken();
         CHECK(token->getType() == TokenType::T_FLOAT);
-        CHECK(token->getFloatValue() == Approx(5.2));
+        REQUIRE(token->getFloatValue() != nullptr);
+        CHECK(*token->getFloatValue() == Approx(5.2));
     }
 }
 
 TEST_CASE("String token", "[Lexer tests]") {
-    // TODO: Check string value
     SECTION("Empty string") {
         StringSource source("\"\"");
         Lexer lexer(source);
         auto token = lexer.getNextToken();
         CHECK(token->getType() == TokenType::T_STRING);
-        CHECK(token->getStringValue() == "");
+        REQUIRE(token->getStringValue() != nullptr);
+        CHECK(*token->getStringValue() == "");
 
     }
     SECTION("Not empty string") {
@@ -264,7 +274,8 @@ TEST_CASE("String token", "[Lexer tests]") {
         Lexer lexer(source);
         auto token = lexer.getNextToken();
         CHECK(token->getType() == TokenType::T_STRING);
-        CHECK(token->getStringValue() == "test");
+        REQUIRE(token->getStringValue() != nullptr);
+        CHECK(*token->getStringValue() == "test");
     }
     SECTION("Unexpected string end") {
         StringSource source("\"");
@@ -276,28 +287,32 @@ TEST_CASE("String token", "[Lexer tests]") {
         Lexer lexer(source);
         auto token = lexer.getNextToken();
         CHECK(token->getType() == TokenType::T_STRING);
-        CHECK(token->getStringValue() == "\\");
+        REQUIRE(token->getStringValue() != nullptr);
+        CHECK(*token->getStringValue() == "\\");
     }
     SECTION("Escape sequence \\\"") {
         StringSource source("\"\\\"\""); // "\""
         Lexer lexer(source);
         auto token = lexer.getNextToken();
         CHECK(token->getType() == TokenType::T_STRING);
-        CHECK(token->getStringValue() == "\"");
+        REQUIRE(token->getStringValue() != nullptr);
+        CHECK(*token->getStringValue() == "\"");
     }
     SECTION("Escape sequence \\n") {
         StringSource source("\"\\n\""); // "\n"
         Lexer lexer(source);
         auto token = lexer.getNextToken();
         CHECK(token->getType() == TokenType::T_STRING);
-        CHECK(token->getStringValue() == "\n");
+        REQUIRE(token->getStringValue() != nullptr);
+        CHECK(*token->getStringValue() == "\n");
     }
     SECTION("Escape sequence \\t") {
         StringSource source("\"\\t\""); // "\t"
         Lexer lexer(source);
         auto token = lexer.getNextToken();
         CHECK(token->getType() == TokenType::T_STRING);
-        CHECK(token->getStringValue() == "\t");
+        REQUIRE(token->getStringValue() != nullptr);
+        CHECK(*token->getStringValue() == "\t");
     }
     SECTION("Unknown escape sequence") {
         StringSource source("\"\\c\""); // "\c"

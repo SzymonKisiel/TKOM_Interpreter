@@ -17,13 +17,11 @@ class Context;
 class WhileStatementNode : public Node {
     std::unique_ptr<ExpressionNode> condition;
     std::unique_ptr<StatementNode> statement;
-    std::string name = "";
 public:
-    WhileStatementNode(std::string name);
     void setCondition(std::unique_ptr<ExpressionNode> node);
     void setStatement(std::unique_ptr<StatementNode> node);
-    void print(int depth = 0);
-    std::variant<std::monostate, std::string, int, float> execute(Context & context);
+    std::string toString(int depth = 0);
+    Value execute(Context & context);
 };
 
 #endif //_TKOM__INTERPRETER_WHILESTATEMENTNODE_H

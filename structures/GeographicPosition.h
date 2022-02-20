@@ -1,30 +1,25 @@
 #ifndef _TKOM__INTERPRETER_GEOGRAPHICPOSITION_H
 #define _TKOM__INTERPRETER_GEOGRAPHICPOSITION_H
 
-
 #include "GeographicCoordinate.h"
+class GeographicDistance;
 
 class GeographicPosition {
 public:
-    GeographicPosition() = default;
-    GeographicPosition(const GeographicCoordinate &latitude, const GeographicCoordinate &longitude) {
-        GeographicPosition::latitude = latitude;
-        GeographicPosition::longitude = longitude;
-    }
-
-    void setLatitude(const GeographicCoordinate &latitude) {
-        GeographicPosition::latitude = latitude;
-    }
-
-    void setLongitude(const GeographicCoordinate &longitude) {
-        GeographicPosition::longitude = longitude;
-    }
-
-    GeographicPosition operator+(GeographicPosition const &geoPos);
-    GeographicPosition operator-(GeographicPosition const &geoPos);
+    GeographicPosition();
+    GeographicPosition(const GeographicCoordinate &latitude, const GeographicCoordinate &longitude) ;
+    const GeographicCoordinate getLatitude() const;
+    const GeographicCoordinate getLongitude() const;
+    void setLatitude(const GeographicCoordinate &latitude);
+    void setLongitude(const GeographicCoordinate &longitude);
+    GeographicPosition operator+(const GeographicDistance &geoDist) const;
+    GeographicPosition operator-(const GeographicDistance &geoDist) const;
+    GeographicDistance operator-(const GeographicPosition &geoPos) const;
+    std::string toString();
+    void validate();
 private:
     GeographicCoordinate latitude;
-    GeographicCoordinate longitude
+    GeographicCoordinate longitude;
 };
 
 

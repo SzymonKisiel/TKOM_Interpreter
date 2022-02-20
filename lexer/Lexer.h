@@ -15,7 +15,7 @@
 using namespace std;
 
 class Lexer {
-    inline  const static std::map<string, TokenType> keywords = {
+    inline const static std::map<string, TokenType> keywords = {
             {"while", TokenType::T_WHILE},
             {"if", TokenType::T_IF},
             {"elsif", TokenType::T_ELSIF},
@@ -29,15 +29,17 @@ class Lexer {
             {"string", TokenType::T_TYPE_STRING},
             {"geo", TokenType::T_TYPE_GEO},
             {"geocoord", TokenType::T_TYPE_GEOCOORD},
+            {"geodist", TokenType::T_TYPE_GEODIST},
             {"N", TokenType::T_GEO_DIRECTION_N},
             {"S", TokenType::T_GEO_DIRECTION_S},
             {"W", TokenType::T_GEO_DIRECTION_W},
             {"E", TokenType::T_GEO_DIRECTION_E}
     };
+    const int MAX_ID_LENGTH = 50;
+    const int MAX_STRING_LENGTH = 1000;
+
     Source & source;
-
     char character {};
-
     int row = 0;
     int column = 0;
 
