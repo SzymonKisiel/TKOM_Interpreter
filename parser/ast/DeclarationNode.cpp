@@ -13,10 +13,8 @@ void DeclarationNode::setExpression(std::unique_ptr<ExpressionNode> expression) 
     this->expression = std::move(expression);
 }
 
-std::string DeclarationNode::toString(int depth) {
-    std::string result = std::string();
-    for (int i = 0; i < depth; ++i)
-        result.append(prefix);
+std::string DeclarationNode::toString(int depth) const {
+    std::string result = getPrefix(depth);
     result.append("DECLARATION ")
             .append(tokenTypeToString(type))
             .append(" ")
@@ -28,7 +26,7 @@ std::string DeclarationNode::toString(int depth) {
     return result;
 }
 
-void DeclarationNode::execute(Context &context) {
+void DeclarationNode::execute(Context &context) const {
     auto value = expression->evaluate(context);
     std::variant<TokenType> test = type;
     if (!std::visit(VisitCheckType(), value, test))

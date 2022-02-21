@@ -31,10 +31,8 @@ void StatementNode::setSimpleStatement(std::unique_ptr<SimpleStatementNode> node
     }
 }
 
-std::string StatementNode::toString(int depth) {
-    std::string result = std::string();
-    for (int i = 0; i < depth; ++i)
-        result.append(prefix);
+std::string StatementNode::toString(int depth) const {
+    std::string result = getPrefix(depth);
     result.append("STATEMENT\n");
 
     for (const auto &child: statements) {
@@ -50,7 +48,7 @@ std::string StatementNode::toString(int depth) {
     return result;
 }
 
-Value StatementNode::execute(Context &context) {
+Value StatementNode::execute(Context &context) const {
     if (statementType == StatementType::SIMPLE)
         return simpleStatement->execute(context);
 

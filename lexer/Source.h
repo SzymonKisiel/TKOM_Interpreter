@@ -13,10 +13,10 @@ protected:
     int column;
 public:
     virtual char getNextChar() = 0;
-    const int getRow() {
+    const int getRow() const {
         return row;
     }
-    const int getColumn() {
+    const int getColumn() const {
         return column;
     }
 };

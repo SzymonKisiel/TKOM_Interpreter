@@ -20,8 +20,9 @@ class ExpressionNode : public Node {
 public:
     void addOperand(std::unique_ptr<AddExpressionNode> node);
     void addOperation(TokenType compOperation);
-    std::string toString(int depth = 0);
-    Value evaluate(Context & context);
+
+    std::string toString(int depth = 0) const;
+    Value evaluate(Context & context) const;
 };
 
 

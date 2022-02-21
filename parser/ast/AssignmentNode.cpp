@@ -9,10 +9,8 @@ void AssignmentNode::setExpression(std::unique_ptr<ExpressionNode> expression) {
     this->expression = std::move(expression);
 }
 
-std::string AssignmentNode::toString(int depth) {
-    std::string result = std::string();
-    for (int i = 0; i < depth; ++i)
-        result.append(prefix);
+std::string AssignmentNode::toString(int depth) const {
+    std::string result = getPrefix(depth);
     result.append("ASSIGNMENT ")
             .append(id)
             .append("\n");
@@ -23,7 +21,7 @@ std::string AssignmentNode::toString(int depth) {
     return result;
 }
 
-void AssignmentNode::execute(Context &context) {
+void AssignmentNode::execute(Context &context) const {
     context.assignToVariable(id, expression->evaluate(context));
     // debug print
 //    auto variables = context.getVariables();

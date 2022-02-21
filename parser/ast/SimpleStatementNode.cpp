@@ -21,10 +21,8 @@ void SimpleStatementNode::setReturnStatement(std::unique_ptr <ReturnStatementNod
     simpleStatementType = SimpleStatementType::RETURN_STATEMENT;
 }
 
-std::string SimpleStatementNode::toString(int depth) {
-    std::string result = std::string();
-    for (int i = 0; i < depth; ++i)
-        result.append(prefix);
+std::string SimpleStatementNode::toString(int depth) const {
+    std::string result = getPrefix(depth);
     result.append("SIMPLE_STATEMENT\n");
 
     if (declaration != nullptr)
@@ -39,7 +37,7 @@ std::string SimpleStatementNode::toString(int depth) {
     return result;
 }
 
-Value SimpleStatementNode::execute(Context &context) {
+Value SimpleStatementNode::execute(Context &context) const {
     switch (simpleStatementType) {
         case SimpleStatementType::DECLARATION:
             declaration->execute(context);

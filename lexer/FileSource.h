@@ -8,7 +8,7 @@ class FileSource : public Source {
     fstream file;
 public:
     FileSource(string filename) {
-        file.open(filename, ios::in);
+        file.open(std::move(filename), ios::in);
         row = 1;
         column = -1;
     }

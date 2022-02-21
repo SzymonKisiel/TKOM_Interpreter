@@ -9,10 +9,8 @@ void AddExpressionNode::addOperation(TokenType addOperation) {
     addOperations.push_back(addOperation);
 }
 
-std::string AddExpressionNode::toString(int depth) {
-    std::string result = std::string();
-    for (int i = 0; i < depth; ++i)
-        result.append(prefix);
+std::string AddExpressionNode::toString(int depth) const {
+    std::string result = getPrefix(depth);
     result.append("ADD_EXPRESSION");
 
     if (!addOperations.empty()) {
@@ -28,7 +26,7 @@ std::string AddExpressionNode::toString(int depth) {
     return result;
 }
 
-Value AddExpressionNode::evaluate(Context & context) {
+Value AddExpressionNode::evaluate(Context & context) const {
     Value lhs = operands[0]->evaluate(context);
     Value rhs;
     TokenType operation;

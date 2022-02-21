@@ -5,10 +5,8 @@ void ReturnStatementNode::setReturnExpression(std::unique_ptr <ExpressionNode> r
     this->returnExpression = std::move(returnExpression);
 }
 
-std::string ReturnStatementNode::toString(int depth) {
-    std::string result = std::string();
-    for (int i = 0; i < depth; ++i)
-        result.append(prefix);
+std::string ReturnStatementNode::toString(int depth) const {
+    std::string result = getPrefix(depth);
     result.append("RETURN_STATEMENT\n");
 
     if (returnExpression != nullptr)
@@ -17,6 +15,6 @@ std::string ReturnStatementNode::toString(int depth) {
     return result;
 }
 
-Value ReturnStatementNode::execute(Context &context) {
+Value ReturnStatementNode::execute(Context &context) const {
     return returnExpression->evaluate(context);
 }

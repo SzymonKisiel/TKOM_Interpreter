@@ -26,8 +26,9 @@ public:
     void addElsifCondition(std::unique_ptr<ExpressionNode> node);
     void addElsifStatement(std::unique_ptr<StatementNode> node);
     void setElseStatement(std::unique_ptr<StatementNode> node);
-    std::string toString(int depth = 0);
-    Value execute(Context & context);
+
+    std::string toString(int depth = 0) const;
+    Value execute(Context & context) const;
 };
 
 #endif //_TKOM__INTERPRETER_IFSTATEMENTNODE_H

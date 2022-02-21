@@ -17,9 +17,9 @@ class ArgumentsNode : public Node {
     std::vector<std::shared_ptr<ExpressionNode>> arguments;
 public:
     void addArgument(std::shared_ptr<ExpressionNode> argument);
-    std::vector<std::shared_ptr<ExpressionNode>> getArguments();
-    std::string toString(int depth = 0);
-//    void execute(Context & context);
+
+    std::vector<std::shared_ptr<ExpressionNode>> getArguments() const;
+    std::string toString(int depth = 0) const;
 };
 
 

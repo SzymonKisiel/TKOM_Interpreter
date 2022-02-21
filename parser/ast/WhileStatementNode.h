@@ -20,8 +20,9 @@ class WhileStatementNode : public Node {
 public:
     void setCondition(std::unique_ptr<ExpressionNode> node);
     void setStatement(std::unique_ptr<StatementNode> node);
-    std::string toString(int depth = 0);
-    Value execute(Context & context);
+
+    std::string toString(int depth = 0) const;
+    Value execute(Context & context) const;
 };
 
 #endif //_TKOM__INTERPRETER_WHILESTATEMENTNODE_H

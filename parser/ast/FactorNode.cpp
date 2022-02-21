@@ -30,10 +30,8 @@ void FactorNode::setNegative() {
     isPositive = false;
 }
 
-std::string FactorNode::toString(int depth) {
-    std::string result = std::string();
-    for (int i = 0; i < depth; ++i)
-        result.append(prefix);
+std::string FactorNode::toString(int depth) const {
+    std::string result = getPrefix(depth);
     result.append("FACTOR ")
             .append(factorTypeNames[factorType]);
     std::string sign = "";
@@ -70,7 +68,7 @@ std::string FactorNode::toString(int depth) {
     return result;
 }
 
-Value FactorNode::evaluate(Context & context) {
+Value FactorNode::evaluate(Context & context) const {
     Value returnValue;
     switch (factorType) {
         case FactorType::VALUE:

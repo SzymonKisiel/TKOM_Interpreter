@@ -17,8 +17,8 @@ class ParametersNode;
 
 class Function {
 public:
-    virtual Value execute(Context & context) = 0;
-    virtual std::shared_ptr<ParametersNode> getParameters() {
+    virtual Value execute(Context & context) const = 0;
+    virtual std::shared_ptr<ParametersNode> getParameters() const {
         return nullptr;
     };
 };

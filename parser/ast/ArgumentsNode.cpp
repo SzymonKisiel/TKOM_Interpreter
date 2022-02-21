@@ -5,10 +5,8 @@ void ArgumentsNode::addArgument(std::shared_ptr<ExpressionNode> argument) {
         arguments.push_back(std::move(argument));
 }
 
-std::string ArgumentsNode::toString(int depth) {
-    std::string result = std::string();
-    for (int i = 0; i < depth; ++i)
-        result.append(prefix);
+std::string ArgumentsNode::toString(int depth) const {
+    std::string result = getPrefix(depth);
     result.append("ARGUMENTS\n");
 
     for (const auto &child: arguments) {
@@ -18,6 +16,6 @@ std::string ArgumentsNode::toString(int depth) {
     return result;
 }
 
-std::vector<std::shared_ptr<ExpressionNode>> ArgumentsNode::getArguments() {
+std::vector<std::shared_ptr<ExpressionNode>> ArgumentsNode::getArguments() const {
     return arguments;
 }

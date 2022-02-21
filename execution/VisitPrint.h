@@ -11,13 +11,6 @@ struct VisitPrintValue {
     void operator()(auto) { std::cout << "empty/unknown"; }
 };
 
-//struct VisitGetValue {
-//    int operator()(int& x) { return x; }
-//    float operator()(float& x) { return x; }
-//    std::string operator()(std::string& x) { return x; }
-//    int operator()(auto) { return 0;}
-//};
-
 struct VisitToString {
     std::string operator()(int& x)         { return to_string(x); }
     std::string operator()(float& x)       { return to_string(x); }

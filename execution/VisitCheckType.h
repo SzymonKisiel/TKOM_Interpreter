@@ -4,33 +4,33 @@
 #include "../lexer/Token.h"
 
 struct VisitCheckType {
-    bool operator()(int&, TokenType& type)    { return type == TokenType::T_TYPE_INT; }
-    bool operator()(float&, TokenType& type)  { return type == TokenType::T_TYPE_FLOAT; }
-    bool operator()(string&, TokenType& type) { return type == TokenType::T_TYPE_STRING; }
-    bool operator()(GeographicCoordinate&, TokenType& type) { return type == TokenType::T_TYPE_GEOCOORD; }
-    bool operator()(GeographicPosition&, TokenType& type)   { return type == TokenType::T_TYPE_GEO; }
-    bool operator()(GeographicDistance&, TokenType& type)   { return type == TokenType::T_TYPE_GEODIST; }
-    bool operator()(auto&, auto&) { return false; }
+    bool operator()(const int&, const TokenType& type) const { return type == TokenType::T_TYPE_INT; }
+    bool operator()(const float&, const TokenType& type) const { return type == TokenType::T_TYPE_FLOAT; }
+    bool operator()(const string&, const TokenType& type) const { return type == TokenType::T_TYPE_STRING; }
+    bool operator()(const GeographicCoordinate&, const TokenType& type) const { return type == TokenType::T_TYPE_GEOCOORD; }
+    bool operator()(const GeographicPosition&, const TokenType& type) const { return type == TokenType::T_TYPE_GEO; }
+    bool operator()(const GeographicDistance&, const TokenType& type) const { return type == TokenType::T_TYPE_GEODIST; }
+    bool operator()(const auto&, const auto&) const { return false; }
 };
 
 struct VisitGetType {
-    TokenType operator()(int&)    { return TokenType::T_TYPE_INT; }
-    TokenType operator()(float&)  { return TokenType::T_TYPE_FLOAT; }
-    TokenType operator()(string&) { return TokenType::T_TYPE_STRING; }
-    TokenType operator()(GeographicCoordinate&) { return TokenType::T_TYPE_GEOCOORD; }
-    TokenType operator()(GeographicPosition&)   { return TokenType::T_TYPE_GEO; }
-    TokenType operator()(GeographicDistance&)   { return TokenType::T_TYPE_GEODIST; }
-    TokenType operator()(auto&) { return TokenType::T_UNKNOWN; }
+    TokenType operator()(const int&) const { return TokenType::T_TYPE_INT; }
+    TokenType operator()(const float&) const { return TokenType::T_TYPE_FLOAT; }
+    TokenType operator()(const string&) const { return TokenType::T_TYPE_STRING; }
+    TokenType operator()(const GeographicCoordinate&) const { return TokenType::T_TYPE_GEOCOORD; }
+    TokenType operator()(const GeographicPosition&) const { return TokenType::T_TYPE_GEO; }
+    TokenType operator()(const GeographicDistance&) const { return TokenType::T_TYPE_GEODIST; }
+    TokenType operator()(const auto&) const { return TokenType::T_UNKNOWN; }
 };
 
 struct VisitCompareType {
-    bool operator()(int&, int&)       { return true; }
-    bool operator()(float&, float&)   { return true; }
-    bool operator()(string&, string&) { return true; }
-    bool operator()(GeographicCoordinate&, GeographicCoordinate&) { return true; }
-    bool operator()(GeographicPosition&, GeographicPosition&)     { return true; }
-    bool operator()(GeographicDistance&, GeographicDistance&)     { return true; }
-    bool operator()(auto&, auto&) { return false; }
+    bool operator()(const int&, const int&) const { return true; }
+    bool operator()(const float&, const float&) const { return true; }
+    bool operator()(const string&, const string&) const { return true; }
+    bool operator()(const GeographicCoordinate&, const GeographicCoordinate&) const { return true; }
+    bool operator()(const GeographicPosition&, const GeographicPosition&) const { return true; }
+    bool operator()(const GeographicDistance&, const GeographicDistance&) const { return true; }
+    bool operator()(const auto&, const auto&) const { return false; }
 };
 
 

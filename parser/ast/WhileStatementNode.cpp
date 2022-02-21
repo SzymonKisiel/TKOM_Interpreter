@@ -11,10 +11,8 @@ void WhileStatementNode::setStatement(std::unique_ptr<StatementNode> node) {
         statement = std::move(node);
 }
 
-std::string WhileStatementNode::toString(int depth) {
-    std::string result = std::string();
-    for (int i = 0; i < depth; ++i)
-        result.append(prefix);
+std::string WhileStatementNode::toString(int depth) const {
+    std::string result = getPrefix(depth);
     result.append("WHILE_STATEMENT\n");
 
     result.append(condition->toString(depth+1));
@@ -23,7 +21,7 @@ std::string WhileStatementNode::toString(int depth) {
     return result;
 }
 
-Value WhileStatementNode::execute(Context &context) {
+Value WhileStatementNode::execute(Context &context) const {
     auto cond = condition->evaluate(context);
     while (std::visit(VisitCondition(), cond)) {
         auto value = statement->execute(context);
