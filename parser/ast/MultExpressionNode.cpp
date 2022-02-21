@@ -9,10 +9,8 @@ void MultExpressionNode::addOperation(TokenType multOperation) {
     multOperations.push_back(multOperation);
 }
 
-std::string MultExpressionNode::toString(int depth) {
-    std::string result = std::string();
-    for (int i = 0; i < depth; ++i)
-        result.append(prefix);
+std::string MultExpressionNode::toString(int depth) const {
+    std::string result = getPrefix(depth);
     result.append("MULT_EXPRESSION");
 
     if (!multOperations.empty()) {
@@ -28,7 +26,7 @@ std::string MultExpressionNode::toString(int depth) {
     return result;
 }
 
-Value MultExpressionNode::evaluate(Context & context) {
+Value MultExpressionNode::evaluate(Context & context) const {
     Value lhs = operands[0]->evaluate(context);
     Value rhs;
     TokenType operation;

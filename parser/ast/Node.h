@@ -16,6 +16,12 @@ public:
     //virtual void execute(Context & context) = 0;
 
     const std::string prefix = "  ";
+    const std::string getPrefix(int depth) const {
+        std::string result = std::string();
+        for (int i = 0; i < depth; ++i)
+            result.append(prefix);
+        return result;
+    }
 };
 
 #include "AddExpressionNode.h"

@@ -1,7 +1,7 @@
 #include "StringSource.h"
 
 StringSource::StringSource(string source) {
-    stringSource = source;
+    stringSource = std::move(source);
     stringIndex = 0;
     row = 1;
     column = -1;

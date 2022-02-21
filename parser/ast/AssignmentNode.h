@@ -18,8 +18,9 @@ class AssignmentNode : public Node {
 public:
     void setId(std::string id);
     void setExpression(std::unique_ptr<ExpressionNode> expression);
-    std::string toString(int depth = 0);
-    void execute(Context & context);
+
+    std::string toString(int depth = 0) const;
+    void execute(Context & context) const;
 };
 
 

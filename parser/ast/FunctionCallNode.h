@@ -19,8 +19,9 @@ class FunctionCallNode : public Node {
 public:
     void setId(std::string id);
     void setArguments(std::shared_ptr<ArgumentsNode> arguments);
-    std::string toString(int depth = 0);
-    Value execute(Context & context);
+
+    std::string toString(int depth = 0) const;
+    Value execute(Context & context) const;
 };
 
 

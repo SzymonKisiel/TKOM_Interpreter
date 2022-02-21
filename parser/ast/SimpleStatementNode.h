@@ -32,8 +32,9 @@ public:
     void setAssignment(std::unique_ptr <AssignmentNode> assignment);
     void setFunctionCall(std::unique_ptr <FunctionCallNode> functionCall);
     void setReturnStatement(std::unique_ptr <ReturnStatementNode> returnStatement);
-    std::string toString(int depth = 0);
-    Value execute(Context & context);
+
+    std::string toString(int depth = 0) const;
+    Value execute(Context & context) const;
 };
 
 

@@ -36,9 +36,9 @@ public:
 
     void print(std::string id = "");
 
-    Context& operator=(Context& context) {
+    Context& operator=(const Context& context) {
         this->functions = context.functions;
-        return context;
+        return *this;
     }
 };
 

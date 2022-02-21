@@ -10,40 +10,36 @@
 class PrintFunction : public Function {
     std::shared_ptr<ParametersNode> parameters;
     const std::string PRINT_VAR_ID = "var";
-    fstream output;
-    void print(Value & value) {
-        output.open("output.txt", ios::out | ios::app);
-        if (auto int_val = get_if<int>(&value))
-            output << *int_val << '\n';
-        else if (auto float_val = get_if<float>(&value))
-            output << *float_val << '\n';
-        else if (auto string_val = get_if<string>(&value))
-            output << *string_val << '\n';
-        else if (auto geocoord_val = get_if<GeographicCoordinate>(&value))
-            output << geocoord_val->toString() << '\n';
-        else if (auto geo_val = get_if<GeographicPosition>(&value))
-            output << geo_val->toString() << '\n';
-        else if (auto geodist_val = get_if<GeographicDistance>(&value))
-            output << geodist_val->toString() << '\n';
-        else
-            throw ExecutionException("Can't print"); // TODO: Exception message
-        output.close();
+    inline static const std::string DEFAULT_OUTPUT_FILENAME = "output.txt";
+    std::string output_filename;
 
+    void print(Value & value) const {
+        fstream output;
+        output.open(output_filename, ios::out | ios::app);
+
+        std::string valueString = std::visit(VisitToString(), value);
+        output << valueString << '\n';
+        output.close();
     }
 public:
-    PrintFunction() {
+    PrintFunction(std::string filename) {
         parameters = std::make_unique<ParametersNode>();
         parameters->addIdentifier(PRINT_VAR_ID);
+        output_filename = std::move(filename);
+
         // clear output file
-        output.open("output.txt", ios::out | ios::trunc);
+        fstream output;
+        output.open(output_filename, ios::out | ios::trunc);
         output.close();
     }
 
-    std::shared_ptr<ParametersNode> getParameters() {
+    PrintFunction() : PrintFunction(DEFAULT_OUTPUT_FILENAME) {}
+
+    std::shared_ptr<ParametersNode> getParameters() const {
         return parameters;
     };
 
-    Value execute(Context & context) {
+    Value execute(Context & context) const {
         auto value = context.getVariableValue(PRINT_VAR_ID);
         print(value); // print to output file
 //        std::visit(VisitPrintValue(), value); // debug print

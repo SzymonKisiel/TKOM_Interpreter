@@ -12,9 +12,19 @@ void checkOutput(const std::string str) {
     string val;
     output.open("output.txt", ios::in);
     getline(output, val);
-    //output >> val;
     output.close();
     CHECK(val == str);
+}
+
+void checkFloatOutput(const std::string str) {
+    fstream output;
+    string val;
+    output.open("output.txt", ios::in);
+    getline(output, val);
+    output.close();
+    float lhs = std::stof(val);
+    float rhs = std::stof(str);
+    CHECK(lhs == Approx(rhs));
 }
 
 TEST_CASE("Print", "[Execution tests]") {
@@ -30,7 +40,7 @@ TEST_CASE("Print", "[Execution tests]") {
         Lexer lexer(source);
         Parser parser(lexer);
         parser.parse()->execute();
-        checkOutput("3.65");
+        checkFloatOutput("3.65");
     }
     SECTION("String") {
         StringSource source("print(\"test\");");
@@ -85,7 +95,7 @@ TEST_CASE("Negation", "[Execution tests]") {
         Lexer lexer(source);
         Parser parser(lexer);
         parser.parse()->execute();
-        checkOutput("-2.6");
+        checkFloatOutput("-2.6");
     }
     SECTION("Geodist negation") {
         StringSource source("print(-(10^, -5^));");
@@ -133,21 +143,21 @@ TEST_CASE("Expressions", "[Execution tests]") {
             Lexer lexer(source);
             Parser parser(lexer);
             parser.parse()->execute();
-            checkOutput("7.2");
+            checkFloatOutput("7.2");
         }
         SECTION("float + int") {
             StringSource source("print(4.2 + 3);");
             Lexer lexer(source);
             Parser parser(lexer);
             parser.parse()->execute();
-            checkOutput("7.2");
+            checkFloatOutput("7.2");
         }
         SECTION("float + float") {
             StringSource source("print(3.5 + 4.2);");
             Lexer lexer(source);
             Parser parser(lexer);
             parser.parse()->execute();
-            checkOutput("7.7");
+            checkFloatOutput("7.7");
         }
         SECTION("string + string") {
             StringSource source("print(\"abc\" + \"123\");");
@@ -286,21 +296,21 @@ TEST_CASE("Expressions", "[Execution tests]") {
             Lexer lexer(source);
             Parser parser(lexer);
             parser.parse()->execute();
-            checkOutput("1.8");
+            checkFloatOutput("1.8");
         }
         SECTION("float - int") {
             StringSource source("print(6.2 - 4);");
             Lexer lexer(source);
             Parser parser(lexer);
             parser.parse()->execute();
-            checkOutput("2.2");
+            checkFloatOutput("2.2");
         }
         SECTION("float - float") {
             StringSource source("print(6.8 - 4.2);");
             Lexer lexer(source);
             Parser parser(lexer);
             parser.parse()->execute();
-            checkOutput("2.6");
+            checkFloatOutput("2.6");
         }
         SECTION("geo - geo") {
             StringSource source("print(45^ 20' 30'' N 70^ 40' 30'' E - 60^ 30' 10'' S 45^ 15' 45'' W);");
@@ -358,21 +368,21 @@ TEST_CASE("Expressions", "[Execution tests]") {
             Lexer lexer(source);
             Parser parser(lexer);
             parser.parse()->execute();
-            checkOutput("87.5");
+            checkFloatOutput("87.5");
         }
         SECTION("float * int") {
             StringSource source("print(12.5 * 7);");
             Lexer lexer(source);
             Parser parser(lexer);
             parser.parse()->execute();
-            checkOutput("87.5");
+            checkFloatOutput("87.5");
         }
         SECTION("float * float") {
             StringSource source("print(12.5 * 7.5);");
             Lexer lexer(source);
             Parser parser(lexer);
             parser.parse()->execute();
-            checkOutput("93.75");
+            checkFloatOutput("93.75");
         }
         SECTION("Multiplication exception") {
             StringSource source("print(\"abc\" * \"123\");");
@@ -394,21 +404,21 @@ TEST_CASE("Expressions", "[Execution tests]") {
             Lexer lexer(source);
             Parser parser(lexer);
             parser.parse()->execute();
-            checkOutput("12.5");
+            checkFloatOutput("12.5");
         }
         SECTION("float / int") {
             StringSource source("print(20.5 / 2);");
             Lexer lexer(source);
             Parser parser(lexer);
             parser.parse()->execute();
-            checkOutput("10.25");
+            checkFloatOutput("10.25");
         }
         SECTION("float / float") {
             StringSource source("print(20.5 / 2.5);");
             Lexer lexer(source);
             Parser parser(lexer);
             parser.parse()->execute();
-            checkOutput("8.2");
+            checkFloatOutput("8.2");
         }
         SECTION("Division exception") {
             StringSource source("print(\"abc\" / \"123\");");
@@ -1092,7 +1102,7 @@ TEST_CASE("Variables", "[Execution tests]") {
             Lexer lexer(source);
             Parser parser(lexer);
             parser.parse()->execute();
-            checkOutput("3.6");
+            checkFloatOutput("3.6");
         }
         SECTION("Assignment") {
             StringSource source("float x = 3.6;\n"
@@ -1101,7 +1111,7 @@ TEST_CASE("Variables", "[Execution tests]") {
             Lexer lexer(source);
             Parser parser(lexer);
             parser.parse()->execute();
-            checkOutput("2.7");
+            checkFloatOutput("2.7");
         }
         SECTION("Declaration type exception") {
             StringSource source("string x = 3.6;\n"

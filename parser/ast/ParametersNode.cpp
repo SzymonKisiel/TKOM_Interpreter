@@ -8,10 +8,8 @@ void ParametersNode::addIdentifier(std::string identifier) {
     identifiers.push_back(identifier);
 }
 
-std::string ParametersNode::toString(int depth) {
-    std::string result = std::string();
-    for (int i = 0; i < depth; ++i)
-        result.append(prefix);
+std::string ParametersNode::toString(int depth) const {
+    std::string result = getPrefix(depth);
     result.append("PARAMETERS");
 
     for (int i = 0; i < std::min(types.size(), identifiers.size()); ++i) {
@@ -25,10 +23,10 @@ std::string ParametersNode::toString(int depth) {
     return result;
 }
 
-const vector<TokenType> &ParametersNode::getTypes() {
+const vector<TokenType> &ParametersNode::getTypes() const {
     return types;
 }
 
-const vector<std::string> &ParametersNode::getIdentifiers() {
+const vector<std::string> &ParametersNode::getIdentifiers() const {
     return identifiers;
 }

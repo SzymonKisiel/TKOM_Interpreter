@@ -3,12 +3,12 @@
 
 
 struct VisitCondition {
-    bool operator() (int& condition) {
+    bool operator() (const int& condition) const {
         if (condition == 0)
             return false;
         return true;
     }
-    bool operator() (auto&) {
+    bool operator() (const auto&) const {
         return true;
     }
 };

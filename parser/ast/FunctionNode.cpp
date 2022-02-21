@@ -17,10 +17,8 @@ void FunctionNode::setReturnType(TokenType returnType) {
     this->returnType = returnType;
 }
 
-std::string FunctionNode::toString(int depth) {
-    std::string result = std::string();
-    for (int i = 0; i < depth; ++i)
-        result.append(prefix);
+std::string FunctionNode::toString(int depth) const {
+    std::string result = getPrefix(depth);
     result.append("FUNCTION ")
             .append(tokenTypeToString(returnType))
             .append(" ")
@@ -36,7 +34,7 @@ std::string FunctionNode::toString(int depth) {
     return result;
 }
 
-Value FunctionNode::execute(Context &context) {
+Value FunctionNode::execute(Context &context) const {
     for (const auto& statement: statements) {
         auto value = statement->execute(context);
         if (!std::get_if<std::monostate>(&value)) {
@@ -52,10 +50,10 @@ Value FunctionNode::execute(Context &context) {
     return std::monostate();
 }
 
-const string &FunctionNode::getId() {
+const string &FunctionNode::getId() const {
     return id;
 }
 
-std::shared_ptr<ParametersNode> FunctionNode::getParameters() {
+std::shared_ptr<ParametersNode> FunctionNode::getParameters() const {
     return parameters;
 }

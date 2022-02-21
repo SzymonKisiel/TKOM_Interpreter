@@ -23,10 +23,8 @@ void IfStatementNode::setElseStatement(std::unique_ptr<StatementNode> node) {
     elseStatement = std::move(node);
 }
 
-std::string IfStatementNode::toString(int depth) {
-    std::string result = std::string();
-    for (int i = 0; i < depth; ++i)
-        result.append(prefix);
+std::string IfStatementNode::toString(int depth) const {
+    std::string result = getPrefix(depth);
     result.append("IF_STATEMENT\n");
 
     if (ifCondition != nullptr)
@@ -45,7 +43,7 @@ std::string IfStatementNode::toString(int depth) {
     return result;
 }
 
-Value IfStatementNode::execute(Context & context) {
+Value IfStatementNode::execute(Context & context) const {
     auto condition = ifCondition->evaluate(context);
     if (std::visit(VisitCondition(), condition)) {
         return ifStatement->execute(context);

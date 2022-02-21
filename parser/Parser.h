@@ -23,15 +23,16 @@ private:
     std::unique_ptr<Token> currentToken;
     std::queue<std::unique_ptr<Token>> tokensBuffer;
 public:
+    // TODO public/private methods
     Parser(Lexer & lexer) : lexer(lexer) {
         nextToken();
     }
 
     void nextToken() {
         if (tokensBuffer.empty()) {
-            currentToken = std::move(lexer.getNextToken());
+            currentToken = lexer.getNextToken();
             while (currentToken->getType() == TokenType::T_MULTICOMMENT)
-                currentToken = std::move(lexer.getNextToken());
+                currentToken = lexer.getNextToken();
         }
         else {
             currentToken = std::move(tokensBuffer.front());
@@ -42,9 +43,9 @@ public:
     void bufferToken() {
         tokensBuffer.push(std::move(currentToken));
 
-        currentToken = std::move(lexer.getNextToken());
+        currentToken = lexer.getNextToken();
         while (currentToken->getType() == TokenType::T_MULTICOMMENT)
-            currentToken = std::move(lexer.getNextToken());
+            currentToken = lexer.getNextToken();
     }
 
     void bufferTokenAndGetNextFromBuffer() {
@@ -54,11 +55,10 @@ public:
     }
 
     void clearBuffer() {
-        std::queue<std::unique_ptr<Token>> emptyBuffer;
-        std::swap(tokensBuffer, emptyBuffer);
+        tokensBuffer = {};
     }
 
-    void test() {
+    void printCurrentToken() {
         std::cerr << std::string("Current token: ")
                 .append(tokenTypeToString(currentToken->getType()))
                 .append("\tRow: ")
@@ -72,15 +72,11 @@ public:
     std::unique_ptr<ProgramNode> parse() {
         std::unique_ptr<ProgramNode> result = std::make_unique<ProgramNode>();
         while (currentToken->getType() != TokenType::T_END) {
-            std::unique_ptr<FunctionNode> function = parseFunction();
-            if (function != nullptr) {
+            if (auto function = parseFunction()) {
                 result->addFunction(std::move(function));
             }
-            else {
-                std::unique_ptr<StatementNode> statement = parseStatement();
-                if (statement != nullptr) {
-                    result->addStatement(std::move(statement));
-                }
+            else if (auto statement = parseStatement()) {
+                result->addStatement(std::move(statement));
             }
         }
         return result;

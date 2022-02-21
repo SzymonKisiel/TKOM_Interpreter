@@ -33,8 +33,9 @@ public:
     void setWhileStatement(std::unique_ptr<WhileStatementNode> node);
     void setIfStatement(std::unique_ptr<IfStatementNode> node);
     void setSimpleStatement(std::unique_ptr<SimpleStatementNode> node);
-    std::string toString(int depth = 0);
-    Value execute(Context & context);
+
+    std::string toString(int depth = 0) const;
+    Value execute(Context & context) const;
 };
 
 
