@@ -15,7 +15,7 @@
 using namespace std;
 
 class Lexer {
-    inline const static std::map<string, TokenType> keywords = {
+    inline const static std::map<std::string, TokenType> keywords = {
             {"while", TokenType::T_WHILE},
             {"if", TokenType::T_IF},
             {"elsif", TokenType::T_ELSIF},

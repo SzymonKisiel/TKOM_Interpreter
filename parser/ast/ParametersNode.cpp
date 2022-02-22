@@ -23,10 +23,10 @@ std::string ParametersNode::toString(int depth) const {
     return result;
 }
 
-const vector<TokenType> &ParametersNode::getTypes() const {
+std::vector<TokenType> ParametersNode::getTypes() const {
     return types;
 }
 
-const vector<std::string> &ParametersNode::getIdentifiers() const {
+std::vector<std::string> ParametersNode::getIdentifiers() const {
     return identifiers;
 }

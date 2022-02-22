@@ -153,7 +153,7 @@ std::unique_ptr<Token> Lexer::buildNumber() {
 
 std::unique_ptr<Token> Lexer::buildString() {
     if (character == '"') {
-        string value = "";
+        std::string value = "";
         character = source.getNextChar();
         int length = 0;
         while (character != '"') {
@@ -192,7 +192,7 @@ std::unique_ptr<Token> Lexer::buildString() {
 
 std::unique_ptr<Token> Lexer::buildId() {
     if (isalpha(character)) {
-        string value = "";
+        std::string value = "";
         int length = 0;
         while (isalnum(character) || character == '_') {
             if (length >= MAX_ID_LENGTH)

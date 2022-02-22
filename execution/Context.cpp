@@ -145,15 +145,15 @@ Value Context::callFunction(std::string id, std::shared_ptr<ArgumentsNode> argum
 }
 
 void Context::print(std::string id) {
-    cout << "Context print {\n";
+    std::cout << "Context print {\n";
     // debug print
     for (auto variable: variables) {
-        cout << '\t' << variable.first << " = ";
+        std::cout << '\t' << variable.first << " = ";
         std::visit(VisitPrintValue(), variable.second);
-        cout << endl;
+        std::cout << endl;
     }
     for (auto function: functions) {
-        cout << '\t' << function.first << endl;
+        std::cout << '\t' << function.first << endl;
     }
-    cout << "}\n";
+    std::cout << "}\n";
 }

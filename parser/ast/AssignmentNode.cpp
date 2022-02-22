@@ -26,13 +26,13 @@ void AssignmentNode::execute(Context &context) const {
     // debug print
 //    auto variables = context.getVariables();
 //    if (auto variable = variables.find(id); variable != variables.end()) {
-//        cout << "assignment: " << variable->first << " = ";
+//        std::cout << "assignment: " << variable->first << " = ";
 //        std::visit(VisitPrintValue(), variable->second);
-//        cout << endl;
+//        std::cout << endl;
 //    }
 //    for (auto variable: variables) {
-//        cout << variable.first << " = ";
+//        std::cout << variable.first << " = ";
 //        std::visit(VisitPrintValue(), variable.second);
-//        cout << endl;
+//        std::cout << endl;
 //    }
 }

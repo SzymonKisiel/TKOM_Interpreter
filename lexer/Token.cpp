@@ -4,7 +4,7 @@ std::string tokenTypeToString(TokenType tokenType) {
     return Token::tokenTypeNames[tokenType];
 }
 
-Token::Token(TokenType type, int row, int column, variant<std::monostate, string, int, float> value) :
+Token::Token(TokenType type, int row, int column, std::variant<std::monostate, std::string, int, float> value) :
         type(type), row(row), column(column), value(std::move(value)) {
 }
 
@@ -16,16 +16,16 @@ Token::Token(TokenType type) : type(type) {
     Token(type, 0, 0);
 }
 
-const TokenType Token::getType() const {
+TokenType Token::getType() const {
     return this->type;
 }
 
-const std::variant<std::monostate, std::string, int, float> Token::getValue() const {
+std::variant<std::monostate, std::string, int, float> Token::getValue() const {
     return value;
 }
 
-const string* Token::getStringValue() const {
-    return std::get_if<string>(&this->value);
+const std::string* Token::getStringValue() const {
+    return std::get_if<std::string>(&this->value);
 }
 
 const int* Token::getIntValue() const {
@@ -36,15 +36,15 @@ const float* Token::getFloatValue() const {
     return std::get_if<float>(&this->value);
 }
 
-const int Token::getRow() const {
+int Token::getRow() const {
     return this->row;
 }
 
-const int Token::getColumn() const {
+int Token::getColumn() const {
     return this->column;
 }
 
-const bool Token::isValue() const {
+bool Token::isValue() const {
     if (this->getType() == TokenType::T_ID ||
         this->getType() == TokenType::T_INT ||
         this->getType() == TokenType::T_FLOAT ||
@@ -54,19 +54,19 @@ const bool Token::isValue() const {
     return false;
 }
 
-const bool Token::isType() const {
+bool Token::isType() const {
     if (this->type >= TokenType::T_TYPE_VOID && this->type <= TokenType::T_TYPE_GEODIST)
         return true;
     return false;
 }
 
-const bool Token::isCompOperator() const {
+bool Token::isCompOperator() const {
     if (this->type >= TokenType::T_LESS && this->type <= TokenType::T_NOT_EQUAL)
         return true;
     return false;
 }
 
-const bool Token::isMultOperator() const {
+bool Token::isMultOperator() const {
     if (this->type == TokenType::T_MUL ||
         this->type == TokenType::T_DIV ||
         this->type == TokenType::T_AND)
@@ -74,7 +74,7 @@ const bool Token::isMultOperator() const {
     return false;
 }
 
-const bool Token::isAddOperator() const {
+bool Token::isAddOperator() const {
     if (this->type == TokenType::T_PLUS ||
         this->type == TokenType::T_MINUS ||
         this->type == TokenType::T_OR)
@@ -82,13 +82,13 @@ const bool Token::isAddOperator() const {
     return false;
 }
 
-const bool Token::isOperator() const {
+bool Token::isOperator() const {
     if (this->type >= TokenType::T_LESS && this->type <= TokenType::T_AND)
         return true;
     return false;
 }
 
-const bool Token::isGeoDirection() const {
+bool Token::isGeoDirection() const {
     if (this->type == TokenType::T_GEO_DIRECTION_N ||
         this->type == TokenType::T_GEO_DIRECTION_S ||
         this->type == TokenType::T_GEO_DIRECTION_W ||
@@ -97,7 +97,7 @@ const bool Token::isGeoDirection() const {
     return false;
 }
 
-const bool Token::isGeoUnit() const {
+bool Token::isGeoUnit() const {
     if (this->type == TokenType::T_GEO_DEGREE ||
         this->type == TokenType::T_GEO_MINUTE ||
         this->type == TokenType::T_GEO_SECOND)
@@ -105,7 +105,7 @@ const bool Token::isGeoUnit() const {
     return false;
 }
 
-const string Token::getTypeString() const {
+string Token::getTypeString() const {
     return tokenTypeNames[this->getType()];
 }
 
@@ -118,7 +118,7 @@ struct VisitToString {
 
 void Token::print() const {
     std::string valueString = std::visit(VisitToString(), this->getValue());
-    cout << this->getRow() << '\t'
+    std::cout << this->getRow() << '\t'
          << this->getColumn() << '\t'
          << this->getTypeString() << '\t'
          << valueString << '\n';

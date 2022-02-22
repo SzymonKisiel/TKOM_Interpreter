@@ -160,7 +160,6 @@ struct VisitDiv {
 };
 struct VisitAnd {
     int operator()(const int& lhs, const int& rhs) const {
-        //cout << lhs << " and " << rhs << endl;
         if (lhs != 0 && rhs != 0)
             return 1;
         return 0;

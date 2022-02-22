@@ -19,9 +19,9 @@ public:
     void addFunction(std::shared_ptr<FunctionNode> node);
     void addStatement(std::unique_ptr<StatementNode> node);
 
-    const bool isTerminal() const;
+    bool isTerminal() const;
     void print(int depth = 0) const;
-    const std::string toString() const;
+    std::string toString() const;
     void execute() const;
 };
 
