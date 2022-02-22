@@ -22,12 +22,26 @@ private:
     Lexer & lexer;
     std::unique_ptr<Token> currentToken;
     std::queue<std::unique_ptr<Token>> tokensBuffer;
+
 public:
-    // TODO public/private methods
     Parser(Lexer & lexer) : lexer(lexer) {
         nextToken();
     }
+    // program = {statement | function} ;
+    std::unique_ptr<ProgramNode> parse() {
+        std::unique_ptr<ProgramNode> result = std::make_unique<ProgramNode>();
+        while (currentToken->getType() != TokenType::T_END) {
+            if (auto function = parseFunction()) {
+                result->addFunction(std::move(function));
+            }
+            else if (auto statement = parseStatement()) {
+                result->addStatement(std::move(statement));
+            }
+        }
+        return result;
+    }
 
+private:
     void nextToken() {
         if (tokensBuffer.empty()) {
             currentToken = lexer.getNextToken();
@@ -66,20 +80,6 @@ public:
                 .append(", Col: ")
                 .append(std::to_string(currentToken->getColumn()))
                 .append("\n");
-    }
-
-    // program = {statement | function} ;
-    std::unique_ptr<ProgramNode> parse() {
-        std::unique_ptr<ProgramNode> result = std::make_unique<ProgramNode>();
-        while (currentToken->getType() != TokenType::T_END) {
-            if (auto function = parseFunction()) {
-                result->addFunction(std::move(function));
-            }
-            else if (auto statement = parseStatement()) {
-                result->addStatement(std::move(statement));
-            }
-        }
-        return result;
     }
 
     // function = type , id ,  "(" , [parameters] , ")" , "{" , {statement} , "}" ;
