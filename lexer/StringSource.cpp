@@ -1,6 +1,6 @@
 #include "StringSource.h"
 
-StringSource::StringSource(string source) {
+StringSource::StringSource(std::string source) {
     stringSource = std::move(source);
     stringIndex = 0;
     row = 1;

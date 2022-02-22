@@ -20,8 +20,8 @@ public:
     void addIdentifier(std::string identifier);
 
     std::string toString(int depth = 0) const;
-    const vector<TokenType> &getTypes() const;
-    const vector<std::string> &getIdentifiers() const;
+    std::vector<TokenType> getTypes() const;
+    std::vector<std::string> getIdentifiers() const;
 };
 
 

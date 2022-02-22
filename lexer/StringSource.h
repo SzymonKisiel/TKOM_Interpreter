@@ -5,10 +5,10 @@
 #include "Source.h"
 
 class StringSource : public Source {
-    string stringSource;
+    std::string stringSource;
     int stringIndex;
 public:
-    StringSource(string source);
+    StringSource(std::string source);
     char getNextChar();
 };
 

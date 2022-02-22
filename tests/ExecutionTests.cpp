@@ -9,7 +9,7 @@
 
 void checkOutput(const std::string str) {
     fstream output;
-    string val;
+    std::string val;
     output.open("output.txt", ios::in);
     getline(output, val);
     output.close();
@@ -18,7 +18,7 @@ void checkOutput(const std::string str) {
 
 void checkFloatOutput(const std::string str) {
     fstream output;
-    string val;
+    std::string val;
     output.open("output.txt", ios::in);
     getline(output, val);
     output.close();
@@ -1190,7 +1190,7 @@ TEST_CASE("Execute while statement", "[Execution tests]") {
     parser.parse()->execute();
 
     fstream output;
-    string val;
+    std::string val;
     output.open("output.txt", ios::in);
     output >> val;
     REQUIRE(val == "0");
@@ -1279,7 +1279,7 @@ TEST_CASE("Functions", "[Execution tests]") {
         parser.parse()->execute();
 
         fstream output;
-        string val;
+        std::string val;
         output.open("output.txt", ios::in);
         output >> val;
         CHECK(val == "3");
@@ -1331,7 +1331,7 @@ TEST_CASE("Functions", "[Execution tests]") {
         parser.parse()->execute();
 
         fstream output;
-        string val;
+        std::string val;
         output.open("output.txt", ios::in);
         output >> val;
         CHECK(val == "1");

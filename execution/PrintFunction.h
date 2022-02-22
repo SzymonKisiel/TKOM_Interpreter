@@ -44,7 +44,7 @@ public:
         print(value); // print to output file
 //        std::visit(VisitPrintValue(), value); // debug print
 //        std::cout << '\n';
-        return monostate();
+        return std::monostate();
     }
 };
 

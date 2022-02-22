@@ -25,7 +25,7 @@ public:
     void addStatement(std::unique_ptr<StatementNode> statement);
     void setReturnType(TokenType returnType);
 
-    const string &getId() const;
+    std::string getId() const;
     std::shared_ptr<ParametersNode> getParameters() const;
     std::string toString(int depth = 0) const;
     Value execute(Context & context) const;

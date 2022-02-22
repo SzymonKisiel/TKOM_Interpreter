@@ -50,7 +50,7 @@ Value FunctionNode::execute(Context &context) const {
     return std::monostate();
 }
 
-const string &FunctionNode::getId() const {
+std::string FunctionNode::getId() const {
     return id;
 }
 

@@ -67,25 +67,25 @@ public:
             "T_UNKNOWN",
     };
 
-    Token(enum TokenType type, int row, int column, std::variant<std::monostate, string, int, float> value);
+    Token(enum TokenType type, int row, int column, std::variant<std::monostate, std::string, int, float> value);
     Token(enum TokenType type, int row, int column);
     explicit Token(enum TokenType type);
-    const enum TokenType getType() const;
-    const std::variant<std::monostate, string, int, float> getValue() const;
-    const string* getStringValue() const;
+    enum TokenType getType() const;
+    std::variant<std::monostate, std::string, int, float> getValue() const;
+    const std::string* getStringValue() const;
     const int* getIntValue() const;
     const float* getFloatValue() const;
-    const int getRow() const;
-    const int getColumn() const;
-    const bool isValue() const;
-    const bool isType() const;
-    const bool isCompOperator() const;
-    const bool isMultOperator() const;
-    const bool isAddOperator() const;
-    const bool isOperator() const;
-    const bool isGeoDirection() const;
-    const bool isGeoUnit() const;
-    const string getTypeString() const;
+    int getRow() const;
+    int getColumn() const;
+    bool isValue() const;
+    bool isType() const;
+    bool isCompOperator() const;
+    bool isMultOperator() const;
+    bool isAddOperator() const;
+    bool isOperator() const;
+    bool isGeoDirection() const;
+    bool isGeoUnit() const;
+    std::string getTypeString() const;
     void print() const;
 };
 

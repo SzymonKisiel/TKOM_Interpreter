@@ -10,7 +10,7 @@ void ProgramNode::addStatement(std::unique_ptr<StatementNode> node) {
         statements.push_back(std::move(node));
 }
 
-const bool ProgramNode::isTerminal() const {
+bool ProgramNode::isTerminal() const {
     return false;
 }
 
@@ -18,7 +18,7 @@ void ProgramNode::print(int depth) const {
     std::cout << this->toString() << std::endl;
 }
 
-const std::string ProgramNode::toString() const {
+std::string ProgramNode::toString() const {
     std::string result = "PROGRAM\n";
     for (const auto &child: functions) {
         result.append(child->toString(1));
